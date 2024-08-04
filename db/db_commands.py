@@ -3,9 +3,15 @@ import logging
 from sqlalchemy import select
 
 from db.database import engine, SessionLocal, Base
+from schemas.short_card import ShortCard
 from models.educational_data import EducationalData
 from models.personal_data import PersonalData
-from schemas.short_card import ShortCard
+from models.contact_data import ContactData
+from models.other_data import OtherData
+from models.stipend_data import StipendData
+from models.benefits_data import BenefitsData
+from models.military_data import MilitaryData
+
 
 logging.basicConfig(filename='db/db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")

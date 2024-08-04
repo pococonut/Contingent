@@ -1,13 +1,19 @@
+from io import BytesIO
 from typing import Annotated
 
-from fastapi import FastAPI, Depends, Query
+import pandas as pd
+from fastapi import FastAPI, Depends, Query, UploadFile
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db, add_data, get_cards
 from models.educational_data import EducationalData
 from models.personal_data import PersonalData
-
+from models.contact_data import ContactData
+from models.other_data import OtherData
+from models.stipend_data import StipendData
+from models.benefits_data import BenefitsData
+from models.military_data import MilitaryData
 
 app = FastAPI()
 
@@ -77,3 +83,74 @@ async def get_short_cards(faculty: Annotated[str | None, Query(example='МИКН
 
     short_cards = await get_cards(session, filters)
     return short_cards
+
+
+@app.post("/import_cards_excel")
+async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db)):
+    data = await file.read()
+    excel_data = BytesIO(data)
+
+    df = pd.read_excel(excel_data)
+    amount_rows = df.shape[0]
+
+    for i in range(0, int(amount_rows)):
+        personal_data = {"personal_id": i,
+                         "firstname": df.at[i, 'Имя'],
+                         "lastname": df.at[i, 'Фамилия'],
+                         "patronymic": df.at[i, 'Отчество'],
+                         "birth_date": df.at[i, 'Дата рожд.'],
+                         "birth_place": "",
+                         "citizenship": df.at[i, 'Гражданство'],
+                         "type_of_identity": df.at[i, 'Удостов. личности'],
+                         "address": df.at[i, 'Адрес'],
+                         "marital_status": "",
+                         "snils": str(df.at[i, 'Снилс']),
+                         "polis": df.at[i, 'Имя'],
+                         "study_status": df.at[i, 'Статус внутри вуза'],
+                         "general_status": df.at[i, 'Статус общий'], }
+
+        contact_data = {"number": str(df.at[i, 'Тел.']),
+                        "spare_number": str(df.at[i, '2й Тел.']),
+                        "mail": str(df.at[i, 'Почта']),
+                        "personal_id": i}
+
+        educational_data = {"faculty": df.at[i, 'Факультет'],
+                            "direction": df.at[i, 'Направление'],
+                            "course": str(df.at[i, 'Курс']),
+                            "department": "",
+                            "group": str(df.at[i, 'Группа']),
+                            "subgroup": df.at[i, 'Подгруппа'],
+                            "form": "",
+                            "book_num": str(df.at[i, 'Номер зачётки']),
+                            "degree": df.at[i, 'Степень обучения'],
+                            "degree_payment": df.at[i, 'Форма обуч. $'],
+                            "personal_id": i, }
+
+        benefit_data = {"benefits": str(df.at[i, 'Льготы']),
+                        "personal_id": i}
+
+        stipend_data = {"form": str(df.at[i, 'Форма']),
+                        "amount": str(df.at[i, 'Сумма']),
+                        "personal_id": i, }
+
+        military_data = {"status": str(df.at[i, 'Статус']),
+                         "category": str(df.at[i, 'Категория']),
+                         "delay": str(df.at[i, 'Отсрочка']),
+                         "document": str(df.at[i, 'Документ']),
+                         "personal_id": i, }
+
+        other_data = {"parents": str(df.at[i, 'Родители']),
+                      "parents_contacts": str(df.at[i, 'Контакты родственников']),
+                      "relatives_works": str(df.at[i, 'Места работы родственников']),
+                      "relatives_addresses": str(df.at[i, 'Адреса родственников']),
+                      "personal_id": i, }
+
+        await add_data(db, personal_data, PersonalData)
+        await add_data(db, educational_data, EducationalData)
+        await add_data(db, contact_data, ContactData)
+        await add_data(db, benefit_data, BenefitsData)
+        await add_data(db, stipend_data, StipendData)
+        await add_data(db, military_data, MilitaryData)
+        await add_data(db, other_data, OtherData)
+
+    return {"file": file.filename}
