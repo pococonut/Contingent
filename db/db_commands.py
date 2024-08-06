@@ -41,15 +41,61 @@ async def add_data(db, data, table):
     :param table: Таблица
     :return: Добавленные данные
     """
+    async with db.begin():
+        try:
+            new_data = table(**data.dict())
+            db.add(new_data)
+            await db.commit()
+            await db.refresh(new_data)
+            return data
+        except Exception as e:
+            logging.error(e)
+            print(e)
+
+
+async def add_students_card(db, data):
+    """
+    Функция для вставки личной карты студента в талицу БД
+    :param db: Объект сессии
+    :param data: Данные
+    :return:
+    """
+
+    tables = [PersonalData, EducationalData, ContactData,
+              BenefitsData, StipendData, MilitaryData, OtherData]
+
+    data = [data.personal_data.dict(), data.educational_data.dict(),
+            data.contact_data.dict(), data.benefits_data.dict(),
+            data.stipend_data.dict(), data.military_data.dict(),
+            data.other_data.dict()]
+
+    for table, data in zip(tables, data):
+        await add_data(db, data, table)
+
+
+async def get_all_students_cards(db):
+    """
+    Функция для получения всех карт студентов
+    :param db: Объект сессии
+    :return: Все карты студентов
+    """
     try:
-        new_data = table(**data.dict())
-        db.add(new_data)
-        await db.commit()
-        await db.refresh(new_data)
-        return new_data
+        cols = [PersonalData.firstname,
+                PersonalData.lastname,
+                PersonalData.patronymic,
+                EducationalData.direction,
+                EducationalData.course,
+                EducationalData.department,
+                EducationalData.group,
+                EducationalData.subgroup]
+
+        stmt = select(*cols).join(EducationalData, PersonalData.personal_id == EducationalData.personal_id)
+
+        results = await db.execute(stmt)
+        data = [ShortCard.from_orm(card) for card in results.all()]
+        return data
     except Exception as e:
         logging.error(e)
-        print(e)
 
 
 async def get_short_cards(db, filters: dict = None):

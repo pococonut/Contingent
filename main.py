@@ -1,12 +1,12 @@
 from io import BytesIO
-from typing import Annotated
 
 import pandas as pd
 from fastapi import FastAPI, Depends, Query, UploadFile
+from typing import Annotated
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_db, add_data, get_short_cards
+from db.db_commands import get_db, add_data, get_short_cards, add_students_card, get_all_students_cards
 from models.educational_data import EducationalData
 from models.personal_data import PersonalData
 from models.contact_data import ContactData
@@ -16,13 +16,21 @@ from models.benefits_data import BenefitsData
 from models.military_data import MilitaryData
 from schemas.educational_data import EducationalDataSh
 from schemas.personal_data import PersonalDataSh
+from schemas.students_card import StudentsCardSh
 
 app = FastAPI()
 
 
-@app.post("")
-async def post_card():
-    pass
+@app.post("/students_card")
+async def post_students_card(students_card: StudentsCardSh, db: AsyncSession = Depends(get_db)):
+    await add_students_card(db, students_card)
+    return students_card
+
+
+@app.get("/students_card")
+async def get_students_card(db: AsyncSession = Depends(get_db)):
+    res = await get_all_students_cards(db)
+    return res
 
 
 @app.post("/personal_data")

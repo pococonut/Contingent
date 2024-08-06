@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class OtherData(BaseModel):
+class OtherDataSh(BaseModel):
     """
     Модель тела запроса остальной информации студента.
     """
