@@ -42,7 +42,7 @@ async def add_data(db, data, table):
     :return: Добавленные данные
     """
     try:
-        new_data = table(**data)
+        new_data = table(**data.dict())
         db.add(new_data)
         await db.commit()
         await db.refresh(new_data)
@@ -52,7 +52,7 @@ async def add_data(db, data, table):
         print(e)
 
 
-async def get_cards(db, filters: dict = None):
+async def get_short_cards(db, filters: dict = None):
     """
     Функция для получения списка краткого представления карт студентов
     :param db: Объект сессии

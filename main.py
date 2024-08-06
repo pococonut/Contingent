@@ -6,7 +6,7 @@ from fastapi import FastAPI, Depends, Query, UploadFile
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_db, add_data, get_cards
+from db.db_commands import get_db, add_data, get_short_cards
 from models.educational_data import EducationalData
 from models.personal_data import PersonalData
 from models.contact_data import ContactData
@@ -14,48 +14,35 @@ from models.other_data import OtherData
 from models.stipend_data import StipendData
 from models.benefits_data import BenefitsData
 from models.military_data import MilitaryData
+from schemas.educational_data import EducationalDataSh
+from schemas.personal_data import PersonalDataSh
 
 app = FastAPI()
 
 
-@app.post("/personal_data")
-async def post_personal_data(firstname: Annotated[str | None, Query(example='Владимир')] = None,
-                             lastname: Annotated[str | None, Query(example='Высоцкий')] = None,
-                             patronymic: Annotated[str | None, Query(example='Семёнович')] = None,
-                             db: AsyncSession = Depends(get_db)):
-    data = {"firstname": firstname,
-            "lastname": lastname,
-            "patronymic": patronymic, }
+@app.post("")
+async def post_card():
+    pass
 
-    result = await add_data(db, data, PersonalData)
+
+@app.post("/personal_data")
+async def post_personal_data(personal_data: PersonalDataSh,
+                             db: AsyncSession = Depends(get_db)):
+    result = await add_data(db, personal_data, PersonalData)
     return result
 
 
 @app.get("/personal_data")
 async def get_personal_data(db: AsyncSession = Depends(get_db)):
     results = await db.execute((select(PersonalData)))
-    users = results.scalars().all()
-    return {"personal_data_of_students": users}
+    data = results.scalars().all()
+    return {"personal_data_of_students": data}
 
 
 @app.post("/educational_data")
-async def post_educational_data(personal_id: Annotated[int, Query()],
-                                faculty: Annotated[str | None, Query(example='МИКН')] = None,
-                                direction: Annotated[str | None, Query(example='МИКН')] = None,
-                                course: Annotated[str | None, Query(example='2')] = None,
-                                department: Annotated[str | None, Query(example='ВМИ')] = None,
-                                group: Annotated[str | None, Query(example='21')] = None,
-                                subgroup: Annotated[str | None, Query(example='21/2')] = None,
+async def post_educational_data(educational_data: EducationalDataSh,
                                 db: AsyncSession = Depends(get_db)):
-    data = {"personal_id": personal_id,
-            "faculty": faculty,
-            "direction": direction,
-            "course": course,
-            "department": department,
-            "group": group,
-            "subgroup": subgroup, }
-
-    result = await add_data(db, data, EducationalData)
+    result = await add_data(db, educational_data, EducationalData)
     return result
 
 
@@ -81,7 +68,7 @@ async def get_short_cards(faculty: Annotated[str | None, Query(example='МИКН
                "group": group,
                "subgroup": subgroup, }
 
-    short_cards = await get_cards(session, filters)
+    short_cards = await get_short_cards(session, filters)
     return short_cards
 
 
@@ -89,7 +76,6 @@ async def get_short_cards(faculty: Annotated[str | None, Query(example='МИКН
 async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db)):
     data = await file.read()
     excel_data = BytesIO(data)
-
     df = pd.read_excel(excel_data)
     amount_rows = df.shape[0]
 
@@ -105,7 +91,7 @@ async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db
                          "address": df.at[i, 'Адрес'],
                          "marital_status": "",
                          "snils": str(df.at[i, 'Снилс']),
-                         "polis": df.at[i, 'Имя'],
+                         "polis": "",
                          "study_status": df.at[i, 'Статус внутри вуза'],
                          "general_status": df.at[i, 'Статус общий'], }
 

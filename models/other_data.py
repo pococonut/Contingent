@@ -11,7 +11,7 @@ from models.personal_data import PersonalData
 
 class OtherData(Base):
     """
-    Модель таблицы информации об отношении к военной службе студента.
+    Модель таблицы об остальной информации студента.
     """
     __tablename__ = 'other_data'
 
