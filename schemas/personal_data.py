@@ -5,7 +5,7 @@ class PersonalDataSh(BaseModel):
     """
     Модель тела запроса информации студента.
     """
-    personal_id: int
+    personal_id: int | None = None
     firstname: str | None = None
     lastname: str | None = None
     patronymic: str | None = None
@@ -19,3 +19,7 @@ class PersonalDataSh(BaseModel):
     polis: str | None = None
     study_status: str | None = None
     general_status: str | None = None
+
+    class Config:
+        orm_mode = True
+        from_attributes = True

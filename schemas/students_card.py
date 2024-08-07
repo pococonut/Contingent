@@ -11,7 +11,7 @@ from schemas.stipend_data import StipendDataSh
 
 class StudentsCardSh(BaseModel):
     """
-    Модель тела запроса карты студента
+    Модель тела запроса карты студента.
     """
     personal_data: PersonalDataSh | None = None
     educational_data: EducationalDataSh | None = None
@@ -20,3 +20,8 @@ class StudentsCardSh(BaseModel):
     military_data: MilitaryDataSh | None = None
     stipend_data: StipendDataSh | None = None
     other_data: OtherDataSh | None = None
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
+

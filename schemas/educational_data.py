@@ -15,4 +15,9 @@ class EducationalDataSh(BaseModel):
     book_num: str | None = None
     degree: str | None = None
     degree_payment: str | None = None
-    personal_id: int
+    personal_id: int | None = None
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
+

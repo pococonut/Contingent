@@ -2,6 +2,9 @@ from pydantic import BaseModel
 
 
 class ShortCard(BaseModel):
+    """
+    Модель тела запроса сокращенной карты студента.
+    """
     firstname: str | None = None
     lastname: str | None = None
     patronymic: str | None = None

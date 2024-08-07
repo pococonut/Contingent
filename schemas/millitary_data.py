@@ -9,5 +9,9 @@ class MilitaryDataSh(BaseModel):
     category: str | None = None
     delay: str | None = None
     document: str | None = None
-    personal_id: int
+    personal_id: int | None = None
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
 

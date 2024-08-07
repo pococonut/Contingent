@@ -6,7 +6,6 @@ from typing import Annotated
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_db, add_data, get_short_cards, add_students_card, get_all_students_cards
 from models.educational_data import EducationalData
 from models.personal_data import PersonalData
 from models.contact_data import ContactData
@@ -17,8 +16,10 @@ from models.military_data import MilitaryData
 from schemas.educational_data import EducationalDataSh
 from schemas.personal_data import PersonalDataSh
 from schemas.students_card import StudentsCardSh
+from db.db_commands import get_db, add_data, get_short_cards, add_students_card, get_all_students_cards
 
-app = FastAPI()
+
+app = FastAPI(title="Contingent")
 
 
 @app.post("/students_card")

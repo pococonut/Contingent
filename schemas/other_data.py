@@ -9,6 +9,10 @@ class OtherDataSh(BaseModel):
     parents_contacts: str | None = None
     relatives_works: str | None = None
     relatives_addresses: str | None = None
-    personal_id: int
+    personal_id: int | None = None
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
 
 

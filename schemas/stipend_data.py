@@ -7,5 +7,8 @@ class StipendDataSh(BaseModel):
     """
     form: str | None = None
     amount: str | None = None
-    personal_id: int
+    personal_id: int | None = None
 
+    class Config:
+        orm_mode = True
+        from_attributes = True

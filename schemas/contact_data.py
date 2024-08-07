@@ -8,5 +8,9 @@ class ContactDataSh(BaseModel):
     number: str | None = None
     spare_number: str | None = None
     mail: str | None = None
-    personal_id: int
+    personal_id: int | None = None
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
 
