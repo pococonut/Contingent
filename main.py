@@ -85,10 +85,10 @@ async def get_short_cards(faculty: Annotated[str | None, Query(example='МИКН
 async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db)):
     data = await file.read()
     excel_data = BytesIO(data)
-    df = pd.read_excel(excel_data)
+    df = pd.read_excel(excel_data, header=1)
     amount_rows = df.shape[0]
 
-    for i in range(0, int(amount_rows)):
+    for i in range(int(amount_rows)):
         personal_data = {"id": i,
                          "firstname": df.at[i, 'Имя'],
                          "lastname": df.at[i, 'Фамилия'],
@@ -104,11 +104,6 @@ async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db
                          "study_status": df.at[i, 'Статус внутри вуза'],
                          "general_status": df.at[i, 'Статус общий'], }
 
-        contact_data = {"number": str(df.at[i, 'Тел.']),
-                        "spare_number": str(df.at[i, '2й Тел.']),
-                        "mail": str(df.at[i, 'Почта']),
-                        "personal_id": i}
-
         educational_data = {"faculty": df.at[i, 'Факультет'],
                             "direction": df.at[i, 'Направление'],
                             "course": str(df.at[i, 'Курс']),
@@ -120,6 +115,11 @@ async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db
                             "degree": df.at[i, 'Степень обучения'],
                             "degree_payment": df.at[i, 'Форма обуч. $'],
                             "personal_id": i, }
+
+        contact_data = {"number": str(df.at[i, 'Тел.']),
+                        "spare_number": str(df.at[i, '2й Тел.']),
+                        "mail": str(df.at[i, 'Почта']),
+                        "personal_id": i}
 
         benefit_data = {"benefits": str(df.at[i, 'Льготы']),
                         "personal_id": i}
