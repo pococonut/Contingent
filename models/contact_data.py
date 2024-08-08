@@ -15,7 +15,7 @@ class ContactData(Base):
     """
     __tablename__ = 'contact_data'
 
-    contact_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     number: Mapped[str] = mapped_column(nullable=True)
     spare_number: Mapped[str] = mapped_column(nullable=True)
     mail: Mapped[str] = mapped_column(nullable=True)

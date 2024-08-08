@@ -15,7 +15,7 @@ class MilitaryData(Base):
     """
     __tablename__ = 'military_data'
 
-    military_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     status: Mapped[str] = mapped_column(nullable=True)
     category: Mapped[str] = mapped_column(nullable=True)
     delay: Mapped[str] = mapped_column(nullable=True)

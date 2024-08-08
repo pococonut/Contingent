@@ -13,7 +13,7 @@ class PersonalData(Base):
     """
     __tablename__ = 'personal_data'
 
-    personal_id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     firstname: Mapped[str] = mapped_column(nullable=True)
     lastname: Mapped[str] = mapped_column(nullable=True)
     patronymic: Mapped[str] = mapped_column(nullable=True)

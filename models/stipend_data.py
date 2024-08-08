@@ -15,7 +15,7 @@ class StipendData(Base):
     """
     __tablename__ = 'stipend_data'
 
-    stipend_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     form: Mapped[str] = mapped_column(nullable=True)
     amount: Mapped[str] = mapped_column(nullable=True)
 

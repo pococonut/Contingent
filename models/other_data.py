@@ -15,7 +15,7 @@ class OtherData(Base):
     """
     __tablename__ = 'other_data'
 
-    other_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     parents: Mapped[str] = mapped_column(nullable=True)
     parents_contacts: Mapped[str] = mapped_column(nullable=True)
     relatives_works: Mapped[str] = mapped_column(nullable=True)

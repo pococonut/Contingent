@@ -15,7 +15,7 @@ class BenefitsData(Base):
     """
     __tablename__ = 'benefits_data'
 
-    benefits_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     benefits: Mapped[str] = mapped_column(nullable=True)
 
     personal_id: Mapped[int] = mapped_column(ForeignKey('personal_data.personal_id'), nullable=False)

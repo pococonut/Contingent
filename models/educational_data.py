@@ -15,7 +15,7 @@ class EducationalData(Base):
     """
     __tablename__ = 'educational_data'
 
-    education_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     faculty: Mapped[str] = mapped_column(nullable=True)
     direction: Mapped[str] = mapped_column(nullable=True)
     course: Mapped[str] = mapped_column(nullable=True)
