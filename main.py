@@ -89,7 +89,7 @@ async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db
     amount_rows = df.shape[0]
 
     for i in range(0, int(amount_rows)):
-        personal_data = {"personal_id": i,
+        personal_data = {"id": i,
                          "firstname": df.at[i, 'Имя'],
                          "lastname": df.at[i, 'Фамилия'],
                          "patronymic": df.at[i, 'Отчество'],

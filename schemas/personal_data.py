@@ -5,7 +5,7 @@ class PersonalDataSh(BaseModel):
     """
     Модель тела запроса информации студента.
     """
-    personal_id: int | None = None
+    id: int | None = None
     firstname: str | None = None
     lastname: str | None = None
     patronymic: str | None = None

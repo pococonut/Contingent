@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from sqlalchemy import select
@@ -20,7 +21,7 @@ from models.military_data import MilitaryData
 from schemas.stipend_data import StipendDataSh
 from schemas.students_card import StudentsCardSh
 
-logging.basicConfig(filename='db/db_log.log', level=logging.INFO,
+logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")
 
 
@@ -91,7 +92,7 @@ async def get_all_students_cards(db):
     :return: Все карты студентов
     """
     try:
-        personal_cols = [PersonalData.personal_id,
+        personal_cols = [PersonalData.id,
                          PersonalData.firstname,
                          PersonalData.lastname,
                          PersonalData.patronymic,
@@ -142,37 +143,37 @@ async def get_all_students_cards(db):
                       OtherData.relatives_addresses,
                       OtherData.personal_id]
 
-        personal_stmt = (select(*personal_cols))
-        educational_stmt = (select(*educational_cols))
-        contact_stmt = (select(*contact_cols))
-        military_stmt = (select(*military_cols))
-        benefits_stmt = (select(*benefits_cols))
-        stipend_stmt = (select(*stipend_cols))
-        other_stmt = (select(*other_cols))
+        personal_stmt = select(PersonalData)
+        # educational_stmt = (select(*educational_cols))
+        # contact_stmt = (select(*contact_cols))
+        # military_stmt = (select(*military_cols))
+        # benefits_stmt = (select(*benefits_cols))
+        # stipend_stmt = (select(*stipend_cols))
+        # other_stmt = (select(*other_cols))
 
         personal_results = await db.execute(personal_stmt)
-        educational_results = await db.execute(educational_stmt)
-        contact_results = await db.execute(contact_stmt)
-        military_results = await db.execute(military_stmt)
-        benefits_results = await db.execute(benefits_stmt)
-        stipend_results = await db.execute(stipend_stmt)
-        other_results = await db.execute(other_stmt)
+        # educational_results = await db.execute(educational_stmt)
+        # contact_results = await db.execute(contact_stmt)
+        # military_results = await db.execute(military_stmt)
+        # benefits_results = await db.execute(benefits_stmt)
+        # stipend_results = await db.execute(stipend_stmt)
+        # other_results = await db.execute(other_stmt)
 
-        personal_data = [PersonalDataSh.from_orm(row) for row in personal_results.all()]
-        educational_data = [EducationalDataSh.from_orm(row) for row in educational_results.all()]
-        contact_data = [ContactDataSh.from_orm(row) for row in contact_results.all()]
-        military_data = [MilitaryDataSh.from_orm(row) for row in military_results.all()]
-        benefits_data = [BenefitsDataSh.from_orm(row) for row in benefits_results.all()]
-        stipend_data = [StipendDataSh.from_orm(row) for row in stipend_results.all()]
-        other_data = [OtherDataSh.from_orm(row) for row in other_results.all()]
+        # personal_data = [PersonalDataSh.from_orm(row) for row in personal_results.all()]
+        # educational_data = [EducationalDataSh.from_orm(row) for row in educational_results.all()]
+        # contact_data = [ContactDataSh.from_orm(row) for row in contact_results.all()]
+        # military_data = [MilitaryDataSh.from_orm(row) for row in military_results.all()]
+        # benefits_data = [BenefitsDataSh.from_orm(row) for row in benefits_results.all()]
+        # stipend_data = [StipendDataSh.from_orm(row) for row in stipend_results.all()]
+        # other_data = [OtherDataSh.from_orm(row) for row in other_results.all()]
 
-        data = {"personal_data": personal_data,
-                "educational_data": educational_data,
-                "contact_data": contact_data,
-                "military_data": military_data,
-                "benefits_data": benefits_data,
-                "stipend_data": stipend_data,
-                "other_data": other_data}
+        data = {"personal_data": personal_results.scalars().all(),}
+        #         "educational_data": educational_data,
+        #         "contact_data": contact_data,
+        #         "military_data": military_data,
+        #         "benefits_data": benefits_data,
+        #         "stipend_data": stipend_data,
+        #         "other_data": other_data}
 
         return data
     except Exception as e:
@@ -198,7 +199,7 @@ async def get_short_cards(db, filters: dict = None):
                 EducationalData.group,
                 EducationalData.subgroup]
 
-        stmt = select(*cols).join(EducationalData, PersonalData.personal_id == EducationalData.personal_id)
+        stmt = select(*cols).join(EducationalData, PersonalData.id == EducationalData.personal_id)
 
         if faculty:
             stmt = stmt.where(EducationalData.faculty == faculty)
@@ -218,3 +219,16 @@ async def get_short_cards(db, filters: dict = None):
         return data
     except Exception as e:
         logging.error(e)
+
+
+async def drop_table():
+    async with engine.begin() as conn:
+        # Удаление таблицы
+        await conn.run_sync(EducationalData.metadata.drop_all)
+
+
+async def main():
+    await drop_table()
+
+
+# asyncio.run(main())

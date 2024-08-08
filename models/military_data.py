@@ -21,7 +21,7 @@ class MilitaryData(Base):
     delay: Mapped[str] = mapped_column(nullable=True)
     document: Mapped[str] = mapped_column(nullable=True)
 
-    personal_id: Mapped[int] = mapped_column(ForeignKey('personal_data.personal_id'), nullable=False)
+    personal_id: Mapped[int] = mapped_column(ForeignKey('personal_data.id'), nullable=False)
 
     personal_data: Mapped["PersonalData"] = relationship("PersonalData", back_populates="military_data")
 
