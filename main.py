@@ -87,13 +87,14 @@ async def get_number_contingent(faculty: Annotated[str | None, Query()] = None,
 async def get_personal_data(table_name: str = Query(enum=list(models_dict.keys())),
                             db: AsyncSession = Depends(get_db)):
     table = models_dict.get(table_name)
-    results = await db.execute((select(table)))
+    results = await db.execute(select(table))
     data = results.scalars().all()
     return {f"{table_name}": data}
 
 
 @app.post("/students_card")
-async def post_students_card(students_card: StudentsCardSh, db: AsyncSession = Depends(get_db)):
+async def post_students_card(students_card: StudentsCardSh,
+                             db: AsyncSession = Depends(get_db)):
     await add_students_card(db, students_card)
     return students_card
 

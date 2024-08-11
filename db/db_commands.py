@@ -56,15 +56,14 @@ async def add_data(db, data, table):
             return data
         except Exception as e:
             logging.error(e)
-            print(e)
 
 
 async def add_students_card(db, data):
     """
-    Функция для вставки личной карты студента в талицу БД
+    Функция для вставки личной карты студента в таблицы БД
     :param db: Объект сессии
     :param data: Данные
-    :return:
+    :return: data при успешном выполнении
     """
 
     tables = [PersonalData, EducationalData, ContactData,
@@ -75,8 +74,12 @@ async def add_students_card(db, data):
             data.stipend_data.dict(), data.military_data.dict(),
             data.other_data.dict()]
 
-    for table, data in zip(tables, data):
-        await add_data(db, data, table)
+    try:
+        for table, data in zip(tables, data):
+            await add_data(db, data, table)
+        return data
+    except Exception as e:
+        logging.error(e)
 
 
 async def get_tables_data(db):
@@ -117,7 +120,7 @@ async def get_tables_data(db):
 
 async def get_filtered_cards(db, filters: dict = None):
     """
-    Функция для получения списка карт студентов отобранных по некоторым признакам, если признаки были переданы
+    Функция для получения списка карт студентов
     :param db: Объект сессии
     :param filters: Фильтры
     :return: Словарь карт студентов
