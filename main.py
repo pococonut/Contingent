@@ -22,6 +22,15 @@ from db.db_commands import get_db, add_data, get_filtered_cards, add_students_ca
 app = FastAPI(title="Contingent")
 
 
+models_dict = {"personal_data": PersonalData,
+               "educational_data": EducationalData,
+               "stipend_data": StipendData,
+               "contact_data": ContactData,
+               "military_data": MilitaryData,
+               "benefits_data": BenefitsData,
+               "other_data": OtherData}
+
+
 @app.post("/students_card")
 async def post_students_card(students_card: StudentsCardSh, db: AsyncSession = Depends(get_db)):
     await add_students_card(db, students_card)
@@ -97,13 +106,6 @@ async def post_personal_data(personal_data: PersonalDataSh,
     return result
 
 
-@app.get("/personal_data")
-async def get_personal_data(db: AsyncSession = Depends(get_db)):
-    results = await db.execute((select(PersonalData)))
-    data = results.scalars().all()
-    return {"personal_data_of_students": data}
-
-
 @app.post("/educational_data")
 async def post_educational_data(educational_data: EducationalDataSh,
                                 db: AsyncSession = Depends(get_db)):
@@ -111,11 +113,13 @@ async def post_educational_data(educational_data: EducationalDataSh,
     return result
 
 
-@app.get("/educational_data")
-async def get_educational_data(db: AsyncSession = Depends(get_db)):
-    results = await db.execute((select(EducationalData)))
+@app.get("/table_data")
+async def get_personal_data(table_name: str = Query(enum=list(models_dict.keys())),
+                            db: AsyncSession = Depends(get_db)):
+    table = models_dict.get(table_name)
+    results = await db.execute((select(table)))
     data = results.scalars().all()
-    return {"educational_data_of_students": data}
+    return {f"{table_name}": data}
 
 
 @app.post("/import_cards_excel")
