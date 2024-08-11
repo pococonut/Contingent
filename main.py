@@ -1,3 +1,4 @@
+from collections import defaultdict
 from io import BytesIO
 
 import pandas as pd
@@ -16,8 +17,7 @@ from models.military_data import MilitaryData
 from schemas.educational_data import EducationalDataSh
 from schemas.personal_data import PersonalDataSh
 from schemas.students_card import StudentsCardSh
-from db.db_commands import get_db, add_data, get_short_cards, add_students_card, get_all_students_cards
-
+from db.db_commands import get_db, add_data, get_filtered_cards, add_students_card
 
 app = FastAPI(title="Contingent")
 
@@ -28,10 +28,23 @@ async def post_students_card(students_card: StudentsCardSh, db: AsyncSession = D
     return students_card
 
 
-@app.get("/students_card")
-async def get_students_card(db: AsyncSession = Depends(get_db)):
-    res = await get_all_students_cards(db)
-    return res
+@app.get('/students_cards')
+async def get_students_cards(faculty: Annotated[str | None, Query()] = None,
+                             direction: Annotated[str | None, Query()] = None,
+                             course: Annotated[str | None, Query()] = None,
+                             department: Annotated[str | None, Query()] = None,
+                             group: Annotated[str | None, Query()] = None,
+                             subgroup: Annotated[list[str] | None, Query()] = None,
+                             session: AsyncSession = Depends(get_db)):
+    filters = {"faculty": faculty,
+               "direction": direction,
+               "course": course,
+               "department": department,
+               "group": group,
+               "subgroup": subgroup, }
+
+    students_cards = await get_filtered_cards(session, filters)
+    return students_cards
 
 
 @app.post("/personal_data")
@@ -60,25 +73,6 @@ async def get_educational_data(db: AsyncSession = Depends(get_db)):
     results = await db.execute((select(EducationalData)))
     data = results.scalars().all()
     return {"educational_data_of_students": data}
-
-
-@app.get('/short_cards')
-async def get_short_cards(faculty: Annotated[str | None, Query(example='МИКН')] = None,
-                          direction: Annotated[str | None, Query(example='ФМИМ')] = None,
-                          course: Annotated[str | None, Query(example='2')] = None,
-                          department: Annotated[str | None, Query(example='ВМИ')] = None,
-                          group: Annotated[str | None, Query(example='21')] = None,
-                          subgroup: Annotated[list[str] | None, Query(example='21/2')] = None,
-                          session: AsyncSession = Depends(get_db)):
-    filters = {"faculty": faculty,
-               "direction": direction,
-               "course": course,
-               "department": department,
-               "group": group,
-               "subgroup": subgroup, }
-
-    short_cards = await get_short_cards(session, filters)
-    return short_cards
 
 
 @app.post("/import_cards_excel")

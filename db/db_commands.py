@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from collections import defaultdict
 
 from sqlalchemy import select
 
@@ -23,6 +24,14 @@ from schemas.students_card import StudentsCardSh
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")
+
+schemas_dict = {"personal_data": PersonalDataSh,
+           "educational_data": EducationalDataSh,
+           "stipend_data": StipendDataSh,
+           "contact_data": ContactDataSh,
+           "military_data": MilitaryDataSh,
+           "benefits_data": BenefitsDataSh,
+           "other_data": OtherDataSh}
 
 
 async def get_db():
@@ -85,7 +94,7 @@ async def add_students_card(db, data):
         await add_data(db, data, table)
 
 
-async def get_all_students_cards(db):
+async def get_tables_data(db):
     """
     Функция для получения всех карт студентов
     :param db: Объект сессии
@@ -121,43 +130,44 @@ async def get_all_students_cards(db):
         logging.error(e)
 
 
-async def get_short_cards(db, filters: dict = None):
+async def get_filtered_cards(db, filters: dict = None):
     """
-    Функция для получения списка краткого представления карт студентов
+    Функция для получения списка карт студентов отобранных по некоторым признакам, если признаки были переданы
     :param db: Объект сессии
     :param filters: Фильтры
-    :return: Список карт студентов
+    :return: Словарь карт студентов
     """
     try:
+        suitable_students_ids = []
+        suitable_students = defaultdict(dict)
+        students_cards = await get_tables_data(db)
         faculty, direction, course, department, group, subgroup = filters.values()
 
-        cols = [PersonalData.firstname,
-                PersonalData.lastname,
-                PersonalData.patronymic,
-                EducationalData.direction,
-                EducationalData.course,
-                EducationalData.department,
-                EducationalData.group,
-                EducationalData.subgroup]
+        for ed_data in students_cards.get("educational_data"):
+            ed_data = EducationalDataSh.from_orm(ed_data).dict()
+            if faculty and ed_data.get("faculty") != faculty:
+                continue
+            if direction and ed_data.get("direction") != direction:
+                continue
+            if course and ed_data.get("course") != course:
+                continue
+            if department and ed_data.get("department") != department:
+                continue
+            if group and ed_data.get("group") != group:
+                continue
+            if subgroup and ed_data.get("subgroup") not in subgroup:
+                continue
+            suitable_students_ids.append(ed_data.get("personal_id"))
 
-        stmt = select(*cols).join(EducationalData, PersonalData.id == EducationalData.personal_id)
+        for table_name, rows in students_cards.items():
+            for row in rows:
+                schema = schemas_dict.get(table_name)
+                data = schema.from_orm(row).dict()
+                student_id = data.get("personal_id") if table_name != "personal_data" else data.get("id")
+                if student_id in suitable_students_ids:
+                    suitable_students[student_id].update(data)
 
-        if faculty:
-            stmt = stmt.where(EducationalData.faculty == faculty)
-        if direction:
-            stmt = stmt.where(EducationalData.direction == direction)
-        if course:
-            stmt = stmt.where(EducationalData.course == course)
-        if department:
-            stmt = stmt.where(EducationalData.department == department)
-        if group:
-            stmt = stmt.where(EducationalData.group == group)
-        if subgroup:
-            stmt = stmt.where(EducationalData.subgroup.in_(subgroup))
-
-        results = await db.execute(stmt)
-        data = [ShortCard.from_orm(card) for card in results.all()]
-        return data
+        return suitable_students
     except Exception as e:
         logging.error(e)
 
@@ -170,6 +180,5 @@ async def drop_table():
 
 async def main():
     await drop_table()
-
 
 # asyncio.run(main())
