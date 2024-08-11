@@ -5,13 +5,8 @@ from collections import defaultdict
 from sqlalchemy import select
 
 from db.database import engine, SessionLocal, Base
-from schemas.benefits_data import BenefitsDataSh
-from schemas.contact_data import ContactDataSh
+from general.dicts import schemas_dict
 from schemas.educational_data import EducationalDataSh
-from schemas.millitary_data import MilitaryDataSh
-from schemas.other_data import OtherDataSh
-from schemas.personal_data import PersonalDataSh
-from schemas.short_card import ShortCard
 from models.educational_data import EducationalData
 from models.personal_data import PersonalData
 from models.contact_data import ContactData
@@ -19,19 +14,9 @@ from models.other_data import OtherData
 from models.stipend_data import StipendData
 from models.benefits_data import BenefitsData
 from models.military_data import MilitaryData
-from schemas.stipend_data import StipendDataSh
-from schemas.students_card import StudentsCardSh
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")
-
-schemas_dict = {"personal_data": PersonalDataSh,
-                "educational_data": EducationalDataSh,
-                "stipend_data": StipendDataSh,
-                "contact_data": ContactDataSh,
-                "military_data": MilitaryDataSh,
-                "benefits_data": BenefitsDataSh,
-                "other_data": OtherDataSh}
 
 
 async def get_db():

@@ -7,6 +7,7 @@ from typing import Annotated
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from general.dicts import models_dict
 from models.educational_data import EducationalData
 from models.personal_data import PersonalData
 from models.contact_data import ContactData
@@ -14,27 +15,10 @@ from models.other_data import OtherData
 from models.stipend_data import StipendData
 from models.benefits_data import BenefitsData
 from models.military_data import MilitaryData
-from schemas.educational_data import EducationalDataSh
-from schemas.personal_data import PersonalDataSh
 from schemas.students_card import StudentsCardSh
 from db.db_commands import get_db, add_data, get_filtered_cards, add_students_card
 
 app = FastAPI(title="Contingent")
-
-
-models_dict = {"personal_data": PersonalData,
-               "educational_data": EducationalData,
-               "stipend_data": StipendData,
-               "contact_data": ContactData,
-               "military_data": MilitaryData,
-               "benefits_data": BenefitsData,
-               "other_data": OtherData}
-
-
-@app.post("/students_card")
-async def post_students_card(students_card: StudentsCardSh, db: AsyncSession = Depends(get_db)):
-    await add_students_card(db, students_card)
-    return students_card
 
 
 @app.get('/students_cards')
@@ -99,20 +83,6 @@ async def get_number_contingent(faculty: Annotated[str | None, Query()] = None,
     return number_contingent
 
 
-@app.post("/personal_data")
-async def post_personal_data(personal_data: PersonalDataSh,
-                             db: AsyncSession = Depends(get_db)):
-    result = await add_data(db, personal_data, PersonalData)
-    return result
-
-
-@app.post("/educational_data")
-async def post_educational_data(educational_data: EducationalDataSh,
-                                db: AsyncSession = Depends(get_db)):
-    result = await add_data(db, educational_data, EducationalData)
-    return result
-
-
 @app.get("/table_data")
 async def get_personal_data(table_name: str = Query(enum=list(models_dict.keys())),
                             db: AsyncSession = Depends(get_db)):
@@ -120,6 +90,12 @@ async def get_personal_data(table_name: str = Query(enum=list(models_dict.keys()
     results = await db.execute((select(table)))
     data = results.scalars().all()
     return {f"{table_name}": data}
+
+
+@app.post("/students_card")
+async def post_students_card(students_card: StudentsCardSh, db: AsyncSession = Depends(get_db)):
+    await add_students_card(db, students_card)
+    return students_card
 
 
 @app.post("/import_cards_excel")
