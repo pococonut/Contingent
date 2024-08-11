@@ -26,12 +26,12 @@ logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")
 
 schemas_dict = {"personal_data": PersonalDataSh,
-           "educational_data": EducationalDataSh,
-           "stipend_data": StipendDataSh,
-           "contact_data": ContactDataSh,
-           "military_data": MilitaryDataSh,
-           "benefits_data": BenefitsDataSh,
-           "other_data": OtherDataSh}
+                "educational_data": EducationalDataSh,
+                "stipend_data": StipendDataSh,
+                "contact_data": ContactDataSh,
+                "military_data": MilitaryDataSh,
+                "benefits_data": BenefitsDataSh,
+                "other_data": OtherDataSh}
 
 
 async def get_db():

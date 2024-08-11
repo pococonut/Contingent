@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 from io import BytesIO
 
 import pandas as pd
@@ -45,6 +45,49 @@ async def get_students_cards(faculty: Annotated[str | None, Query()] = None,
 
     students_cards = await get_filtered_cards(session, filters)
     return students_cards
+
+
+@app.get("/number_contingent")
+async def get_number_contingent(faculty: Annotated[str | None, Query()] = None,
+                                direction: Annotated[str | None, Query()] = None,
+                                course: Annotated[str | None, Query()] = None,
+                                department: Annotated[str | None, Query()] = None,
+                                group: Annotated[str | None, Query()] = None,
+                                subgroup: Annotated[list[str] | None, Query()] = None,
+                                session: AsyncSession = Depends(get_db)):
+    filters = {"faculty": faculty,
+               "direction": direction,
+               "course": course,
+               "department": department,
+               "group": group,
+               "subgroup": subgroup, }
+
+    students_cards = await get_filtered_cards(session, filters)
+
+    subgroups_lists = defaultdict(list)
+    degree_payment_lists = defaultdict(list)
+    for k, v in students_cards.items():
+        subgroups_lists[v.get("group")].append(v.get("subgroup"))
+        degree_payment_lists[v.get("group")].append(v.get("degree_payment"))
+
+    group_students_amount = defaultdict()
+    degree_students_amount = defaultdict()
+    total_students_amount = defaultdict(dict)
+    for k, v in subgroups_lists.items():
+        group_students_amount[k] = Counter(v)
+    for k, v in subgroups_lists.items():
+        total_students_amount[k] = {"total": len(v)}
+    for k, v in degree_payment_lists.items():
+        degree_students_amount[k] = Counter(v)
+
+    number_contingent = defaultdict()
+    for k in group_students_amount:
+        number_contingent[k] = group_students_amount[k].copy()
+    for k in number_contingent:
+        number_contingent[k].update(degree_students_amount[k])
+        number_contingent[k].update(total_students_amount[k])
+
+    return number_contingent
 
 
 @app.post("/personal_data")
