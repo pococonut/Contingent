@@ -151,7 +151,14 @@ async def get_filtered_cards(db, filters: dict = None):
             for row in rows:
                 schema = schemas_dict.get(table_name)
                 data = schema.from_orm(row).dict()
-                student_id = data.get("personal_id") if table_name != "personal_data" else data.get("id")
+
+                if table_name == "personal_data":
+                    student_id = data.get("id")
+                    del data['id']
+                else:
+                    student_id = data.get("personal_id")
+                    del data['personal_id']
+
                 if student_id in suitable_students_ids:
                     suitable_students[student_id].update(data)
 
