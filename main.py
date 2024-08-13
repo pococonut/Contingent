@@ -158,12 +158,11 @@ async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db
                       "relatives_addresses": str(df.at[i, 'Адреса родственников']),
                       "personal_id": i, }
 
-        await add_data(db, personal_data, PersonalData)
-        await add_data(db, educational_data, EducationalData)
-        await add_data(db, contact_data, ContactData)
-        await add_data(db, benefit_data, BenefitsData)
-        await add_data(db, stipend_data, StipendData)
-        await add_data(db, military_data, MilitaryData)
-        await add_data(db, other_data, OtherData)
+        models = models_dict.values()
+        student_card = [personal_data, educational_data, stipend_data,
+                        contact_data, military_data, benefit_data, other_data]
+
+        for data, table in zip(student_card, models):
+            await add_data(db, data, table)
 
     return {"file": file.filename}
