@@ -23,12 +23,7 @@ async def get_students_cards(faculty: Annotated[str | None, Query()] = None,
                              group: Annotated[str | None, Query()] = None,
                              subgroup: Annotated[list[str] | None, Query()] = None,
                              session: AsyncSession = Depends(get_db)):
-    filters = {"faculty": faculty,
-               "direction": direction,
-               "course": course,
-               "department": department,
-               "group": group,
-               "subgroup": subgroup, }
+    filters = [faculty, direction, course, department, group, subgroup]
 
     students_cards = await get_filtered_cards(session, filters)
     return students_cards
@@ -42,13 +37,8 @@ async def get_number_contingent(faculty: Annotated[str | None, Query()] = None,
                                 group: Annotated[str | None, Query()] = None,
                                 subgroup: Annotated[list[str] | None, Query()] = None,
                                 session: AsyncSession = Depends(get_db)):
-    filters = {"faculty": faculty,
-               "direction": direction,
-               "course": course,
-               "department": department,
-               "group": group,
-               "subgroup": subgroup, }
 
+    filters = [faculty, direction, course, department, group, subgroup]
     students_cards = await get_filtered_cards(session, filters)
 
     subgroups_lists = defaultdict(list)

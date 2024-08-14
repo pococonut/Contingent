@@ -97,7 +97,36 @@ async def get_tables_data(db):
         logging.error(e)
 
 
-async def get_filtered_cards(db, filters: dict = None):
+async def get_suitable_students_ids(students_cards, filters):
+    """
+    Функция для формирования списка подходящих под фильтры студентов
+    :param students_cards: Список всех студентов
+    :param filters: Фильтры
+    :return: Список подходящих под фильтры студентов
+    """
+    suitable_students_ids = []
+    faculty, direction, course, department, group, subgroup = filters
+
+    for ed_data in students_cards.get("educational_data"):
+        ed_data = EducationalDataSh.from_orm(ed_data).dict()
+        if faculty and ed_data.get("faculty") != faculty:
+            continue
+        if direction and ed_data.get("direction") != direction:
+            continue
+        if course and ed_data.get("course") != course:
+            continue
+        if department and ed_data.get("department") != department:
+            continue
+        if group and ed_data.get("group") != group:
+            continue
+        if subgroup and ed_data.get("subgroup") not in subgroup:
+            continue
+        suitable_students_ids.append(ed_data.get("personal_id"))
+
+    return suitable_students_ids
+
+
+async def get_filtered_cards(db, filters: list = None):
     """
     Функция для получения списка карт студентов
     :param db: Объект сессии
@@ -105,26 +134,9 @@ async def get_filtered_cards(db, filters: dict = None):
     :return: Словарь карт студентов
     """
     try:
-        suitable_students_ids = []
         suitable_students = defaultdict(dict)
         students_cards = await get_tables_data(db)
-        faculty, direction, course, department, group, subgroup = filters.values()
-
-        for ed_data in students_cards.get("educational_data"):
-            ed_data = EducationalDataSh.from_orm(ed_data).dict()
-            if faculty and ed_data.get("faculty") != faculty:
-                continue
-            if direction and ed_data.get("direction") != direction:
-                continue
-            if course and ed_data.get("course") != course:
-                continue
-            if department and ed_data.get("department") != department:
-                continue
-            if group and ed_data.get("group") != group:
-                continue
-            if subgroup and ed_data.get("subgroup") not in subgroup:
-                continue
-            suitable_students_ids.append(ed_data.get("personal_id"))
+        suitable_students_ids = await get_suitable_students_ids(students_cards, filters)
 
         for table_name, rows in students_cards.items():
             for row in rows:
