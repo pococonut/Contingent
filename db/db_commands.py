@@ -8,12 +8,6 @@ from db.database import engine, SessionLocal, Base
 from general.dicts import schemas_dict, models_dict
 from schemas.educational_data import EducationalDataSh
 from models.educational_data import EducationalData
-from models.personal_data import PersonalData
-from models.contact_data import ContactData
-from models.other_data import OtherData
-from models.stipend_data import StipendData
-from models.benefits_data import BenefitsData
-from models.military_data import MilitaryData
 from schemas.students_card import StudentsCardSh
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
@@ -91,32 +85,14 @@ async def get_tables_data(db):
     :param db: Объект сессии
     :return: Все карты студентов
     """
+    data = {}
     try:
-        personal_stmt = select(PersonalData)
-        educational_stmt = select(EducationalData)
-        contact_stmt = select(ContactData)
-        military_stmt = select(MilitaryData)
-        benefits_stmt = select(BenefitsData)
-        stipend_stmt = select(StipendData)
-        other_stmt = select(OtherData)
-
-        personal_results = await db.execute(personal_stmt)
-        educational_results = await db.execute(educational_stmt)
-        contact_results = await db.execute(contact_stmt)
-        military_results = await db.execute(military_stmt)
-        benefits_results = await db.execute(benefits_stmt)
-        stipend_results = await db.execute(stipend_stmt)
-        other_results = await db.execute(other_stmt)
-
-        data = {"personal_data": personal_results.scalars().all(),
-                "educational_data": educational_results.scalars().all(),
-                "contact_data": contact_results.scalars().all(),
-                "military_data": military_results.scalars().all(),
-                "benefits_data": benefits_results.scalars().all(),
-                "stipend_data": stipend_results.scalars().all(),
-                "other_data": other_results.scalars().all()}
-
+        for table_name, table_model in models_dict.items():
+            stmt = select(table_model)
+            result = await db.execute(stmt)
+            data[table_name] = result.scalars().all()
         return data
+
     except Exception as e:
         logging.error(e)
 
