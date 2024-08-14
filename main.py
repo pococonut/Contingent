@@ -1,5 +1,5 @@
-from collections import defaultdict, Counter
 from io import BytesIO
+from collections import defaultdict, Counter
 
 import pandas as pd
 from fastapi import FastAPI, Depends, Query, UploadFile
@@ -8,15 +8,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from general.dicts import models_dict
-from models.educational_data import EducationalData
-from models.personal_data import PersonalData
-from models.contact_data import ContactData
-from models.other_data import OtherData
-from models.stipend_data import StipendData
-from models.benefits_data import BenefitsData
-from models.military_data import MilitaryData
 from schemas.students_card import StudentsCardSh
-from db.db_commands import get_db, add_data, get_filtered_cards, add_students_card
+from db.db_commands import get_db, get_filtered_cards, add_students_card
+
 
 app = FastAPI(title="Contingent")
 
@@ -87,16 +81,16 @@ async def get_number_contingent(faculty: Annotated[str | None, Query()] = None,
 async def get_personal_data(table_name: str = Query(enum=list(models_dict.keys())),
                             db: AsyncSession = Depends(get_db)):
     table = models_dict.get(table_name)
-    results = await db.execute(select(table))
-    data = results.scalars().all()
+    result = await db.execute(select(table))
+    data = result.scalars().all()
     return {f"{table_name}": data}
 
 
 @app.post("/students_card")
 async def post_students_card(students_card: StudentsCardSh,
                              db: AsyncSession = Depends(get_db)):
-    await add_students_card(db, students_card)
-    return students_card
+    result = await add_students_card(db, students_card)
+    return result
 
 
 @app.post("/import_cards_excel")
@@ -158,11 +152,9 @@ async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db
                       "relatives_addresses": str(df.at[i, 'Адреса родственников']),
                       "personal_id": i, }
 
-        models = models_dict.values()
         student_card = [personal_data, educational_data, stipend_data,
                         contact_data, military_data, benefit_data, other_data]
 
-        for data, table in zip(student_card, models):
-            await add_data(db, data, table)
+        await add_students_card(db, student_card)
 
     return {"file": file.filename}

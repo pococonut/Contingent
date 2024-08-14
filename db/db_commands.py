@@ -5,7 +5,7 @@ from collections import defaultdict
 from sqlalchemy import select
 
 from db.database import engine, SessionLocal, Base
-from general.dicts import schemas_dict
+from general.dicts import schemas_dict, models_dict
 from schemas.educational_data import EducationalDataSh
 from models.educational_data import EducationalData
 from models.personal_data import PersonalData
@@ -14,6 +14,7 @@ from models.other_data import OtherData
 from models.stipend_data import StipendData
 from models.benefits_data import BenefitsData
 from models.military_data import MilitaryData
+from schemas.students_card import StudentsCardSh
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")
@@ -35,7 +36,7 @@ async def get_db():
         await db.close()
 
 
-async def add_data(db, data, table):
+async def add_data_to_table(db, data, table):
     """
     Функция для вставки данных в талицу БД
     :param db: Объект сессии
@@ -58,26 +59,28 @@ async def add_data(db, data, table):
             logging.error(e)
 
 
-async def add_students_card(db, data):
+async def add_students_card(db, student_card):
     """
     Функция для вставки личной карты студента в таблицы БД
     :param db: Объект сессии
-    :param data: Данные
-    :return: data при успешном выполнении
+    :param student_card: Данные
+    :return: Карта студента при успешном выполнении
     """
-
-    tables = [PersonalData, EducationalData, ContactData,
-              BenefitsData, StipendData, MilitaryData, OtherData]
-
-    data = [data.personal_data.dict(), data.educational_data.dict(),
-            data.contact_data.dict(), data.benefits_data.dict(),
-            data.stipend_data.dict(), data.military_data.dict(),
-            data.other_data.dict()]
-
     try:
-        for table, data in zip(tables, data):
-            await add_data(db, data, table)
-        return data
+        models = models_dict.values()
+        if type(student_card) is StudentsCardSh:
+            student_card = [student_card.personal_data.dict(),
+                            student_card.educational_data.dict(),
+                            student_card.stipend_data.dict(),
+                            student_card.contact_data.dict(),
+                            student_card.military_data.dict(),
+                            student_card.benefits_data.dict(),
+                            student_card.other_data.dict()]
+
+        for data, table in zip(student_card, models):
+            await add_data_to_table(db, data, table)
+        return student_card
+
     except Exception as e:
         logging.error(e)
 
