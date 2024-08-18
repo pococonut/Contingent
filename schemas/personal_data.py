@@ -14,11 +14,11 @@ class PersonalDataSh(BaseModel):
     citizenship: str | None = None
     type_of_identity: str | None = None
     address: str | None = None
-    marital_status: str | None = None
     snils: str | None = None
     polis: str | None = None
     study_status: str | None = None
     general_status: str | None = None
+    genser: str | None = None
 
     class Config:
         orm_mode = True

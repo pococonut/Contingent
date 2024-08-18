@@ -15,6 +15,11 @@ class EducationalDataSh(BaseModel):
     book_num: str | None = None
     degree: str | None = None
     degree_payment: str | None = None
+    study_duration: str | None = None
+    study_duration_total: str | None = None
+    study_profile: str | None = None
+    current_year: str | None = None
+
     personal_id: int | None = None
 
     class Config:

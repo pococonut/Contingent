@@ -26,6 +26,10 @@ class EducationalData(Base):
     book_num: Mapped[str] = mapped_column(nullable=True)
     degree: Mapped[str] = mapped_column(nullable=True)
     degree_payment: Mapped[str] = mapped_column(nullable=True)
+    study_duration: Mapped[str] = mapped_column(nullable=True)
+    study_duration_total: Mapped[str] = mapped_column(nullable=True)
+    study_profile: Mapped[str] = mapped_column(nullable=True)
+    current_year: Mapped[str] = mapped_column(nullable=True)
 
     personal_id: Mapped[int] = mapped_column(ForeignKey('personal_data.id'), nullable=False)
 

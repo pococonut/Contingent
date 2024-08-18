@@ -22,11 +22,11 @@ class PersonalData(Base):
     citizenship: Mapped[str] = mapped_column(nullable=True)
     type_of_identity: Mapped[str] = mapped_column(nullable=True)
     address: Mapped[str] = mapped_column(nullable=True)
-    marital_status: Mapped[str] = mapped_column(nullable=True)
     snils: Mapped[str] = mapped_column(nullable=True)
     polis: Mapped[str] = mapped_column(nullable=True)
     study_status: Mapped[str] = mapped_column(nullable=True)
     general_status: Mapped[str] = mapped_column(nullable=True)
+    gender: Mapped[str] = mapped_column(nullable=True)
 
     educational_data: Mapped["EducationalData"] = relationship("EducationalData", back_populates="personal_data",
                                                                uselist=False)
