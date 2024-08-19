@@ -18,7 +18,7 @@ class PersonalDataSh(BaseModel):
     polis: str | None = None
     study_status: str | None = None
     general_status: str | None = None
-    genser: str | None = None
+    gender: str | None = None
 
     class Config:
         orm_mode = True

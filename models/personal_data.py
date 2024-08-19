@@ -40,3 +40,7 @@ class PersonalData(Base):
                                                        uselist=False)
     other_data: Mapped["OtherData"] = relationship("OtherData", back_populates="personal_data",
                                                    uselist=False)
+    history_data: Mapped["HistoryData"] = relationship("HistoryData", back_populates="personal_data",
+                                                   uselist=False)
+    order_data: Mapped["OrderData"] = relationship("OrderData", back_populates="personal_data",
+                                                   uselist=False)

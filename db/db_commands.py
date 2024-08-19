@@ -69,7 +69,9 @@ async def add_students_card(db, student_card):
                             student_card.contact_data.dict(),
                             student_card.military_data.dict(),
                             student_card.benefits_data.dict(),
-                            student_card.other_data.dict()]
+                            student_card.other_data.dict(),
+                            student_card.history_data.dict(),
+                            student_card.order_data.dict()]
 
         for data, table in zip(student_card, models):
             await add_data_to_table(db, data, table)

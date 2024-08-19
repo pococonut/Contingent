@@ -7,6 +7,8 @@ from schemas.millitary_data import MilitaryDataSh
 from schemas.other_data import OtherDataSh
 from schemas.personal_data import PersonalDataSh
 from schemas.stipend_data import StipendDataSh
+from schemas.history_data import HistoryDataSh
+from schemas.order_data import OrderDataSh
 
 
 class StudentsCardSh(BaseModel):
@@ -20,6 +22,8 @@ class StudentsCardSh(BaseModel):
     military_data: MilitaryDataSh | None = None
     stipend_data: StipendDataSh | None = None
     other_data: OtherDataSh | None = None
+    history_data: HistoryDataSh | None = None
+    order_data: OrderDataSh | None = None
 
     class Config:
         orm_mode = True
