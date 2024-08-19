@@ -11,7 +11,6 @@ from general.dicts import models_dict
 from schemas.students_card import StudentsCardSh
 from db.db_commands import get_db, get_filtered_cards, add_students_card
 
-
 app = FastAPI(title="Contingent")
 
 
@@ -37,7 +36,6 @@ async def get_number_contingent(faculty: Annotated[str | None, Query()] = None,
                                 group: Annotated[str | None, Query()] = None,
                                 subgroup: Annotated[list[str] | None, Query()] = None,
                                 session: AsyncSession = Depends(get_db)):
-
     filters = [faculty, direction, course, department, group, subgroup]
     students_cards = await get_filtered_cards(session, filters)
 
@@ -96,26 +94,30 @@ async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db
                          "lastname": df.at[i, 'Фамилия'],
                          "patronymic": df.at[i, 'Отчество'],
                          "birth_date": df.at[i, 'Дата рожд.'],
-                         "birth_place": "",
+                         "birth_place": df.at[i, 'Место рожд.'],
                          "citizenship": df.at[i, 'Гражданство'],
                          "type_of_identity": df.at[i, 'Удостов. личности'],
                          "address": df.at[i, 'Адрес'],
-                         "marital_status": "",
                          "snils": str(df.at[i, 'Снилс']),
-                         "polis": "",
+                         "polis": str(df.at[i, 'Полис']),
                          "study_status": df.at[i, 'Статус внутри вуза'],
-                         "general_status": df.at[i, 'Статус общий'], }
+                         "general_status": df.at[i, 'Статус общий'],
+                         "gender": df.at[i, 'Пол']}
 
         educational_data = {"faculty": df.at[i, 'Факультет'],
                             "direction": df.at[i, 'Направление'],
                             "course": str(df.at[i, 'Курс']),
-                            "department": "",
+                            "department": str(df.at[i, 'Кафедра']),
                             "group": str(df.at[i, 'Группа']),
                             "subgroup": df.at[i, 'Подгруппа'],
-                            "form": "",
                             "book_num": str(df.at[i, 'Номер зачётки']),
-                            "degree": df.at[i, 'Степень обучения'],
+                            "form": str(df.at[i, 'Форма обуч.']),
+                            "degree": df.at[i, 'Степень обуч.'],
                             "degree_payment": df.at[i, 'Форма обуч. $'],
+                            "study_duration": str(df.at[i, 'Период обуч.']),
+                            "study_duration_total": str(df.at[i, 'Срок обуч.']),
+                            "study_profile": str(df.at[i, 'Профиль обуч.']),
+                            "current_year": str(df.at[i, 'Текущий год обуч.']),
                             "personal_id": i, }
 
         contact_data = {"number": str(df.at[i, 'Тел.']),
@@ -142,8 +144,15 @@ async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db
                       "relatives_addresses": str(df.at[i, 'Адреса родственников']),
                       "personal_id": i, }
 
-        student_card = [personal_data, educational_data, stipend_data,
-                        contact_data, military_data, benefit_data, other_data]
+        history_data = {"movements": str(df.at[i, 'История перемещений (курс)']),
+                        "statuses": str(df.at[i, 'История статусов']),
+                        "personal_id": i, }
+
+        order_data = {"order": str(df.at[i, 'Приказы']),
+                      "personal_id": i, }
+
+        student_card = [personal_data, educational_data, stipend_data, contact_data,
+                        military_data, benefit_data, other_data, history_data, order_data]
 
         await add_students_card(db, student_card)
 
