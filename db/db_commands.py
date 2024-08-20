@@ -2,7 +2,7 @@ import asyncio
 import logging
 from collections import defaultdict
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from db.database import engine, SessionLocal, Base
 from general.dicts import schemas_dict, models_dict
@@ -156,6 +156,41 @@ async def get_filtered_cards(db, filters: list = None):
                     suitable_students[student_id].update(data)
 
         return suitable_students
+    except Exception as e:
+        logging.error(e)
+
+
+async def change_card(db, data):
+    """
+    Функция для изменения данных личной карточки студента
+    :param db: Объект сессии
+    :param data: Словарь, содержащий имя таблицы,
+     параметры для изменения, идентификатор студента
+    :return: Измененная карточка студента
+    """
+    table_name = data.get("table_name")
+    parameters = data.get("parameters")
+    personal_id = data.get("personal_id")
+
+    table = models_dict.get(table_name)
+
+    if table_name == "personal_data":
+        student_id = table.id
+    else:
+        student_id = table.personal_id
+
+    try:
+        for parameter, new_val in parameters.items():
+            stmt = update(table).where(student_id == personal_id)
+            stmt = stmt.values({f"{parameter}": new_val})
+            await db.execute(stmt)
+        await db.commit()
+
+        stmt = select(table).where(student_id == personal_id)
+        result = await db.execute(stmt)
+        updated_data = result.scalars().all()
+        return updated_data
+
     except Exception as e:
         logging.error(e)
 

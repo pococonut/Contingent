@@ -4,12 +4,13 @@ from collections import defaultdict, Counter
 import pandas as pd
 from fastapi import FastAPI, Depends, Query, UploadFile
 from typing import Annotated
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from general.dicts import models_dict
+from general.dicts import models_dict, schemas_dict
+from models.personal_data import PersonalData
 from schemas.students_card import StudentsCardSh
-from db.db_commands import get_db, get_filtered_cards, add_students_card
+from db.db_commands import get_db, get_filtered_cards, add_students_card, change_card
 
 app = FastAPI(title="Contingent")
 
@@ -66,17 +67,17 @@ async def get_number_contingent(faculty: Annotated[str | None, Query()] = None,
 
 
 @app.get("/table_data")
-async def get_personal_data(table_name: str = Query(enum=list(models_dict.keys())),
-                            db: AsyncSession = Depends(get_db)):
+async def get_table_data(table_name: str = Query(enum=list(models_dict.keys())),
+                         db: AsyncSession = Depends(get_db)):
     table = models_dict.get(table_name)
     result = await db.execute(select(table))
     data = result.scalars().all()
     return {f"{table_name}": data}
 
 
-@app.post("/students_card")
-async def post_students_card(students_card: StudentsCardSh,
-                             db: AsyncSession = Depends(get_db)):
+@app.post("/student_card")
+async def post_student_card(students_card: StudentsCardSh,
+                            db: AsyncSession = Depends(get_db)):
     result = await add_students_card(db, students_card)
     return result
 
@@ -157,3 +158,16 @@ async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db
         await add_students_card(db, student_card)
 
     return {"file": file.filename}
+
+
+@app.put("/change_student_card")
+async def change_student_card(personal_id: int,
+                              table_name: str = Query(enum=list(models_dict.keys())),
+                              parameters: dict = None,
+                              db: AsyncSession = Depends(get_db)):
+    data = {"personal_id": personal_id,
+            "table_name": table_name,
+            "parameters": parameters}
+
+    updated_data = await change_card(db, data)
+    return updated_data
