@@ -16,14 +16,18 @@ app = FastAPI(title="Contingent")
 
 
 @app.get('/students_cards')
-async def get_students_cards(faculty: Annotated[str | None, Query()] = None,
+async def get_students_cards(firstname: Annotated[str | None, Query()] = None,
+                             lastname: Annotated[str | None, Query()] = None,
+                             faculty: Annotated[str | None, Query()] = None,
                              direction: Annotated[str | None, Query()] = None,
                              course: Annotated[str | None, Query()] = None,
                              department: Annotated[str | None, Query()] = None,
                              group: Annotated[str | None, Query()] = None,
                              subgroup: Annotated[list[str] | None, Query()] = None,
                              session: AsyncSession = Depends(get_db)):
-    filters = [faculty, direction, course, department, group, subgroup]
+    filters = {"personal_filters": [firstname, lastname],
+               "educational_filters": [faculty, direction, course, department, group, subgroup]}
+    # filters = [firstname, lastname, faculty, direction, course, department, group, subgroup]
 
     students_cards = await get_filtered_cards(session, filters)
     return students_cards

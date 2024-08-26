@@ -7,6 +7,7 @@ from sqlalchemy import select, update, delete
 from db.database import engine, SessionLocal, Base
 from general.dicts import schemas_dict, models_dict
 from schemas.educational_data import EducationalDataSh
+from schemas.personal_data import PersonalDataSh
 from models.educational_data import EducationalData
 from schemas.students_card import StudentsCardSh
 
@@ -99,18 +100,41 @@ async def get_tables_data(db):
         logging.error(e)
 
 
-async def get_suitable_students_ids(students_cards, filters):
+async def personal_filters_check(students_cards, p_filters):
     """
-    Функция для формирования списка подходящих под фильтры студентов
-    :param students_cards: Список всех студентов
-    :param filters: Фильтры
-    :return: Список подходящих под фильтры студентов
+    Функция для формирования множества идентификаторов студентов,
+    подходящих под фильтры персональной информации
+    :param students_cards: Список карт всех студентов
+    :param p_filters: Фильтры персональной информации
+    :return: Множество идентификаторов студентов
     """
-    suitable_students_ids = []
-    faculty, direction, course, department, group, subgroup = filters
+    firstname, lastname = p_filters
+    suitable_students = set()
+    for p_data in students_cards.get("personal_data"):
+        p_data = PersonalDataSh.from_orm(p_data).dict()
 
+        if firstname and p_data.get("firstname") != firstname:
+            continue
+        if lastname and p_data.get("lastname") != lastname:
+            continue
+        suitable_students.add(p_data.get("id"))
+
+    return suitable_students
+
+
+async def educational_filters_check(students_cards, ed_filters):
+    """
+    Функция для формирования множества идентификаторов студентов,
+    подходящих под фильтры учебной информации
+    :param students_cards: Список карт всех студентов
+    :param ed_filters: Фильтры учебной информации
+    :return: Множество идентификаторов студентов
+    """
+    faculty, direction, course, department, group, subgroup = ed_filters
+    suitable_students = set()
     for ed_data in students_cards.get("educational_data"):
         ed_data = EducationalDataSh.from_orm(ed_data).dict()
+
         if faculty and ed_data.get("faculty") != faculty:
             continue
         if direction and ed_data.get("direction") != direction:
@@ -123,12 +147,29 @@ async def get_suitable_students_ids(students_cards, filters):
             continue
         if subgroup and ed_data.get("subgroup") not in subgroup:
             continue
-        suitable_students_ids.append(ed_data.get("personal_id"))
+        suitable_students.add(ed_data.get("personal_id"))
 
-    return suitable_students_ids
+    return suitable_students
 
 
-async def get_filtered_cards(db, filters: list = None):
+async def get_suitable_students_ids(students_cards, filters):
+    """
+    Функция для формирования списка подходящих под фильтры студентов
+    :param students_cards: Список карт всех студентов
+    :param filters: Фильтры
+    :return: Список подходящих под фильтры студентов
+    """
+    personal_filters = filters.get("personal_filters")
+    educational_filters = filters.get("educational_filters")
+
+    suitable_students_personal = await personal_filters_check(students_cards, personal_filters)
+    suitable_students_educational = await educational_filters_check(students_cards, educational_filters)
+    suitable_students = suitable_students_educational & suitable_students_personal
+
+    return suitable_students
+
+
+async def get_filtered_cards(db, filters: dict = None):
     """
     Функция для получения списка карт студентов
     :param db: Объект сессии
