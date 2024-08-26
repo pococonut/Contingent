@@ -4,13 +4,13 @@ from collections import defaultdict, Counter
 import pandas as pd
 from fastapi import FastAPI, Depends, Query, UploadFile
 from typing import Annotated
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from general.dicts import models_dict, schemas_dict
 from models.personal_data import PersonalData
 from schemas.students_card import StudentsCardSh
-from db.db_commands import get_db, get_filtered_cards, add_students_card, change_card
+from db.db_commands import get_db, get_filtered_cards, add_students_card, change_card, delete_card
 
 app = FastAPI(title="Contingent")
 
@@ -171,3 +171,11 @@ async def change_student_card(personal_id: int,
 
     updated_data = await change_card(db, data)
     return updated_data
+
+
+@app.delete("/delete_student_card")
+async def delete_student_card(personal_id: int,
+                              db: AsyncSession = Depends(get_db)):
+    personal_id = await delete_card(db, personal_id)
+    return personal_id
+

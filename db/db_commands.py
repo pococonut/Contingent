@@ -2,7 +2,7 @@ import asyncio
 import logging
 from collections import defaultdict
 
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 
 from db.database import engine, SessionLocal, Base
 from general.dicts import schemas_dict, models_dict
@@ -191,6 +191,29 @@ async def change_card(db, data):
         updated_data = result.scalars().all()
         return updated_data
 
+    except Exception as e:
+        logging.error(e)
+
+
+async def delete_card(db, p_id):
+    """
+    Функция для удаления личной карточки студента
+    :param db: Объект сессии
+    :param p_id: Идентификатор студента
+    :return: Идентификатор студента при успешном выполнении
+    """
+    try:
+        for table_name, table in models_dict.items():
+            if table_name == "personal_data":
+                continue
+            stmt = delete(table).where(table.personal_id == p_id)
+            await db.execute(stmt)
+
+        table = models_dict.get("personal_data")
+        stmt = delete(table).where(table.id == p_id)
+        await db.execute(stmt)
+        await db.commit()
+        return p_id
     except Exception as e:
         logging.error(e)
 
