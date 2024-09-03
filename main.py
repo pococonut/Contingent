@@ -180,6 +180,6 @@ async def change_student_card(personal_id: int,
 @app.delete("/delete_student_card")
 async def delete_student_card(personal_id: int,
                               db: AsyncSession = Depends(get_db)):
-    personal_id = await delete_card(db, personal_id)
-    return personal_id
+    result = await delete_card(db, personal_id)
+    return result
 

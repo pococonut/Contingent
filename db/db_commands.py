@@ -6,6 +6,7 @@ from sqlalchemy import select, update, delete
 
 from db.database import engine, SessionLocal, Base
 from general.dicts import schemas_dict, models_dict
+from models.personal_data import PersonalData
 from schemas.educational_data import EducationalDataSh
 from schemas.personal_data import PersonalDataSh
 from models.educational_data import EducationalData
@@ -244,19 +245,13 @@ async def delete_card(db, p_id):
     :return: Идентификатор студента при успешном выполнении
     """
     try:
-        for table_name, table in models_dict.items():
-            if table_name == "personal_data":
-                continue
-            stmt = delete(table).where(table.personal_id == p_id)
-            await db.execute(stmt)
-
-        table = models_dict.get("personal_data")
-        stmt = delete(table).where(table.id == p_id)
-        await db.execute(stmt)
+        student = await db.get(PersonalData, p_id)
+        await db.delete(student)
         await db.commit()
-        return p_id
+        return {"result": f"Student {p_id} was successfully deleted"}
     except Exception as e:
         logging.error(e)
+        return {"error": e}
 
 
 async def drop_table():

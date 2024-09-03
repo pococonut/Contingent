@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
@@ -31,7 +31,9 @@ class EducationalData(Base):
     study_profile: Mapped[str] = mapped_column(nullable=True)
     current_year: Mapped[str] = mapped_column(nullable=True)
 
-    personal_id: Mapped[int] = mapped_column(ForeignKey('personal_data.id'), nullable=False)
+    personal_id: Mapped[int] = mapped_column(ForeignKey('personal_data.id'), nullable=False, )
+
+    __table_args__ = (ForeignKeyConstraint(['personal_id'], ['personal_data.id'], ondelete='CASCADE'),)
 
     personal_data: Mapped["PersonalData"] = relationship("PersonalData", back_populates="educational_data")
 

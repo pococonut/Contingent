@@ -29,18 +29,18 @@ class PersonalData(Base):
     gender: Mapped[str] = mapped_column(nullable=True)
 
     educational_data: Mapped["EducationalData"] = relationship("EducationalData", back_populates="personal_data",
-                                                               uselist=False)
+                                                               uselist=False, cascade="all, delete-orphan")
     contact_data: Mapped["ContactData"] = relationship("ContactData", back_populates="personal_data",
-                                                       uselist=False)
+                                                       uselist=False, cascade="all, delete-orphan")
     benefits_data: Mapped["BenefitsData"] = relationship("BenefitsData", back_populates="personal_data",
-                                                         uselist=False)
+                                                         uselist=False, cascade="all, delete-orphan")
     military_data: Mapped["MilitaryData"] = relationship("MilitaryData", back_populates="personal_data",
-                                                          uselist=False)
+                                                          uselist=False, cascade="all, delete-orphan")
     stipend_data: Mapped["StipendData"] = relationship("StipendData", back_populates="personal_data",
-                                                       uselist=False)
+                                                       uselist=False, cascade="all, delete-orphan")
     other_data: Mapped["OtherData"] = relationship("OtherData", back_populates="personal_data",
-                                                   uselist=False)
+                                                   uselist=False, cascade="all, delete-orphan")
     history_data: Mapped["HistoryData"] = relationship("HistoryData", back_populates="personal_data",
-                                                   uselist=False)
+                                                   uselist=False, cascade="all, delete-orphan")
     order_data: Mapped["OrderData"] = relationship("OrderData", back_populates="personal_data",
-                                                   uselist=False)
+                                                   uselist=False, cascade="all, delete-orphan")
