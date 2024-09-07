@@ -2,6 +2,7 @@ import asyncio
 import logging
 from collections import defaultdict
 
+from fastapi import HTTPException
 from sqlalchemy import select, update, delete
 
 from db.database import engine, SessionLocal, Base
@@ -48,39 +49,77 @@ async def add_data_to_table(db, data, table):
                 new_data = table(**data.dict())
 
             db.add(new_data)
-            await db.commit()
-            await db.refresh(new_data)
-            return data
         except Exception as e:
             logging.error(e)
 
+        await db.commit()
+        await db.refresh(new_data)
+        return data
 
-async def add_students_card(db, student_card):
+
+async def format_card_to_dict(s_card):
+    """
+    Функция для приведения данных карты студента к нужному виду
+    :param s_card: Карта студента типа StudentsCardSh
+    :return: Данные карты студента в виде списка словарей
+    """
+    return [s_card.personal_data.dict(),
+            s_card.educational_data.dict(),
+            s_card.stipend_data.dict(),
+            s_card.contact_data.dict(),
+            s_card.military_data.dict(),
+            s_card.benefits_data.dict(),
+            s_card.other_data.dict(),
+            s_card.history_data.dict(),
+            s_card.order_data.dict()]
+
+
+async def add_student_data(db, student_card):
+    """
+    Функция для добавления личных карт студента в таблицы БД
+    :param db: Объект сессии
+    :param student_card: Личная карта
+    :return: Объект сессии
+    """
+    models = models_dict.values()
+    for data, table in zip(student_card, models):
+        db.add(table(**data))
+    return db
+
+
+async def add_commit_students_cards(db, student_cards):
+    """
+    Функция для вставки личных карт студента в таблицы БД
+    :param db: Объект сессии
+    :param student_cards: Список личных карт
+    :return: Список личных карт при успешном выполнении
+    """
+    try:
+        for student_card in student_cards:
+            db = await add_student_data(db, student_card)
+        await db.commit()
+    except Exception as e:
+        logging.error(e)
+        raise HTTPException(status_code=400, detail=f"Import Error.\n {e}")
+
+    return student_cards
+
+
+async def add_commit_students_card(db, student_card):
     """
     Функция для вставки личной карты студента в таблицы БД
     :param db: Объект сессии
-    :param student_card: Данные
-    :return: Карта студента при успешном выполнении
+    :param student_card: Личная карта
+    :return: Личная карта студента при успешном выполнении
     """
     try:
-        models = models_dict.values()
-        if type(student_card) is StudentsCardSh:
-            student_card = [student_card.personal_data.dict(),
-                            student_card.educational_data.dict(),
-                            student_card.stipend_data.dict(),
-                            student_card.contact_data.dict(),
-                            student_card.military_data.dict(),
-                            student_card.benefits_data.dict(),
-                            student_card.other_data.dict(),
-                            student_card.history_data.dict(),
-                            student_card.order_data.dict()]
-
-        for data, table in zip(student_card, models):
-            await add_data_to_table(db, data, table)
-        return student_card
-
+        db = await add_student_data(db, student_card)
+        await db.commit()
     except Exception as e:
         logging.error(e)
+        raise HTTPException(status_code=400, detail=f"Import Error.\n {e}")
+
+    return student_card
 
 
 async def get_tables_data(db):
