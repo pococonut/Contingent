@@ -15,7 +15,7 @@ async def read_excel_file(file, begin_row=1):
     return df
 
 
-async def parse_excel_row(i, df):
+async def parse_df_row(i, df):
     """
     Функция для считывания данных из pandas-объекта в Python-объекты
     :param i: Номер строки
@@ -86,3 +86,19 @@ async def parse_excel_row(i, df):
 
     return [personal_data, educational_data, stipend_data, contact_data,
             military_data, benefit_data, other_data, history_data, order_data]
+
+
+async def get_cards_form_df(df):
+    """
+    Функция для получения списка карт студентов из pandas-объекта
+    :param df: pandas-объект содержащий данные студенческих карт
+    :return: Список карт студентов
+    """
+    amount_rows = int(df.shape[0])
+    student_cards = []
+
+    for i in range(amount_rows):
+        card = await parse_df_row(i, df)
+        student_cards.append(card)
+
+    return student_cards

@@ -290,7 +290,7 @@ async def delete_card(db, p_id):
         return {"result": f"Student {p_id} was successfully deleted"}
     except Exception as e:
         logging.error(e)
-        return {"error": e}
+        raise HTTPException(status_code=400, detail=f"Deletion Error.\n {e}")
 
 
 async def drop_table():

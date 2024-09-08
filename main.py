@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from general.dicts import models_dict
-from general.excel_functions import parse_excel_row, read_excel_file
+from general.excel_functions import parse_df_row, read_excel_file, get_cards_form_df
 from schemas.students_card import StudentsCardSh
 from db.db_commands import get_db, get_filtered_cards, add_commit_students_card, change_card, delete_card, \
     add_commit_students_cards, format_card_to_dict
@@ -92,13 +92,7 @@ async def post_student_card(student_card: StudentsCardSh,
 async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db)):
     file = await file.read()
     df = await read_excel_file(file)
-    amount_rows = int(df.shape[0])
-    student_cards = []
-
-    for i in range(amount_rows):
-        card = await parse_excel_row(i, df)
-        student_cards.append(card)
-
+    student_cards = await get_cards_form_df(df)
     response = await add_commit_students_cards(db, student_cards)
     return response
 
