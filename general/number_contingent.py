@@ -1,6 +1,22 @@
 from collections import defaultdict, Counter
 
 
+async def get_dict_of_lists(students_cards, params):
+    """
+    Функция для формирования словаря списков
+    :param students_cards:
+    :param params: Параметры для формирования словаря нужного формата
+    :return: Словарь списков
+    """
+    key_param, value_param = params
+    dict_of_lists = defaultdict(list)
+
+    for v in students_cards.values():
+        dict_of_lists[v.get(key_param)].append(v.get(value_param))
+
+    return dict_of_lists
+
+
 async def get_subgroups_lists(students_cards):
     """
     Функция возвращает словарь, где ключами являются группы,
@@ -8,10 +24,8 @@ async def get_subgroups_lists(students_cards):
     :param students_cards: Словарь карт студентов
     :return: Словарь списков подгрупп
     """
-    subgroups_lists = defaultdict(list)
-
-    for k, v in students_cards.items():
-        subgroups_lists[v.get("group")].append(v.get("subgroup"))
+    params = ["group", "subgroup"]
+    subgroups_lists = await get_dict_of_lists(students_cards, params)
 
     return subgroups_lists
 
@@ -23,10 +37,8 @@ async def get_degree_lists(students_cards):
     :param students_cards: Словарь карт студентов
     :return: Словарь списков форм обучения
     """
-    degree_payment_lists = defaultdict(list)
-
-    for v in students_cards.values():
-        degree_payment_lists[v.get("group")].append(v.get("degree_payment"))
+    params = ["group", "degree_payment"]
+    degree_payment_lists = await get_dict_of_lists(students_cards, params)
 
     return degree_payment_lists
 
