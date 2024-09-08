@@ -1,12 +1,11 @@
-from collections import defaultdict, Counter
-
 from fastapi import FastAPI, Depends, Query, UploadFile
 from typing import Annotated
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from general.dicts import models_dict
-from general.excel_functions import parse_df_row, read_excel_file, get_cards_form_df
+from general.excel_functions import read_excel_file, get_cards_form_df
+from general.number_contingent import get_students_number_contingent
 from schemas.students_card import StudentsCardSh
 from db.db_commands import get_db, get_filtered_cards, add_commit_students_card, change_card, delete_card, \
     add_commit_students_cards, format_card_to_dict
@@ -44,30 +43,7 @@ async def get_number_contingent(firstname: Annotated[str | None, Query()] = None
     filters = {"personal_filters": [firstname, lastname],
                "educational_filters": [faculty, direction, course, department, group, subgroup]}
     students_cards = await get_filtered_cards(session, filters)
-
-    subgroups_lists = defaultdict(list)
-    degree_payment_lists = defaultdict(list)
-    for k, v in students_cards.items():
-        subgroups_lists[v.get("group")].append(v.get("subgroup"))
-        degree_payment_lists[v.get("group")].append(v.get("degree_payment"))
-
-    group_students_amount = defaultdict()
-    degree_students_amount = defaultdict()
-    total_students_amount = defaultdict(dict)
-    for k, v in subgroups_lists.items():
-        group_students_amount[k] = Counter(v)
-    for k, v in subgroups_lists.items():
-        total_students_amount[k] = {"total": len(v)}
-    for k, v in degree_payment_lists.items():
-        degree_students_amount[k] = Counter(v)
-
-    number_contingent = defaultdict()
-    for k in group_students_amount:
-        number_contingent[k] = group_students_amount[k].copy()
-    for k in number_contingent:
-        number_contingent[k].update(degree_students_amount[k])
-        number_contingent[k].update(total_students_amount[k])
-
+    number_contingent = await get_students_number_contingent(students_cards)
     return number_contingent
 
 
