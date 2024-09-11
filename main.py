@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from fastapi import FastAPI, Depends, Query, UploadFile
 from typing import Annotated
 from sqlalchemy import select
@@ -21,10 +23,17 @@ async def get_students_cards(firstname: Annotated[str | None, Query()] = None,
                              course: Annotated[str | None, Query()] = None,
                              department: Annotated[str | None, Query()] = None,
                              group: Annotated[str | None, Query()] = None,
-                             subgroup: Annotated[list[str] | None, Query()] = None,
+                             subgroup: Annotated[str | None, Query()] = None,
                              session: AsyncSession = Depends(get_db)):
-    filters = {"personal_filters": [firstname, lastname],
-               "educational_filters": [faculty, direction, course, department, group, subgroup]}
+    filters = {"personal_filters": {"firstname": firstname,
+                                    "lastname": lastname},
+
+               "educational_filters": {"faculty": faculty,
+                                       "direction": direction,
+                                       "course": course,
+                                       "department": department,
+                                       "group": group,
+                                       "subgroup": subgroup}}
 
     students_cards = await get_filtered_cards(session, filters)
     return students_cards
@@ -38,10 +47,17 @@ async def get_number_contingent(firstname: Annotated[str | None, Query()] = None
                                 course: Annotated[str | None, Query()] = None,
                                 department: Annotated[str | None, Query()] = None,
                                 group: Annotated[str | None, Query()] = None,
-                                subgroup: Annotated[list[str] | None, Query()] = None,
+                                subgroup: Annotated[str | None, Query()] = None,
                                 session: AsyncSession = Depends(get_db)):
-    filters = {"personal_filters": [firstname, lastname],
-               "educational_filters": [faculty, direction, course, department, group, subgroup]}
+    filters = {"personal_filters": {"firstname": firstname,
+                                    "lastname": lastname},
+
+               "educational_filters": {"faculty": faculty,
+                                       "direction": direction,
+                                       "course": course,
+                                       "department": department,
+                                       "group": group,
+                                       "subgroup": subgroup}}
     students_cards = await get_filtered_cards(session, filters)
     number_contingent = await get_students_number_contingent(students_cards)
     return number_contingent

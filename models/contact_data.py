@@ -24,5 +24,5 @@ class ContactData(Base):
 
     __table_args__ = (ForeignKeyConstraint(['personal_id'], ['personal_data.id'], ondelete='CASCADE'),)
 
-    personal_data: Mapped["PersonalData"] = relationship("PersonalData", back_populates="contact_data")
+    personal: Mapped["PersonalData"] = relationship("PersonalData", back_populates="contact")
 

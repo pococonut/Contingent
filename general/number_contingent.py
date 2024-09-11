@@ -91,13 +91,19 @@ async def get_total_students_amount(students_cards):
     return total_students_amount
 
 
-async def get_students_number_contingent(students_cards):
+async def get_students_number_contingent(cards):
     """
     Функция для формирования численного списка студентов
-    :param students_cards: Словарь карт студентов
+    :param cards: Словарь карт студентов
     :return: Численный список, содержащий данные о количестве студентов по
     подгруппам, количестве форм обучения в подгруппах и общее количество в группе
     """
+    students_cards = defaultdict(dict)
+    for person_id, person_data in cards.items():
+        for table_data in person_data.values():
+            data = table_data.__dict__
+            students_cards[person_id].update(data)
+
     group_students_amount = await get_group_students_amount(students_cards)
     degree_students_amount = await get_degree_students_amount(students_cards)
     total_students_amount = await get_total_students_amount(students_cards)

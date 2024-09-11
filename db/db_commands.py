@@ -3,14 +3,16 @@ import logging
 from collections import defaultdict
 
 from fastapi import HTTPException
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update, delete, and_
+from sqlalchemy.util.preloaded import orm
 
 from db.database import engine, SessionLocal, Base
 from general.dicts import schemas_dict, models_dict
 from models.personal_data import PersonalData
+from models.educational_data import EducationalData
+from models.other_data import OtherData
 from schemas.educational_data import EducationalDataSh
 from schemas.personal_data import PersonalDataSh
-from models.educational_data import EducationalData
 from schemas.students_card import StudentsCardSh
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
@@ -140,71 +142,48 @@ async def get_tables_data(db):
         logging.error(e)
 
 
-async def personal_filters_check(students_cards, p_filters):
+async def filters_check(db, filters_data):
     """
     Функция для формирования множества идентификаторов студентов,
-    подходящих под фильтры персональной информации
-    :param students_cards: Список карт всех студентов
-    :param p_filters: Фильтры персональной информации
-    :return: Множество идентификаторов студентов
+    подходящих под фильтры
+    :param db: Объект сессии
+    :param filters_data: Данные для фильтрации: [тип фильтрации, фильтры, таблица]
+    :return: Список идентификаторов студентов
     """
-    firstname, lastname = p_filters
-    suitable_students = set()
-    for p_data in students_cards.get("personal_data"):
-        p_data = PersonalDataSh.from_orm(p_data).dict()
+    data_type, filters, table = filters_data
+    if data_type != "personal":
+        stmt = select(table.personal_id)
+    else:
+        stmt = select(table.id)
 
-        if firstname and p_data.get("firstname") != firstname:
+    conditions = []
+    for param, value in filters.items():
+        if not value:
             continue
-        if lastname and p_data.get("lastname") != lastname:
-            continue
-        suitable_students.add(p_data.get("id"))
+        conditions.append(value == getattr(table, param))
 
-    return suitable_students
+    if conditions:
+        stmt = stmt.where(and_(*conditions))
+
+    result = await db.execute(stmt)
+    students_ids = result.scalars().all()
+
+    return students_ids
 
 
-async def educational_filters_check(students_cards, ed_filters):
+async def get_suitable_students_ids(db, filters):
     """
-    Функция для формирования множества идентификаторов студентов,
-    подходящих под фильтры учебной информации
-    :param students_cards: Список карт всех студентов
-    :param ed_filters: Фильтры учебной информации
-    :return: Множество идентификаторов студентов
-    """
-    faculty, direction, course, department, group, subgroup = ed_filters
-    suitable_students = set()
-    for ed_data in students_cards.get("educational_data"):
-        ed_data = EducationalDataSh.from_orm(ed_data).dict()
-
-        if faculty and ed_data.get("faculty") != faculty:
-            continue
-        if direction and ed_data.get("direction") != direction:
-            continue
-        if course and ed_data.get("course") != course:
-            continue
-        if department and ed_data.get("department") != department:
-            continue
-        if group and ed_data.get("group") != group:
-            continue
-        if subgroup and ed_data.get("subgroup") not in subgroup:
-            continue
-        suitable_students.add(ed_data.get("personal_id"))
-
-    return suitable_students
-
-
-async def get_suitable_students_ids(students_cards, filters):
-    """
-    Функция для формирования списка подходящих под фильтры студентов
-    :param students_cards: Список карт всех студентов
+    Функция для формирования списка идентификаторов студентов подходящих под фильтры
+    :param db: Объект сессии
     :param filters: Фильтры
     :return: Список подходящих под фильтры студентов
     """
-    personal_filters = filters.get("personal_filters")
-    educational_filters = filters.get("educational_filters")
+    personal_filter_data = ["personal", filters.get("personal_filters"), PersonalData]
+    educational_filter_data = ["educational", filters.get("educational_filters"), EducationalData]
 
-    suitable_students_personal = await personal_filters_check(students_cards, personal_filters)
-    suitable_students_educational = await educational_filters_check(students_cards, educational_filters)
-    suitable_students = suitable_students_educational & suitable_students_personal
+    suitable_students_personal = await filters_check(db, personal_filter_data)
+    suitable_students_educational = await filters_check(db, educational_filter_data)
+    suitable_students = set(suitable_students_educational) & set(suitable_students_personal)
 
     return suitable_students
 
@@ -218,23 +197,18 @@ async def get_filtered_cards(db, filters: dict = None):
     """
     try:
         suitable_students = defaultdict(dict)
-        students_cards = await get_tables_data(db)
-        suitable_students_ids = await get_suitable_students_ids(students_cards, filters)
+        suitable_students_ids = await get_suitable_students_ids(db, filters)
 
-        for table_name, rows in students_cards.items():
-            for row in rows:
-                schema = schemas_dict.get(table_name)
-                data = schema.from_orm(row).dict()
-
-                if table_name == "personal_data":
-                    student_id = data.get("id")
-                    del data['id']
+        for student_id in suitable_students_ids:
+            for name, table in models_dict.items():
+                if name == "personal_data":
+                    param_id = "id"
                 else:
-                    student_id = data.get("personal_id")
-                    del data['personal_id']
-
-                if student_id in suitable_students_ids:
-                    suitable_students[student_id].update(data)
+                    param_id = 'personal_id'
+                stmt = select(table).where(student_id == getattr(table, param_id))
+                result = await db.execute(stmt)
+                data = result.scalars().all()[0]
+                suitable_students[student_id][name] = data
 
         return suitable_students
     except Exception as e:
