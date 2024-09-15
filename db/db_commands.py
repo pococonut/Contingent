@@ -1,19 +1,13 @@
-import asyncio
 import logging
 from collections import defaultdict
 
 from fastapi import HTTPException
-from sqlalchemy import select, update, delete, and_
-from sqlalchemy.util.preloaded import orm
+from sqlalchemy import select, update, and_
 
 from db.database import engine, SessionLocal, Base
-from general.dicts import schemas_dict, models_dict
+from general.dicts import models_dict
 from models.personal_data import PersonalData
 from models.educational_data import EducationalData
-from models.other_data import OtherData
-from schemas.educational_data import EducationalDataSh
-from schemas.personal_data import PersonalDataSh
-from schemas.students_card import StudentsCardSh
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")

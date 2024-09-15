@@ -1,22 +1,56 @@
-from collections import defaultdict
+from datetime import timedelta
 
-from fastapi import FastAPI, Depends, Query, UploadFile
 from typing import Annotated
+from fastapi import FastAPI, Depends, Query, UploadFile, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from config import ACCESS_TOKEN_EXPIRE_MINUTES
+from auth.authentication import authenticate_user, fake_users_db, create_access_token, get_current_active_user
 from general.dicts import models_dict
 from general.excel_functions import read_excel_file, get_cards_form_df
 from general.number_contingent import get_students_number_contingent
+from schemas.authentication import Token, User
 from schemas.students_card import StudentsCardSh
 from db.db_commands import get_db, get_filtered_cards, add_commit_students_card, change_card, delete_card, \
     add_commit_students_cards, format_card_to_dict
 
+
 app = FastAPI(title="Contingent")
 
 
+# Create a timedelta with the expiration time of the token.
+# Create a real JWT access token and return it.
+@app.post("/token")
+async def login_for_access_token(
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+) -> Token:
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return Token(access_token=access_token, token_type="bearer")
+
+
+@app.get("/users/me/", response_model=User)
+async def read_users_me(
+        current_user: Annotated[User, Depends(get_current_active_user)],
+):
+    return current_user
+
+
 @app.get('/students_cards')
-async def get_students_cards(firstname: Annotated[str | None, Query()] = None,
+async def get_students_cards(user: Annotated[User, Depends(get_current_active_user)],
+                             firstname: Annotated[str | None, Query()] = None,
                              lastname: Annotated[str | None, Query()] = None,
                              faculty: Annotated[str | None, Query()] = None,
                              direction: Annotated[str | None, Query()] = None,
@@ -40,7 +74,8 @@ async def get_students_cards(firstname: Annotated[str | None, Query()] = None,
 
 
 @app.get("/number_contingent")
-async def get_number_contingent(firstname: Annotated[str | None, Query()] = None,
+async def get_number_contingent(user: Annotated[User, Depends(get_current_active_user)],
+                                firstname: Annotated[str | None, Query()] = None,
                                 lastname: Annotated[str | None, Query()] = None,
                                 faculty: Annotated[str | None, Query()] = None,
                                 direction: Annotated[str | None, Query()] = None,
@@ -48,7 +83,9 @@ async def get_number_contingent(firstname: Annotated[str | None, Query()] = None
                                 department: Annotated[str | None, Query()] = None,
                                 group: Annotated[str | None, Query()] = None,
                                 subgroup: Annotated[str | None, Query()] = None,
-                                session: AsyncSession = Depends(get_db)):
+                                session: AsyncSession = Depends(get_db),
+
+                                ):
     filters = {"personal_filters": {"firstname": firstname,
                                     "lastname": lastname},
 
@@ -64,7 +101,8 @@ async def get_number_contingent(firstname: Annotated[str | None, Query()] = None
 
 
 @app.get("/table_data")
-async def get_table_data(table_name: str = Query(enum=list(models_dict.keys())),
+async def get_table_data(user: Annotated[User, Depends(get_current_active_user)],
+                         table_name: str = Query(enum=list(models_dict.keys())),
                          db: AsyncSession = Depends(get_db)):
     table = models_dict.get(table_name)
     result = await db.execute(select(table))
@@ -73,7 +111,8 @@ async def get_table_data(table_name: str = Query(enum=list(models_dict.keys())),
 
 
 @app.post("/student_card")
-async def post_student_card(student_card: StudentsCardSh,
+async def post_student_card(user: Annotated[User, Depends(get_current_active_user)],
+                            student_card: StudentsCardSh,
                             db: AsyncSession = Depends(get_db)):
     student_card = await format_card_to_dict(student_card)
     result = await add_commit_students_card(db, student_card)
@@ -81,7 +120,8 @@ async def post_student_card(student_card: StudentsCardSh,
 
 
 @app.post("/import_cards_excel")
-async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db)):
+async def import_cards_excel(user: Annotated[User, Depends(get_current_active_user)],
+                             file: UploadFile, db: AsyncSession = Depends(get_db)):
     file = await file.read()
     df = await read_excel_file(file)
     student_cards = await get_cards_form_df(df)
@@ -90,7 +130,8 @@ async def import_cards_excel(file: UploadFile, db: AsyncSession = Depends(get_db
 
 
 @app.put("/change_student_card")
-async def change_student_card(personal_id: int,
+async def change_student_card(user: Annotated[User, Depends(get_current_active_user)],
+                              personal_id: int,
                               table_name: str = Query(enum=list(models_dict.keys())),
                               parameters: dict = None,
                               db: AsyncSession = Depends(get_db)):
@@ -103,7 +144,8 @@ async def change_student_card(personal_id: int,
 
 
 @app.delete("/delete_student_card")
-async def delete_student_card(personal_id: int,
+async def delete_student_card(user: Annotated[User, Depends(get_current_active_user)],
+                              personal_id: int,
                               db: AsyncSession = Depends(get_db)):
     result = await delete_card(db, personal_id)
     return result
