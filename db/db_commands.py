@@ -72,7 +72,7 @@ async def format_card_to_dict(s_card):
 
 async def add_student_data(db, student_card):
     """
-    Функция для добавления личных карт студента в таблицы БД
+    Функция для добавления личной карты студента в таблицы БД
     :param db: Объект сессии
     :param student_card: Личная карта
     :return: Объект сессии

@@ -1,16 +1,6 @@
 from pydantic import BaseModel
 
 
-# Define a Pydantic Model that will be used in the token endpoint for the response.
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    username: str | None = None
-
-
 class User(BaseModel):
     username: str
     email: str | None = None
@@ -18,6 +8,19 @@ class User(BaseModel):
     disabled: bool | None = None
 
 
-class UserInDB(User):
-    hashed_password: str
+class UserAuth(BaseModel):
+    username: str
+    password: str
 
+
+class UserOut(BaseModel):
+    username: str
+
+
+class TokenPayload(BaseModel):
+    sub: str = None
+    exp: int = None
+
+
+class SystemUser(UserOut):
+    password: str
