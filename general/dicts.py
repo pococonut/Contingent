@@ -16,7 +16,15 @@ from models.benefits_data import BenefitsData
 from models.military_data import MilitaryData
 from models.history_data import HistoryData
 from models.order_data import OrderData
+from models.user import User
 
+
+fake_users_db = {
+    "po": User(username="po",
+               password="$2b$12$5coZhCR2ZV3ZOOP9N9PVQukpOSSJu5HnKWUSrIRsdXhSjTiqp7nqW",
+               access_token="access-token",
+               refresh_token="refresh-token")
+}
 
 models_dict = {"personal_data": PersonalData,
                "educational_data": EducationalData,
