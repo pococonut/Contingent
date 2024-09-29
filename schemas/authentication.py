@@ -1,26 +1,15 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
-class UserSh(BaseModel):
+class UserSchema(BaseModel):
     username: str
-    password: str
+    password: bytes
+    email: EmailStr | None = None
+    active: bool | None = True
+
+
+class TokenInfo(BaseModel):
+    access_token: str
     refresh_token: str | None = None
-    access_token: str | None = None
+    token_type: str = "Bearer"
 
-
-class UserAuth(BaseModel):
-    username: str
-    password: str
-
-
-class UserOut(BaseModel):
-    username: str
-
-
-class TokenPayload(BaseModel):
-    sub: str = None
-    exp: int = None
-
-
-class SystemUser(UserOut):
-    password: str

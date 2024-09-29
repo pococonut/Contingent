@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import Depends, Query, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.authentication import oauth2_scheme
+from auth.validation import get_current_active_auth_user
 from general.number_contingent import get_students_number_contingent
 from db.db_commands import get_db, get_filtered_cards
 
@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.get('/students_cards')
-async def get_students_cards(token: str = Depends(oauth2_scheme),
+async def get_students_cards(token: str = Depends(get_current_active_auth_user),
                              firstname: Annotated[str | None, Query()] = None,
                              lastname: Annotated[str | None, Query()] = None,
                              faculty: Annotated[str | None, Query()] = None,
@@ -35,7 +35,7 @@ async def get_students_cards(token: str = Depends(oauth2_scheme),
 
 
 @router.get("/number_contingent")
-async def get_number_contingent(token: str = Depends(oauth2_scheme),
+async def get_number_contingent(token: str = Depends(get_current_active_auth_user),
                                 firstname: Annotated[str | None, Query()] = None,
                                 lastname: Annotated[str | None, Query()] = None,
                                 faculty: Annotated[str | None, Query()] = None,
