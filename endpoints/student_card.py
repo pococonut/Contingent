@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from auth.validation import get_current_active_auth_user
 from general.dicts import models_dict
 from db.db_commands import get_db, change_card, delete_card, format_card_to_dict, add_commit_students_card
-from schemas.students_card import StudentsCardSh
+from schemas.student_card.students_card import StudentsCardSh
 
 router = APIRouter()
 

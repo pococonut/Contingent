@@ -1,14 +1,14 @@
 from pydantic import BaseModel
 
-from schemas.benefits_data import BenefitsDataSh
-from schemas.contact_data import ContactDataSh
-from schemas.educational_data import EducationalDataSh
-from schemas.millitary_data import MilitaryDataSh
-from schemas.other_data import OtherDataSh
-from schemas.personal_data import PersonalDataSh
-from schemas.stipend_data import StipendDataSh
-from schemas.history_data import HistoryDataSh
-from schemas.order_data import OrderDataSh
+from schemas.student_card.benefits_data import BenefitsDataSh
+from schemas.student_card.contact_data import ContactDataSh
+from schemas.student_card.educational_data import EducationalDataSh
+from schemas.student_card.millitary_data import MilitaryDataSh
+from schemas.student_card.other_data import OtherDataSh
+from schemas.student_card.personal_data import PersonalDataSh
+from schemas.student_card.stipend_data import StipendDataSh
+from schemas.student_card.history_data import HistoryDataSh
+from schemas.student_card.order_data import OrderDataSh
 
 
 class StudentsCardSh(BaseModel):

@@ -3,8 +3,8 @@ from auth.helpers import hash_pasword
 
 
 polina = UserSchema(
-    username="polina",
-    password=hash_pasword("505"),
+    username="po",
+    password=hash_pasword("po"),
     email='po@mail.ru'
 )
 

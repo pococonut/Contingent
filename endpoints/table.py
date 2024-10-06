@@ -19,3 +19,7 @@ async def get_table_data(token: str = Depends(get_current_active_auth_user),
     data = result.scalars().all()
     return {f"{table_name}": data}
 
+
+@router.get("/create_db")
+async def create_db(db: AsyncSession = Depends(get_db)):
+    return {"result": "database was created"}

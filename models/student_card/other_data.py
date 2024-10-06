@@ -6,7 +6,7 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
 from db.database import Base
-from models.personal_data import PersonalData
+from models.student_card.personal_data import PersonalData
 
 
 class OtherData(Base):

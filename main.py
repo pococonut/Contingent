@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-
 from endpoints import authentication, students_lists, import_cards, student_card, table
 
 
@@ -10,6 +9,7 @@ app = FastAPI(title="Contingent")
 origins = [
     "http://localhost:5173",
 ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

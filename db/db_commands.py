@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from collections import defaultdict
 
@@ -6,8 +7,8 @@ from sqlalchemy import select, update, and_
 
 from db.database import engine, SessionLocal, Base
 from general.dicts import models_dict
-from models.personal_data import PersonalData
-from models.educational_data import EducationalData
+from models.student_card.personal_data import PersonalData
+from models.student_card.educational_data import EducationalData
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")

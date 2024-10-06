@@ -1,6 +1,9 @@
 from io import BytesIO
+import re
 
+from fastapi import HTTPException
 import pandas as pd
+import numpy as np
 
 
 async def read_excel_file(file, begin_row=1):
@@ -15,6 +18,31 @@ async def read_excel_file(file, begin_row=1):
     return df
 
 
+def check_param_existence(params):
+    for name, value in params.items():
+        if value is None:
+            exception_text = f"ID: {params.get('id')}. The requirement parameter '{name}' is empty."
+            raise HTTPException(status_code=400, detail=exception_text)
+
+
+def validate_string_params(params, for_check):
+    for name, value in params.items():
+        if name not in for_check:
+            continue
+
+        if not value.isalpha():
+            exception_text = f"ID: {params.get('id')}. The string parameter '{name}' contain wrong symbols."
+            raise HTTPException(status_code=400, detail=exception_text)
+
+
+def validate_personal_data(personal_data):
+    not_necessary = ["patronymic"]
+    only_str = ["firstname", "lastname", "patronymic"]
+    requirement_params = dict((k, v) for k, v in personal_data.items() if k not in not_necessary)
+    check_param_existence(requirement_params)
+    validate_string_params(requirement_params, only_str)
+
+
 async def parse_df_row(i, df):
     """
     Функция для считывания данных из pandas-объекта в Python-объекты
@@ -22,6 +50,9 @@ async def parse_df_row(i, df):
     :param df: pandas-объект
     :return: Список словарей представляющий собой карту студента
     """
+
+    df = df.replace({np.nan: None})
+
     personal_data = {"id": i,
                      "firstname": df.at[i, 'Имя'],
                      "lastname": df.at[i, 'Фамилия'],
@@ -32,10 +63,11 @@ async def parse_df_row(i, df):
                      "type_of_identity": df.at[i, 'Удостов. личности'],
                      "address": df.at[i, 'Адрес'],
                      "snils": str(df.at[i, 'Снилс']),
-                     "polis": str(df.at[i, 'Полис']),
                      "study_status": df.at[i, 'Статус внутри вуза'],
                      "general_status": df.at[i, 'Статус общий'],
                      "gender": df.at[i, 'Пол']}
+
+    validate_personal_data(personal_data)
 
     educational_data = {"faculty": df.at[i, 'Факультет'],
                         "direction": df.at[i, 'Направление'],
