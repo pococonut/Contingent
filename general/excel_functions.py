@@ -25,6 +25,10 @@ def check_param_existence(params):
             raise HTTPException(status_code=400, detail=exception_text)
 
 
+def get_only_requirement(data, not_necessary):
+    return dict((k, v) for k, v in data.items() if k not in not_necessary)
+
+
 def validate_string_params(params, for_check):
     for name, value in params.items():
         if name not in for_check:
@@ -35,12 +39,34 @@ def validate_string_params(params, for_check):
             raise HTTPException(status_code=400, detail=exception_text)
 
 
+def validate_date(params, date):
+    pattern = r"\d\d\.\d\d\.\d{4}"
+    if not re.fullmatch(pattern, date):
+        exception_text = f"ID: {params.get('id')}. Wrong date format."
+        raise HTTPException(status_code=400, detail=exception_text)
+
+
+def validate_snils(params, snils):
+    pattern = r"\d{3}-\d{3}-\d{3} \d\d"  # 123-456-789 12
+    if not re.fullmatch(pattern, snils):
+        exception_text = f"ID: {params.get('id')}. Wrong snils format."
+        raise HTTPException(status_code=400, detail=exception_text)
+
+
+def validate_phone_number(params, phone):
+    if len(phone) != 11 or not phone.isdigit():
+        exception_text = f"ID: {params.get('id')}. Wrong phone format."
+        raise HTTPException(status_code=400, detail=exception_text)
+
+
 def validate_personal_data(personal_data):
     not_necessary = ["patronymic"]
     only_str = ["firstname", "lastname", "patronymic"]
-    requirement_params = dict((k, v) for k, v in personal_data.items() if k not in not_necessary)
+    requirement_params = get_only_requirement(personal_data, not_necessary)
     check_param_existence(requirement_params)
-    validate_string_params(requirement_params, only_str)
+    validate_string_params(personal_data, only_str)
+    validate_date(personal_data, personal_data.get("birth_date"))
+    validate_snils(personal_data, personal_data.get("snils"))
 
 
 async def parse_df_row(i, df):
