@@ -11,7 +11,6 @@ router = APIRouter()
 
 @router.post("/import_cards_excel")
 async def import_cards_excel(file: UploadFile,
-                             token: str = Depends(get_current_active_auth_user),
                              db: AsyncSession = Depends(get_db)):
     file = await file.read()
     df = await read_excel_file(file)

@@ -1,9 +1,10 @@
 from io import BytesIO
-import re
 
-from fastapi import HTTPException
 import pandas as pd
 import numpy as np
+
+from general.excel_validation import validate_personal_data, validate_educational_data, validate_contact_data, \
+    validate_other_data
 
 
 async def read_excel_file(file, begin_row=1):
@@ -18,57 +19,6 @@ async def read_excel_file(file, begin_row=1):
     return df
 
 
-def check_param_existence(params):
-    for name, value in params.items():
-        if value is None:
-            exception_text = f"ID: {params.get('id')}. The requirement parameter '{name}' is empty."
-            raise HTTPException(status_code=400, detail=exception_text)
-
-
-def get_only_requirement(data, not_necessary):
-    return dict((k, v) for k, v in data.items() if k not in not_necessary)
-
-
-def validate_string_params(params, for_check):
-    for name, value in params.items():
-        if name not in for_check:
-            continue
-
-        if not value.isalpha():
-            exception_text = f"ID: {params.get('id')}. The string parameter '{name}' contain wrong symbols."
-            raise HTTPException(status_code=400, detail=exception_text)
-
-
-def validate_date(params, date):
-    pattern = r"\d\d\.\d\d\.\d{4}"
-    if not re.fullmatch(pattern, date):
-        exception_text = f"ID: {params.get('id')}. Wrong date format."
-        raise HTTPException(status_code=400, detail=exception_text)
-
-
-def validate_snils(params, snils):
-    pattern = r"\d{3}-\d{3}-\d{3} \d\d"  # 123-456-789 12
-    if not re.fullmatch(pattern, snils):
-        exception_text = f"ID: {params.get('id')}. Wrong snils format."
-        raise HTTPException(status_code=400, detail=exception_text)
-
-
-def validate_phone_number(params, phone):
-    if len(phone) != 11 or not phone.isdigit():
-        exception_text = f"ID: {params.get('id')}. Wrong phone format."
-        raise HTTPException(status_code=400, detail=exception_text)
-
-
-def validate_personal_data(personal_data):
-    not_necessary = ["patronymic"]
-    only_str = ["firstname", "lastname", "patronymic"]
-    requirement_params = get_only_requirement(personal_data, not_necessary)
-    check_param_existence(requirement_params)
-    validate_string_params(personal_data, only_str)
-    validate_date(personal_data, personal_data.get("birth_date"))
-    validate_snils(personal_data, personal_data.get("snils"))
-
-
 async def parse_df_row(i, df):
     """
     Функция для считывания данных из pandas-объекта в Python-объекты
@@ -77,7 +27,7 @@ async def parse_df_row(i, df):
     :return: Список словарей представляющий собой карту студента
     """
 
-    df = df.replace({np.nan: None})
+    df = df.replace({np.nan: ""})
 
     personal_data = {"id": i,
                      "firstname": df.at[i, 'Имя'],
@@ -111,10 +61,14 @@ async def parse_df_row(i, df):
                         "current_year": str(df.at[i, 'Текущий год обуч.']),
                         "personal_id": i, }
 
+    validate_educational_data(educational_data)
+
     contact_data = {"number": str(df.at[i, 'Тел.']),
                     "spare_number": str(df.at[i, '2й Тел.']),
                     "mail": str(df.at[i, 'Почта']),
                     "personal_id": i}
+
+    validate_contact_data(contact_data)
 
     benefit_data = {"benefits": str(df.at[i, 'Льготы']),
                     "personal_id": i}
@@ -134,6 +88,8 @@ async def parse_df_row(i, df):
                   "relatives_works": str(df.at[i, 'Места работы родственников']),
                   "relatives_addresses": str(df.at[i, 'Адреса родственников']),
                   "personal_id": i, }
+
+    validate_other_data(other_data)
 
     history_data = {"movements": str(df.at[i, 'История перемещений (курс)']),
                     "statuses": str(df.at[i, 'История статусов']),
