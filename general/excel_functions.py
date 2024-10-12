@@ -3,7 +3,7 @@ from io import BytesIO
 import pandas as pd
 import numpy as np
 
-from general.excel_validation import validate_personal_data, validate_educational_data, validate_contact_data, \
+from validation.student_card_parameters import validate_personal_data, validate_educational_data, validate_contact_data, \
     validate_other_data
 
 
@@ -70,8 +70,8 @@ async def parse_df_row(i, df):
 
     validate_contact_data(contact_data)
 
-    benefit_data = {"benefits": str(df.at[i, 'Льготы']),
-                    "personal_id": i}
+    benefits_data = {"benefits": str(df.at[i, 'Льготы']),
+                     "personal_id": i}
 
     stipend_data = {"form": str(df.at[i, 'Форма']),
                     "amount": str(df.at[i, 'Сумма']),
@@ -98,8 +98,15 @@ async def parse_df_row(i, df):
     order_data = {"order": str(df.at[i, 'Приказы']),
                   "personal_id": i, }
 
-    return [personal_data, educational_data, stipend_data, contact_data,
-            military_data, benefit_data, other_data, history_data, order_data]
+    return {"personal_data": personal_data,
+            "educational_data": educational_data,
+            "stipend_data": stipend_data,
+            "contact_data": contact_data,
+            "military_data": military_data,
+            "benefits_data": benefits_data,
+            "other_data": other_data,
+            "history_data": history_data,
+            "order_data": order_data}
 
 
 async def get_cards_form_df(df):
@@ -115,4 +122,5 @@ async def get_cards_form_df(df):
         card = await parse_df_row(i, df)
         student_cards.append(card)
 
+    print(student_cards)
     return student_cards

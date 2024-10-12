@@ -60,15 +60,15 @@ async def format_card_to_dict(s_card):
     :param s_card: Карта студента типа StudentsCardSh
     :return: Данные карты студента в виде списка словарей
     """
-    return [s_card.personal_data.dict(),
-            s_card.educational_data.dict(),
-            s_card.stipend_data.dict(),
-            s_card.contact_data.dict(),
-            s_card.military_data.dict(),
-            s_card.benefits_data.dict(),
-            s_card.other_data.dict(),
-            s_card.history_data.dict(),
-            s_card.order_data.dict()]
+    return {"personal_data": s_card.personal_data.dict(),
+            "educational_data": s_card.educational_data.dict(),
+            "stipend_data": s_card.stipend_data.dict(),
+            "contact_data": s_card.contact_data.dict(),
+            "military_data": s_card.military_data.dict(),
+            "benefits_data": s_card.benefits_data.dict(),
+            "other_data": s_card.other_data.dict(),
+            "history_data": s_card.history_data.dict(),
+            "order_data": s_card.order_data.dict()}
 
 
 async def add_student_data(db, student_card):
@@ -78,9 +78,9 @@ async def add_student_data(db, student_card):
     :param student_card: Личная карта
     :return: Объект сессии
     """
-    models = models_dict.values()
-    for data, table in zip(student_card, models):
-        db.add(table(**data))
+    print(models_dict)
+    for table_name, table in models_dict.items():
+        db.add(table(**student_card.get(table_name)))
     return db
 
 

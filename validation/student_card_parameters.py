@@ -141,7 +141,7 @@ def validate_education_forms(params):
 
     for form, list_necessity in zip(forms, forms_lists):
         if params.get(form).lower() not in list_necessity:
-            exception_text = f"ID: {params.get('personal_id')}. Wrong direction name."
+            exception_text = f"ID: {params.get('personal_id')}. Wrong {form} name."
             raise HTTPException(status_code=400, detail=exception_text)
 
 

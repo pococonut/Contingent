@@ -1,19 +1,29 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.validation import get_current_active_auth_user
+from validation.auth_parameters import get_current_active_auth_user
 from general.dicts import models_dict
 from db.db_commands import get_db, change_card, delete_card, format_card_to_dict, add_commit_students_card
 from schemas.student_card.students_card import StudentsCardSh
+from fastapi.encoders import jsonable_encoder
+
+from validation.student_card_parameters import validate_personal_data, validate_educational_data, validate_contact_data, \
+    validate_other_data
 
 router = APIRouter()
 
 
 @router.post("/student_card")
 async def post_student_card(student_card: StudentsCardSh,
-                            token: str = Depends(get_current_active_auth_user),
+
                             db: AsyncSession = Depends(get_db)):
     student_card = await format_card_to_dict(student_card)
+
+    validate_personal_data(jsonable_encoder(student_card.get("personal_data")))
+    validate_educational_data(jsonable_encoder(student_card.get("educational_data")))
+    validate_contact_data(jsonable_encoder(student_card.get("contact_data")))
+    validate_other_data(jsonable_encoder(student_card.get("other_data")))
+
     result = await add_commit_students_card(db, student_card)
     return result
 

@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.validation import get_current_active_auth_user
 from general.excel_functions import read_excel_file, get_cards_form_df
 from db.db_commands import get_db, add_commit_students_cards
 

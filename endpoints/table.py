@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.validation import get_current_active_auth_user
+from validation.auth_parameters import get_current_active_auth_user
 from general.dicts import models_dict
 from db.db_commands import get_db
 

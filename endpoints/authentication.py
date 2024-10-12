@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter
 
 from auth import helpers
-from auth.validation import get_current_active_auth_user, get_current_auth_user_for_refresh, validate_auth_user
+from validation.auth_parameters import get_current_active_auth_user, get_current_auth_user_for_refresh, validate_auth_user
 from schemas.authentication import UserSchema, TokenInfo
 
 
