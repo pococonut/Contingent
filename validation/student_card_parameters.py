@@ -6,7 +6,7 @@ from fastapi import HTTPException
 def check_param_existence(params):
     """
     Функция проверяет наличие обязательных параметров
-    :param params: Данные
+    :param params: Данные студенческой карты
     """
     for name, value in params.items():
         if value is None:
@@ -17,7 +17,7 @@ def check_param_existence(params):
 def get_only_requirement(data, not_necessary):
     """
     Функция отбирает только обязательные параметры
-    :param data: Данные
+    :param data: Данные студенческой карты
     :param not_necessary: Необязательные параметры
     """
     return dict((k, v) for k, v in data.items() if k not in not_necessary)
@@ -27,7 +27,7 @@ def check_requirement_params(not_necessary, params):
     """
     Функция проверяет обязательные параметры
     :param not_necessary: Необязательные параметры
-    :param params: Данные
+    :param params: Данные студенческой карты
     """
     requirement_params = get_only_requirement(params, not_necessary)
     check_param_existence(requirement_params)
@@ -36,7 +36,7 @@ def check_requirement_params(not_necessary, params):
 def validate_string_params(params, for_check):
     """
     Функция проверяет параметры на соответствие строковому типу
-    :param params: Данные
+    :param params: Данные студенческой карты
     :param for_check: Проверяемые параметры
     """
     for name, value in params.items():
@@ -51,7 +51,7 @@ def validate_string_params(params, for_check):
 def validate_date(params):
     """
     Функция проверяет соответствие дат шаблону
-    :param params: Данные
+    :param params: Данные студенческой карты
     """
     pattern = r"\d\d\.\d\d\.\d{4}"
     if not re.fullmatch(pattern, params.get("birth_date")):
@@ -62,7 +62,7 @@ def validate_date(params):
 def validate_snils(params):
     """
     Функция проверяет соответствие номера снилса шаблону
-    :param params: Данные
+    :param params: Данные студенческой карты
     """
     pattern = r"\d{3}-\d{3}-\d{3} \d\d"  # 123-456-789 12
     if not re.fullmatch(pattern, params.get("snils")):
@@ -83,26 +83,27 @@ def validate_personal_data(personal_data):
     validate_snils(personal_data)
 
 
-def validate_phone_number(params, phone):
+def validate_phone_number(params):
     """
-    Функция проверяет формат номера телефона
-    :param params: Данные
-    :param phone: Номер телефона
+    Функция проверяет форматы номеров телефонов
+    :param params: Данные студенческой карты
     """
-    if not phone:
-        return None
+    phones = []
+    for key, value in params.items():
+        if "number" in key and value:
+            phones.append(value)
 
-    phone = phone.split(".")[0]
-    if len(phone) != 11 or not phone.isdigit():
-        print(phone)
-        exception_text = f"ID: {params.get('personal_id')}. Wrong phone format."
-        raise HTTPException(status_code=400, detail=exception_text)
+    for phone in phones:
+        phone = phone.split(".")[0]
+        if len(phone) != 11 or not phone.isdigit():
+            exception_text = f"ID: {params.get('personal_id')}. Wrong phone format."
+            raise HTTPException(status_code=400, detail=exception_text)
 
 
 def validate_mail(params):
     """
     Функция проверяет формат почты
-    :param params: Данные
+    :param params: Данные студенческой карты
     """
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     if not re.match(pattern, params.get("mail")):
@@ -118,15 +119,15 @@ def validate_contact_data(contact_data):
     not_necessary = ["spare_number"]
     requirement_params = get_only_requirement(contact_data, not_necessary)
     check_param_existence(requirement_params)
-    validate_phone_number(contact_data, contact_data.get("number"))
-    validate_phone_number(contact_data, contact_data.get("spare_number"))
+    validate_phone_number(contact_data)
+    validate_phone_number(contact_data)
     validate_mail(contact_data)
 
 
 def validate_education_forms(params):
     """
     Функция проверяет соответствие названий форматов обучения форматам из справочника
-    :param params: Данные
+    :param params: Данные студенческой карты
     """
     # "Справочники" - В дальнейшем будут занесены в бд
     faculties = ['фмикн']
@@ -148,7 +149,7 @@ def validate_education_forms(params):
 def validate_course(params):
     """
     Функция проверяет формат курса
-    :param params: Данные
+    :param params: Данные студенческой карты
     """
     exception_text = f"ID: {params.get('personal_id')}. Wrong course format."
 
@@ -161,7 +162,7 @@ def validate_course(params):
 def validate_group(params):
     """
     Функция проверяет формат группы
-    :param params: Данные
+    :param params: Данные студенческой карты
     """
     if not params.get('group').isdigit():
         exception_text = f"ID: {params.get('personal_id')}. Wrong group format."
@@ -171,7 +172,7 @@ def validate_group(params):
 def validate_subgroup(params):
     """
     Функция проверяет формат подгруппы
-    :param params: Данные
+    :param params: Данные студенческой карты
     """
     pattern = r"\d\d/\d"
     if not re.match(pattern, params.get('subgroup')):
@@ -182,7 +183,7 @@ def validate_subgroup(params):
 def validate_student_book(params):
     """
     Функция проверяет формат зачетной книжки
-    :param params: Данные
+    :param params: Данные студенческой карты
     """
     if not params.get("book_num").isdigit():
         exception_text = f"ID: {params.get('personal_id')}. Wrong book number format."

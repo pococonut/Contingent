@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from validation.auth_parameters import get_current_active_auth_user
-from general.dicts import models_dict
+from general.dicts import models_dict, student_card_validation_dict, student_params_validation_dict
 from db.db_commands import get_db, change_card, delete_card, format_card_to_dict, add_commit_students_card
 from schemas.student_card.students_card import StudentsCardSh
 from fastapi.encoders import jsonable_encoder
@@ -19,21 +19,30 @@ async def post_student_card(student_card: StudentsCardSh,
                             db: AsyncSession = Depends(get_db)):
     student_card = await format_card_to_dict(student_card)
 
-    validate_personal_data(jsonable_encoder(student_card.get("personal_data")))
-    validate_educational_data(jsonable_encoder(student_card.get("educational_data")))
-    validate_contact_data(jsonable_encoder(student_card.get("contact_data")))
-    validate_other_data(jsonable_encoder(student_card.get("other_data")))
+    for name_data, data in student_card.items():
+        validation_function = student_card_validation_dict.get(name_data)
+        if validation_function:
+            validation_function(jsonable_encoder(data))
 
     result = await add_commit_students_card(db, student_card)
     return result
 
 
 @router.put("/change_student_card")
-async def change_student_card(token: str = Depends(get_current_active_auth_user),
+async def change_student_card(
                               personal_id: int = None,
                               table_name: str = Query(enum=list(models_dict.keys())),
                               parameters: dict = None,
                               db: AsyncSession = Depends(get_db)):
+
+    for parameter, new_val in parameters.items():
+        validation_function = student_params_validation_dict.get(parameter)
+        if validation_function:
+            params = {"personal_id": personal_id,
+                      "id": personal_id,
+                      parameter: new_val}
+            validation_function(params)
+
     data = {"personal_id": personal_id,
             "table_name": table_name,
             "parameters": parameters}

@@ -16,15 +16,28 @@ from models.student_card.benefits_data import BenefitsData
 from models.student_card.military_data import MilitaryData
 from models.student_card.history_data import HistoryData
 from models.student_card.order_data import OrderData
-from models.user import User
+from validation.student_card_parameters import *
 
+student_card_validation_dict = {"personal_data": validate_personal_data,
+                                "educational_data": validate_educational_data,
+                                "contact_data": validate_contact_data,
+                                "other_data": validate_other_data, }
 
-fake_users_db = {
-    "po": User(username="po",
-               password="$2b$12$5coZhCR2ZV3ZOOP9N9PVQukpOSSJu5HnKWUSrIRsdXhSjTiqp7nqW",
-               access_token="access-token",
-               refresh_token="refresh-token")
-}
+student_params_validation_dict = {"birth_date": validate_date,
+                                  "snils": validate_snils,
+                                  "number": validate_phone_number,
+                                  "spare_number": validate_phone_number,
+                                  "mail": validate_mail,
+                                  "faculty": validate_education_forms,
+                                  "direction": validate_education_forms,
+                                  "department": validate_education_forms,
+                                  "form": validate_education_forms,
+                                  "degree": validate_education_forms,
+                                  "degree_payment": validate_education_forms,
+                                  "course": validate_course,
+                                  "group": validate_group,
+                                  "subgroup": validate_subgroup,
+                                  "book_num": validate_student_book}
 
 models_dict = {"personal_data": PersonalData,
                "educational_data": EducationalData,
@@ -35,7 +48,6 @@ models_dict = {"personal_data": PersonalData,
                "other_data": OtherData,
                "history_data": HistoryData,
                "order_data": OrderData}
-
 
 schemas_dict = {"personal_data": PersonalDataSh,
                 "educational_data": EducationalDataSh,
