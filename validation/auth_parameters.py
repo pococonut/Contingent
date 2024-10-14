@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from auth import helpers
 from db.fake_db import users_db
-from schemas.authentication import UserSchema
+from schemas.auth.authentication import UserSchema
 
 
 http_bearer = HTTPBearer(auto_error=False)

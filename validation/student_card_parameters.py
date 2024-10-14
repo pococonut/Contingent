@@ -120,7 +120,6 @@ def validate_contact_data(contact_data):
     requirement_params = get_only_requirement(contact_data, not_necessary)
     check_param_existence(requirement_params)
     validate_phone_number(contact_data)
-    validate_phone_number(contact_data)
     validate_mail(contact_data)
 
 

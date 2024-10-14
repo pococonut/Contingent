@@ -1,4 +1,4 @@
-from schemas.authentication import UserSchema
+from schemas.auth.authentication import UserSchema
 from auth.helpers import hash_pasword
 
 
