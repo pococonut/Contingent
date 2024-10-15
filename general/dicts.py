@@ -39,6 +39,7 @@ student_params_validation_dict = {"birth_date": validate_date,
                                   "subgroup": validate_subgroup,
                                   "book_num": validate_student_book}
 
+
 models_dict = {"personal_data": PersonalData,
                "educational_data": EducationalData,
                "stipend_data": StipendData,

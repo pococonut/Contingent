@@ -10,6 +10,12 @@ from general.dicts import models_dict
 
 from models.student_card.personal_data import PersonalData
 from models.student_card.educational_data import EducationalData
+from models.structures.subgroup import SubgroupData
+from models.structures.direction import DirectionData
+from models.structures.group import GroupData
+from models.structures.profile import ProfileData
+from models.structures.department import DepartmentData
+from models.auth.user import User
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")
@@ -51,20 +57,19 @@ async def add_data_to_table(db, data, table):
     :param table: Таблица
     :return: Добавленные данные
     """
-    async with db.begin():
-        try:
-            if type(data) == dict:
-                new_data = table(**data)
-            else:
-                new_data = table(**data.dict())
+    try:
+        if type(data) == dict:
+            new_data = table(**data)
+        else:
+            new_data = table(**data.dict())
 
-            db.add(new_data)
-        except Exception as e:
-            logging.error(e)
+        db.add(new_data)
+    except Exception as e:
+        logging.error(e)
 
-        await db.commit()
-        await db.refresh(new_data)
-        return data
+    await db.commit()
+    await db.refresh(new_data)
+    return data
 
 
 async def format_card_to_dict(s_card):
@@ -91,7 +96,6 @@ async def add_student_data(db, student_card):
     :param student_card: Личная карта
     :return: Объект сессии
     """
-    print(models_dict)
     for table_name, table in models_dict.items():
         db.add(table(**student_card.get(table_name)))
     return db
