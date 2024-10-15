@@ -29,7 +29,7 @@ async def post_student_card(student_card: StudentsCardSh,
     return result
 
 
-@router.put("/change_student_card")
+@router.patch("/change_student_card")
 async def change_student_card(
                               personal_id: int = None,
                               table_name: str = Query(enum=list(student_card_models_dict.keys())),
