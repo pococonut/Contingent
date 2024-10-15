@@ -4,7 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from validation.auth_parameters import get_current_active_auth_user
 from general.number_contingent import get_students_number_contingent
-from db.db_commands import get_db, get_filtered_cards
+from db.db_commands import get_db
+from db.filtering_cards_commands import get_filtered_cards
 
 router = APIRouter()
 

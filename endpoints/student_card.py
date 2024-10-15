@@ -3,7 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from validation.auth_parameters import get_current_active_auth_user
 from general.dicts import models_dict, student_card_validation_dict, student_params_validation_dict
-from db.db_commands import get_db, change_card, delete_card, format_card_to_dict, add_commit_students_card
+from db.student_card_commands import change_card, delete_card, format_card_to_dict, add_commit_students_card
+from db.db_commands import get_db
 from schemas.student_card.students_card import StudentsCardSh
 from fastapi.encoders import jsonable_encoder
 
