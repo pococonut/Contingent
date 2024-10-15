@@ -8,5 +8,5 @@ class GroupSh(BaseModel):
     direction: str
     course: str
     fgos: str
-    group: str
+    group: list[str]
 

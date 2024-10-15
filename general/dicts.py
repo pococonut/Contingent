@@ -16,6 +16,11 @@ from models.student_card.benefits_data import BenefitsData
 from models.student_card.military_data import MilitaryData
 from models.student_card.history_data import HistoryData
 from models.student_card.order_data import OrderData
+from models.structure.direction import DirectionData
+from models.structure.department import DepartmentData
+from models.structure.group import GroupData
+from models.structure.profile import ProfileData
+from models.structure.subgroup import SubgroupData
 from validation.student_card_parameters import *
 
 student_card_validation_dict = {"personal_data": validate_personal_data,
@@ -39,16 +44,24 @@ student_params_validation_dict = {"birth_date": validate_date,
                                   "subgroup": validate_subgroup,
                                   "book_num": validate_student_book}
 
+student_card_models_dict = {"personal_data": PersonalData,
+                            "educational_data": EducationalData,
+                            "stipend_data": StipendData,
+                            "contact_data": ContactData,
+                            "military_data": MilitaryData,
+                            "benefits_data": BenefitsData,
+                            "other_data": OtherData,
+                            "history_data": HistoryData,
+                            "order_data": OrderData}
 
-models_dict = {"personal_data": PersonalData,
-               "educational_data": EducationalData,
-               "stipend_data": StipendData,
-               "contact_data": ContactData,
-               "military_data": MilitaryData,
-               "benefits_data": BenefitsData,
-               "other_data": OtherData,
-               "history_data": HistoryData,
-               "order_data": OrderData}
+structure_models_dict = {"department": DepartmentData,
+                         "direction": DirectionData,
+                         "group": GroupData,
+                         "profile": ProfileData,
+                         "subgroup": SubgroupData, }
+
+
+all_models_dict = {**student_card_models_dict, **structure_models_dict}
 
 schemas_dict = {"personal_data": PersonalDataSh,
                 "educational_data": EducationalDataSh,

@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from sqlalchemy import select, and_
 
-from general.dicts import models_dict
+from general.dicts import student_card_models_dict
 from models.student_card.personal_data import PersonalData
 from models.student_card.educational_data import EducationalData
 
@@ -66,7 +66,7 @@ async def get_filtered_cards(db, filters: dict = None):
         suitable_students_ids = await get_suitable_students_ids(db, filters)
 
         for student_id in suitable_students_ids:
-            for name, table in models_dict.items():
+            for name, table in student_card_models_dict.items():
                 if name == "personal_data":
                     param_id = "id"
                 else:

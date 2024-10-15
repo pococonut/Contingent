@@ -4,7 +4,7 @@ import logging
 from sqlalchemy import select
 
 from db.database import engine, SessionLocal, Base
-from general.dicts import models_dict
+from general.dicts import student_card_models_dict
 from models.student_card.personal_data import PersonalData
 from models.student_card.educational_data import EducationalData
 from models.structure.subgroup import SubgroupData
@@ -69,6 +69,15 @@ async def add_data_to_table(db, data, table):
     return data
 
 
+async def get_table_data(db, table):
+    try:
+        stmt = select(table)
+        result = await db.execute(stmt)
+        return result
+    except Exception as e:
+        logging.error(e)
+
+
 async def get_tables_data(db):
     """
     Функция для получения всех карт студентов
@@ -77,11 +86,10 @@ async def get_tables_data(db):
     """
     data = {}
     try:
-        for table_name, table_model in models_dict.items():
+        for table_name, table_model in student_card_models_dict.items():
             stmt = select(table_model)
             result = await db.execute(stmt)
             data[table_name] = result.scalars().all()
         return data
-
     except Exception as e:
         logging.error(e)

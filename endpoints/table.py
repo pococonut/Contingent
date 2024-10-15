@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from validation.auth_parameters import get_current_active_auth_user
-from general.dicts import models_dict
+from general.dicts import all_models_dict
 from db.db_commands import get_db
 
 
@@ -11,10 +11,9 @@ router = APIRouter()
 
 
 @router.get("/table_data")
-async def get_table_data(token: str = Depends(get_current_active_auth_user),
-                         table_name: str = Query(enum=list(models_dict.keys())),
+async def get_table_data(table_name: str = Query(enum=list(all_models_dict.keys())),
                          db: AsyncSession = Depends(get_db)):
-    table = models_dict.get(table_name)
+    table = all_models_dict.get(table_name)
     result = await db.execute(select(table))
     data = result.scalars().all()
     return {f"{table_name}": data}

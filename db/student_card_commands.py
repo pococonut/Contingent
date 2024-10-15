@@ -3,7 +3,7 @@ import logging
 from fastapi import HTTPException
 from sqlalchemy import select, update
 
-from general.dicts import models_dict
+from general.dicts import student_card_models_dict
 from models.student_card.personal_data import PersonalData
 
 
@@ -31,7 +31,7 @@ async def add_student_data(db, student_card):
     :param student_card: Личная карта
     :return: Объект сессии
     """
-    for table_name, table in models_dict.items():
+    for table_name, table in student_card_models_dict.items():
         db.add(table(**student_card.get(table_name)))
     return db
 
@@ -83,7 +83,7 @@ async def change_card(db, data):
     parameters = data.get("parameters")
     personal_id = data.get("personal_id")
 
-    table = models_dict.get(table_name)
+    table = student_card_models_dict.get(table_name)
 
     if table_name == "personal_data":
         student_id = table.id
