@@ -10,11 +10,11 @@ from general.dicts import models_dict
 
 from models.student_card.personal_data import PersonalData
 from models.student_card.educational_data import EducationalData
-from models.structures.subgroup import SubgroupData
-from models.structures.direction import DirectionData
-from models.structures.group import GroupData
-from models.structures.profile import ProfileData
-from models.structures.department import DepartmentData
+from models.structure.subgroup import SubgroupData
+from models.structure.direction import DirectionData
+from models.structure.group import GroupData
+from models.structure.profile import ProfileData
+from models.structure.department import DepartmentData
 from models.auth.user import User
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,

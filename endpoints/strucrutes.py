@@ -2,8 +2,8 @@ from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db, add_data_to_table
-from models.structures.direction import DirectionData
-from schemas.structures.direction import DirectionSh
+from models.structure.direction import DirectionData
+from schemas.structure.direction import DirectionSh
 
 router = APIRouter()
 
