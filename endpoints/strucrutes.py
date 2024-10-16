@@ -18,28 +18,28 @@ router = APIRouter()
 
 
 @router.post("/direction")
-async def post(direction: DirectionSh,
+async def post_direction(direction: DirectionSh,
                db: AsyncSession = Depends(get_db)):
     await add_data_to_table(db, direction, DirectionData)
     return {"Successfully added": direction}
 
 
 @router.post("/department")
-async def post(department: DepartmentSh,
+async def post_department(department: DepartmentSh,
                db: AsyncSession = Depends(get_db)):
     await add_data_to_table(db, department, DepartmentData)
     return {"Successfully added": department}
 
 
 @router.post("/profile")
-async def post(profile: ProfileSh,
+async def post_profile(profile: ProfileSh,
                db: AsyncSession = Depends(get_db)):
     await add_data_to_table(db, profile, ProfileData)
     return {"Successfully added": profile}
 
 
 @router.post("/group")
-async def post(group: GroupSh,
+async def post_group(group: GroupSh,
                db: AsyncSession = Depends(get_db)):
     data = jsonable_encoder(group)
     list_of_groups = data.get('group')
@@ -52,7 +52,7 @@ async def post(group: GroupSh,
 
 
 @router.post("/subgroup")
-async def post(subgroup: SubgroupSh,
+async def post_subgroup(subgroup: SubgroupSh,
                db: AsyncSession = Depends(get_db)):
     data = jsonable_encoder(subgroup)
     list_of_subgroups = data.get('subgroup')
@@ -62,3 +62,5 @@ async def post(subgroup: SubgroupSh,
         await add_data_to_table(db, data, SubgroupData)
 
     return {"Successfully added": subgroup}
+
+
