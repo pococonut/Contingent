@@ -73,7 +73,7 @@ async def get_table_data(db, table):
     try:
         stmt = select(table)
         result = await db.execute(stmt)
-        return result
+        return result.scalars().all()
     except Exception as e:
         logging.error(e)
 

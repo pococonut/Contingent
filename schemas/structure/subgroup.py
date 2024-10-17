@@ -9,5 +9,5 @@ class SubgroupSh(BaseModel):
     course: str
     group: str
     profile: str
-    subgroup: str
+    subgroup: list[str]
 
