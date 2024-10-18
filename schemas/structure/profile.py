@@ -5,5 +5,5 @@ class ProfileSh(BaseModel):
     """
     Схема профиля
     """
-    profile: str
+    name: str
 

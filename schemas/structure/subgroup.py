@@ -5,9 +5,9 @@ class SubgroupSh(BaseModel):
     """
     Схема подгруппы
     """
-    direction: str
+    direction_name: str
     course: str
-    group: str
-    profile: str
-    subgroup: list[str]
+    group_name: str
+    profile_name: str
+    name: list[str]
 

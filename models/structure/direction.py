@@ -1,4 +1,5 @@
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy import ForeignKeyConstraint
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from db.database import Base
 
@@ -16,4 +17,5 @@ class DirectionData(Base):
     courses: Mapped[str] = mapped_column(nullable=True)
     qualification: Mapped[str] = mapped_column(nullable=True)
     form: Mapped[str] = mapped_column(nullable=True)
+
 

@@ -1,10 +1,9 @@
 from fastapi import Depends, APIRouter
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from sqlalchemy.util.preloaded import orm
 
-from db.db_commands import get_db, add_data_to_table, get_table_data
+from db.db_commands import get_db, add_data_to_table
+from db.structure_commands import get_structures_data
 from models.structure.direction import DirectionData
 from models.structure.department import DepartmentData
 from models.structure.group import GroupData
@@ -44,10 +43,10 @@ async def post_profile(profile: ProfileSh,
 async def post_group(group: GroupSh,
                      db: AsyncSession = Depends(get_db)):
     data = jsonable_encoder(group)
-    list_of_groups = data.get('group')
+    list_of_groups = data.get('name')
 
     for gr in list_of_groups:
-        data['group'] = gr
+        data['name'] = gr
         await add_data_to_table(db, data, GroupData)
 
     return {"Successfully added": group}
@@ -57,10 +56,10 @@ async def post_group(group: GroupSh,
 async def post_subgroup(subgroup: SubgroupSh,
                         db: AsyncSession = Depends(get_db)):
     data = jsonable_encoder(subgroup)
-    list_of_subgroups = data.get('subgroup')
+    list_of_subgroups = data.get('name')
 
     for sgr in list_of_subgroups:
-        data['subgroup'] = sgr
+        data['name'] = sgr
         await add_data_to_table(db, data, SubgroupData)
 
     return {"Successfully added": subgroup}
@@ -68,20 +67,5 @@ async def post_subgroup(subgroup: SubgroupSh,
 
 @router.get("/structures")
 async def get_structures(db: AsyncSession = Depends(get_db)):
-    # directions = await get_table_data(db, DirectionData)
-    # departments = await get_table_data(db, DepartmentData)
-    # profiles = await get_table_data(db, ProfileData)
-    groups = await get_table_data(db, GroupData)
-    subgroups = await get_table_data(db, SubgroupData)
-
-    # sa.select(PersonalData).options(sa.orm.joinedload(PersonalData.education_data))
-    # stmt = select(SubgroupData).join(GroupData, SubgroupData.group == GroupData.group)
-    stmt = select(SubgroupData, GroupData.fgos).join(SubgroupData, SubgroupData.group == GroupData.group)
-
-    result = await db.execute(stmt)
-    groups = result.scalars().all()
-    return groups
-
-
-
-
+    data = await get_structures_data(db)
+    return data

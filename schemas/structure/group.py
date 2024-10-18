@@ -5,8 +5,8 @@ class GroupSh(BaseModel):
     """
     Схема направления
     """
-    direction: str
+    direction_name: str
     course: str
     fgos: str
-    group: list[str]
+    name: list[str]
 

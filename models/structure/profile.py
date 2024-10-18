@@ -10,6 +10,6 @@ class ProfileData(Base):
     __tablename__ = "profile"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    profile: Mapped[str] = mapped_column(nullable=True)
+    name: Mapped[str] = mapped_column(nullable=True)
 
 
