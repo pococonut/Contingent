@@ -18,28 +18,28 @@ from schemas.structure.subgroup import SubgroupSh
 router = APIRouter()
 
 
-@router.post("/direction")
+@router.post("/direction", tags=['structure'])
 async def post_direction(direction: DirectionSh,
                          db: AsyncSession = Depends(get_db)):
     await add_data_to_table(db, direction, DirectionData)
     return {"Successfully added": direction}
 
 
-@router.post("/department")
+@router.post("/department", tags=['structure'])
 async def post_department(department: DepartmentSh,
                           db: AsyncSession = Depends(get_db)):
     await add_data_to_table(db, department, DepartmentData)
     return {"Successfully added": department}
 
 
-@router.post("/profile")
+@router.post("/profile", tags=['structure'])
 async def post_profile(profile: ProfileSh,
                        db: AsyncSession = Depends(get_db)):
     await add_data_to_table(db, profile, ProfileData)
     return {"Successfully added": profile}
 
 
-@router.post("/group")
+@router.post("/group", tags=['structure'])
 async def post_group(group: GroupSh,
                      db: AsyncSession = Depends(get_db)):
     data = jsonable_encoder(group)
@@ -52,7 +52,7 @@ async def post_group(group: GroupSh,
     return {"Successfully added": group}
 
 
-@router.post("/subgroup")
+@router.post("/subgroup", tags=['structure'])
 async def post_subgroup(subgroup: SubgroupSh,
                         db: AsyncSession = Depends(get_db)):
     data = jsonable_encoder(subgroup)
@@ -65,7 +65,7 @@ async def post_subgroup(subgroup: SubgroupSh,
     return {"Successfully added": subgroup}
 
 
-@router.get("/structures")
+@router.get("/structures", tags=['structure'])
 async def get_structures(db: AsyncSession = Depends(get_db)):
     data = await get_structures_data(db)
     return data

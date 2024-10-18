@@ -14,7 +14,7 @@ from validation.student_card_parameters import validate_personal_data, validate_
 router = APIRouter()
 
 
-@router.post("/student_card")
+@router.post("/student_card", tags=['student card'])
 async def post_student_card(student_card: StudentsCardSh,
 
                             db: AsyncSession = Depends(get_db)):
@@ -29,7 +29,7 @@ async def post_student_card(student_card: StudentsCardSh,
     return result
 
 
-@router.patch("/change_student_card")
+@router.patch("/change_student_card", tags=['student card'])
 async def change_student_card(
                               personal_id: int = None,
                               table_name: str = Query(enum=list(student_card_models_dict.keys())),
@@ -52,7 +52,7 @@ async def change_student_card(
     return updated_data
 
 
-@router.delete("/delete_student_card")
+@router.delete("/delete_student_card", tags=['student card'])
 async def delete_student_card(token: str = Depends(get_current_active_auth_user),
                               personal_id: int = None,
                               db: AsyncSession = Depends(get_db)):

@@ -10,7 +10,7 @@ from db.filtering_cards_commands import get_filtered_cards
 router = APIRouter()
 
 
-@router.get('/students_cards')
+@router.get('/students_cards', tags=['students list'])
 async def get_students_cards(token: str = Depends(get_current_active_auth_user),
                              firstname: Annotated[str | None, Query()] = None,
                              lastname: Annotated[str | None, Query()] = None,
@@ -35,7 +35,7 @@ async def get_students_cards(token: str = Depends(get_current_active_auth_user),
     return students_cards
 
 
-@router.get("/number_contingent")
+@router.get("/number_contingent", tags=['students list'])
 async def get_number_contingent(token: str = Depends(get_current_active_auth_user),
                                 firstname: Annotated[str | None, Query()] = None,
                                 lastname: Annotated[str | None, Query()] = None,

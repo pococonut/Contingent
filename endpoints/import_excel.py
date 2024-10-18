@@ -9,7 +9,7 @@ from db.student_card_commands import add_commit_students_cards
 router = APIRouter()
 
 
-@router.post("/import_cards_excel")
+@router.post("/import_cards_excel", tags=['excel'])
 async def import_cards_excel(file: UploadFile,
                              db: AsyncSession = Depends(get_db)):
     file = await file.read()
