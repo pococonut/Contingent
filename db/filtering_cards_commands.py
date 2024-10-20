@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from sqlalchemy import select, and_
 
-from general.dicts import student_card_models_dict
+from helpers.dicts import student_card_models_dict
 from models.student_card.personal_data import PersonalData
 from models.student_card.educational_data import EducationalData
 

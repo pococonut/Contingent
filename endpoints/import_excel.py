@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from general.excel_functions import read_excel_file, get_cards_form_df
 from db.db_commands import get_db
 from db.student_card_commands import add_commit_students_cards
+from helpers.excel_functions import read_excel_file, get_cards_form_df
 
 
 router = APIRouter()

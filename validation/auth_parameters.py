@@ -1,7 +1,6 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from auth import helpers
 from db.fake_db import users_db
 from schemas.auth.authentication import UserSchema
 

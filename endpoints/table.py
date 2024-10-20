@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from validation.auth_parameters import get_current_active_auth_user
-from general.dicts import all_models_dict
+from helpers.dicts import all_models_dict
 from db.db_commands import get_db, add_data_to_table
 
 router = APIRouter()

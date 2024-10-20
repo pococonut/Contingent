@@ -4,7 +4,7 @@ import logging
 from sqlalchemy import select
 
 from db.database import engine, SessionLocal, Base
-from general.dicts import student_card_models_dict
+from helpers.dicts import student_card_models_dict
 from models.student_card.personal_data import PersonalData
 from models.student_card.educational_data import EducationalData
 from models.structure.subgroup import SubgroupData

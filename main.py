@@ -20,9 +20,9 @@ app.add_middleware(
 
 app.include_router(authentication.router)
 app.include_router(students_lists.router)
-app.include_router(import_excel.router)
 app.include_router(student_card.router)
-app.include_router(table.router)
 app.include_router(strucrutes.router)
+app.include_router(import_excel.router)
+app.include_router(table.router)
 
 

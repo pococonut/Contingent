@@ -1,5 +1,5 @@
 from schemas.auth.authentication import UserSchema
-from auth.helpers import hash_pasword
+from helpers.auth import hash_pasword
 
 
 polina = UserSchema(

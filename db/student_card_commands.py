@@ -3,7 +3,7 @@ import logging
 from fastapi import HTTPException
 from sqlalchemy import select, update
 
-from general.dicts import student_card_models_dict
+from helpers.dicts import student_card_models_dict
 from models.student_card.personal_data import PersonalData
 
 
