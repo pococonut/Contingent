@@ -3,15 +3,13 @@ from sqlalchemy.orm import mapped_column, Mapped
 from db.database import Base
 
 
-class GroupData(Base):
+class FgosData(Base):
     """
-    Модель таблицы групп
+    Модель таблицы ФГОСов
     """
-    __tablename__ = "group"
+    __tablename__ = "fgos"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    direction_name: Mapped[str] = mapped_column(nullable=True)
-    course: Mapped[str] = mapped_column(nullable=True)
     name: Mapped[str] = mapped_column(nullable=True)
 
 

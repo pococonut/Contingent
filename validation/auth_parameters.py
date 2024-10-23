@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from db.fake_db import users_db
 from schemas.auth.authentication import UserSchema
-
+from helpers import auth
 
 http_bearer = HTTPBearer(auto_error=False)
 
@@ -21,7 +21,7 @@ def validate_auth_user(user_from_req: UserSchema):
     if not (user := users_db.get(username)):
         raise unauthed_exc
 
-    if not helpers.validate_password(password=password, hashed_password=user.password):
+    if not auth.validate_password(password=password, hashed_password=user.password):
         raise unauthed_exc
 
     if not user.active:
@@ -36,7 +36,7 @@ def get_current_token_payload(
     print('credentials = ', credentials)
     try:
         token = credentials.credentials
-        payload = helpers.decode_jwt(token=token)
+        payload = auth.decode_jwt(token=token)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -46,12 +46,12 @@ def get_current_token_payload(
 
 
 def get_current_auth_user_for_refresh(payload: dict = Depends(get_current_token_payload)):
-    validate_token_type(payload, helpers.REFRESH_TOKEN_TYPE)
+    validate_token_type(payload, auth.REFRESH_TOKEN_TYPE)
     return get_user_by_token_sub(payload)
 
 
 def get_current_auth_user(payload: dict = Depends(get_current_token_payload)):
-    validate_token_type(payload, helpers.ACCESS_TOKEN_TYPE)
+    validate_token_type(payload, auth.ACCESS_TOKEN_TYPE)
     return get_user_by_token_sub(payload)
 
 
@@ -66,7 +66,7 @@ def get_current_active_auth_user(user: UserSchema = Depends(get_current_auth_use
 
 
 def validate_token_type(payload: dict, token_type: str) -> bool:
-    current_token_type = payload.get(helpers.TOKEN_TYPE_FILED)
+    current_token_type = payload.get(auth.TOKEN_TYPE_FILED)
     if current_token_type == token_type:
         return True
     raise HTTPException(

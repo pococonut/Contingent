@@ -7,6 +7,5 @@ class GroupSh(BaseModel):
     """
     direction_name: str
     course: str
-    fgos: str
     name: list[str]
 

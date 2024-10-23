@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from endpoints import authentication, students_lists, import_excel, student_card, table, strucrutes
+from endpoints import authentication, students_lists, import_excel, student_card, table, structures
 
 
 app = FastAPI(title="Contingent")
@@ -21,7 +21,7 @@ app.add_middleware(
 app.include_router(authentication.router)
 app.include_router(students_lists.router)
 app.include_router(student_card.router)
-app.include_router(strucrutes.router)
+app.include_router(structures.router)
 app.include_router(import_excel.router)
 app.include_router(table.router)
 

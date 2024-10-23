@@ -6,6 +6,7 @@ from db.db_commands import get_db, add_data_to_table
 from db.structure_commands import get_structures_data
 from models.structure.direction import DirectionData
 from models.structure.department import DepartmentData
+from models.structure.fgos import FgosData
 from models.structure.group import GroupData
 from models.structure.profile import ProfileData
 from models.structure.subgroup import SubgroupData
@@ -14,6 +15,7 @@ from schemas.structure.department import DepartmentSh
 from schemas.structure.group import GroupSh
 from schemas.structure.profile import ProfileSh
 from schemas.structure.subgroup import SubgroupSh
+from schemas.structure.fgos import FgosSh
 
 router = APIRouter()
 
@@ -37,6 +39,13 @@ async def post_profile(profile: ProfileSh,
                        db: AsyncSession = Depends(get_db)):
     await add_data_to_table(db, profile, ProfileData)
     return {"Successfully added": profile}
+
+
+@router.post("/fgos", tags=['structure'])
+async def post_profile(fgos: FgosSh,
+                       db: AsyncSession = Depends(get_db)):
+    await add_data_to_table(db, fgos, FgosData)
+    return {"Successfully added": fgos}
 
 
 @router.post("/group", tags=['structure'])

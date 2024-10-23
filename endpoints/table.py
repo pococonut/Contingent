@@ -9,6 +9,11 @@ from db.db_commands import get_db, add_data_to_table
 router = APIRouter()
 
 
+@router.get("/create_db", tags=["database"])
+async def create_db(db: AsyncSession = Depends(get_db)):
+    return {"result": "database was created"}
+
+
 @router.get("/table_data", tags=["database"])
 async def get_table_data(table_name: str = Query(enum=list(all_models_dict.keys())),
                          db: AsyncSession = Depends(get_db)):
@@ -16,11 +21,6 @@ async def get_table_data(table_name: str = Query(enum=list(all_models_dict.keys(
     result = await db.execute(select(table))
     data = result.scalars().all()
     return {f"{table_name}": data}
-
-
-@router.get("/create_db", tags=["database"])
-async def create_db(db: AsyncSession = Depends(get_db)):
-    return {"result": "database was created"}
 
 
 @router.post("/table_data", tags=["database"])
