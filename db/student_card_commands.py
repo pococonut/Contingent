@@ -105,20 +105,3 @@ async def change_card(db, data):
     except Exception as e:
         logging.error(e)
 
-
-async def delete_card(db, p_id):
-    """
-    Функция для удаления личной карточки студента
-    :param db: Объект сессии
-    :param p_id: Идентификатор студента
-    :return: Идентификатор студента при успешном выполнении
-    """
-    try:
-        student = await db.get(PersonalData, p_id)
-        await db.delete(student)
-        await db.commit()
-        return {"result": f"Student {p_id} was successfully deleted"}
-    except Exception as e:
-        logging.error(e)
-        raise HTTPException(status_code=400, detail=f"Deletion Error.\n {e}")
-

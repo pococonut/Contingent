@@ -1,5 +1,6 @@
 import logging
 
+from fastapi import HTTPException
 from sqlalchemy import select, update
 
 from helpers.dicts import structure_models_dict
@@ -77,3 +78,5 @@ async def change_structure(db, data):
 
     except Exception as e:
         logging.error(e)
+
+

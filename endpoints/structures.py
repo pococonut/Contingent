@@ -2,7 +2,7 @@ from fastapi import Depends, APIRouter, Query
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_db, add_data_to_table
+from db.db_commands import get_db, add_data_to_table, delete_object
 from db.structure_commands import get_structures_data, change_structure
 from helpers.dicts import structure_models_dict
 from models.structure.direction import DirectionData
@@ -82,11 +82,10 @@ async def get_structures(db: AsyncSession = Depends(get_db)):
 
 
 @router.patch("/change_structure", tags=['structure'])
-async def change_student_card(structure_id: int = None,
-                              table_name: str = Query(enum=list(structure_models_dict.keys())),
-                              parameters: dict = None,
-                              db: AsyncSession = Depends(get_db)):
-
+async def change_change_structure(structure_id: int = None,
+                                  table_name: str = Query(enum=list(structure_models_dict.keys())),
+                                  parameters: dict = None,
+                                  db: AsyncSession = Depends(get_db)):
     data = {"structure_id": structure_id,
             "table_name": table_name,
             "parameters": parameters}
@@ -94,3 +93,11 @@ async def change_student_card(structure_id: int = None,
     updated_data = await change_structure(db, data)
     return updated_data
 
+
+@router.delete("/delete_structure", tags=['structure'])
+async def remove_structure(structure_id: int = None,
+                           table_name: str = Query(enum=list(structure_models_dict.keys())),
+                           db: AsyncSession = Depends(get_db)):
+    table = structure_models_dict.get(table_name)
+    result = await delete_object(db, structure_id, table)
+    return result

@@ -1,6 +1,7 @@
 import asyncio
 import logging
 
+from fastapi import HTTPException
 from sqlalchemy import select
 
 from db.database import engine, SessionLocal, Base
@@ -93,3 +94,21 @@ async def get_tables_data(db):
         return data
     except Exception as e:
         logging.error(e)
+
+
+async def delete_object(db, obj_id, table_name):
+    """
+    Функция для удаления объекта из таблицы БД
+    :param db: Объект сессии
+    :param obj_id: Идентификатор объекта
+    :param table_name: Название таблицы
+    :return: Идентификатор удаленного объекта при успешном выполнении
+    """
+    try:
+        obj = await db.get(table_name, obj_id)
+        await db.delete(obj)
+        await db.commit()
+        return {"result": f"Object {obj_id} was successfully deleted"}
+    except Exception as e:
+        logging.error(e)
+        raise HTTPException(status_code=400, detail=f"Deletion Error.\n {e}")

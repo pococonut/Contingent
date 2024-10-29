@@ -1,15 +1,14 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from models.student_card.personal_data import PersonalData
 from validation.auth_parameters import get_current_active_auth_user
 from helpers.dicts import student_card_models_dict, student_card_validation_dict, student_params_validation_dict
-from db.student_card_commands import change_card, delete_card, format_card_to_dict, add_commit_students_card
-from db.db_commands import get_db
+from db.student_card_commands import change_card, format_card_to_dict, add_commit_students_card
+from db.db_commands import get_db, delete_object
 from schemas.student_card.students_card import StudentsCardSh
 from fastapi.encoders import jsonable_encoder
 
-from validation.student_card_parameters import validate_personal_data, validate_educational_data, validate_contact_data, \
-    validate_other_data
 
 router = APIRouter()
 
@@ -55,5 +54,5 @@ async def change_student_card(personal_id: int = None,
 async def delete_student_card(token: str = Depends(get_current_active_auth_user),
                               personal_id: int = None,
                               db: AsyncSession = Depends(get_db)):
-    result = await delete_card(db, personal_id)
+    result = await delete_object(db, personal_id, PersonalData)
     return result
