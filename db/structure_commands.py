@@ -17,6 +17,7 @@ async def get_structures_data(db):
     stmt = (select(SubgroupData.id,
                    SubgroupData.name,
                    SubgroupData.direction_name,
+                   SubgroupData.profile_name,
                    SubgroupData.course,
                    SubgroupData.group_name,
                    GroupData.fgos,
@@ -28,21 +29,22 @@ async def get_structures_data(db):
             .join(DirectionData, SubgroupData.direction_name == DirectionData.name))
 
     result = await db.execute(stmt)
-    data = []
-
-    for row in result:
-        data.append({
+    data = [
+        {
             "id": row[0],
             "subgroup_name": row[1],
             "direction_name": row[2],
-            "course": row[3],
-            "group_name": row[4],
-            "fgos": row[5],
-            "short_name": row[6],
-            "number": row[7],
-            "qualification": row[8],
-            "form": row[9]
-        })
+            "profile_name": row[3],
+            "course": row[4],
+            "group_name": row[5],
+            "fgos": row[6],
+            "short_name": row[7],
+            "number": row[8],
+            "qualification": row[9],
+            "form": row[10]
+        }
+        for row in result
+    ]
 
     return data
 
@@ -56,8 +58,9 @@ async def change_structure(db, data):
     :return: Измененная Структура
     """
     structure_id = data.get("structure_id")
+    table_name = data.get("table_name")
     parameters = data.get("parameters")
-    table = structure_models_dict.get("subgroup")
+    table = structure_models_dict.get(table_name)
     structure_id_db = table.id
 
     try:
@@ -74,5 +77,3 @@ async def change_structure(db, data):
 
     except Exception as e:
         logging.error(e)
-
-

@@ -83,11 +83,14 @@ async def get_structures(db: AsyncSession = Depends(get_db)):
 
 @router.patch("/change_structure", tags=['structure'])
 async def change_student_card(structure_id: int = None,
+                              table_name: str = Query(enum=list(structure_models_dict.keys())),
                               parameters: dict = None,
                               db: AsyncSession = Depends(get_db)):
 
     data = {"structure_id": structure_id,
+            "table_name": table_name,
             "parameters": parameters}
 
     updated_data = await change_structure(db, data)
     return updated_data
+
