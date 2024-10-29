@@ -1,9 +1,10 @@
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, Query
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db, add_data_to_table
-from db.structure_commands import get_structures_data
+from db.structure_commands import get_structures_data, change_structure
+from helpers.dicts import structure_models_dict
 from models.structure.direction import DirectionData
 from models.structure.department import DepartmentData
 from models.structure.fgos import FgosData
@@ -78,3 +79,15 @@ async def post_subgroup(subgroup: SubgroupSh,
 async def get_structures(db: AsyncSession = Depends(get_db)):
     data = await get_structures_data(db)
     return data
+
+
+@router.patch("/change_structure", tags=['structure'])
+async def change_student_card(structure_id: int = None,
+                              parameters: dict = None,
+                              db: AsyncSession = Depends(get_db)):
+
+    data = {"structure_id": structure_id,
+            "parameters": parameters}
+
+    updated_data = await change_structure(db, data)
+    return updated_data

@@ -12,6 +12,7 @@ class GroupData(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     direction_name: Mapped[str] = mapped_column(nullable=True)
     course: Mapped[str] = mapped_column(nullable=True)
+    fgos: Mapped[str] = mapped_column(nullable=True)
     name: Mapped[str] = mapped_column(nullable=True)
 
 

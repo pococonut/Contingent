@@ -30,8 +30,7 @@ async def post_student_card(student_card: StudentsCardSh,
 
 
 @router.patch("/change_student_card", tags=['student card'])
-async def change_student_card(
-                              personal_id: int = None,
+async def change_student_card(personal_id: int = None,
                               table_name: str = Query(enum=list(student_card_models_dict.keys())),
                               parameters: dict = None,
                               db: AsyncSession = Depends(get_db)):
