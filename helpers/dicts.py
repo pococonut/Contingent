@@ -60,7 +60,6 @@ structure_models_dict = {"department": DepartmentData,
                          "profile": ProfileData,
                          "subgroup": SubgroupData, }
 
-
 all_models_dict = {**student_card_models_dict, **structure_models_dict}
 
 schemas_dict = {"personal_data": PersonalDataSh,

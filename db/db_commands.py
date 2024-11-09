@@ -71,27 +71,16 @@ async def add_data_to_table(db, data, table):
 
 
 async def get_table_data(db, table):
+    """
+    Функция для получения данных из переданной таблицы БД
+    :param db: Объект сессии
+    :param table: Таблица БД
+    :return: Данные таблицы
+    """
     try:
         stmt = select(table)
         result = await db.execute(stmt)
         return result.scalars().all()
-    except Exception as e:
-        logging.error(e)
-
-
-async def get_tables_data(db):
-    """
-    Функция для получения всех карт студентов
-    :param db: Объект сессии
-    :return: Все карты студентов
-    """
-    data = {}
-    try:
-        for table_name, table_model in student_card_models_dict.items():
-            stmt = select(table_model)
-            result = await db.execute(stmt)
-            data[table_name] = result.scalars().all()
-        return data
     except Exception as e:
         logging.error(e)
 

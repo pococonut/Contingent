@@ -4,7 +4,6 @@ from fastapi import HTTPException
 from sqlalchemy import select, update
 
 from helpers.dicts import student_card_models_dict
-from models.student_card.personal_data import PersonalData
 
 
 async def format_card_to_dict(s_card):
