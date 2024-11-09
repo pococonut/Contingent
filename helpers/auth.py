@@ -15,6 +15,15 @@ def encode_jwt(payload: dict,
                algorithm: str = str(ALGORITHM),
                expire_minutes: int = int(ACCESS_TOKEN_EXPIRE_MINUTES),
                expire_timedelta: timedelta | None = None):
+    """
+    Функция предназначена для шифрования JWT на основе переданных данных
+    :param payload: Полезные данные
+    :param key: Секретный ключ
+    :param algorithm: Алгоритм шифрования
+    :param expire_minutes: Время действия токена по умолчанию
+    :param expire_timedelta: Заданное время действия токена
+    :return: Функция возвращает закодированный JWT
+    """
     to_encode = payload.copy()
     now = datetime.utcnow()
 
@@ -33,19 +42,38 @@ def encode_jwt(payload: dict,
 def decode_jwt(token: str,
                key: str = str(SECRET_KEY),
                algorithm: str = str(ALGORITHM)):
+    """
+    Функция предназначена для дешифрования JWT на основе переданных данных
+    :param token: JWT
+    :param key: Секретный ключ
+    :param algorithm: Алгоритм шифрования
+    :return: Декодированный JWT
+    """
     decoded = jwt.decode(jwt=token,
                          key=key,
                          algorithms=[algorithm])
     return decoded
 
 
-def hash_pasword(password: str) -> bytes:
+def hash_password(password: str) -> bytes:
+    """
+    Функция предназначена для шифрования пароля пользователя
+    :param password: Пароль пользователя
+    :return: Зашифрованный пароль
+    """
     salt = bcrypt.gensalt()
     pwd_bytes: bytes = password.encode()
     return bcrypt.hashpw(pwd_bytes, salt)
 
 
 def validate_password(password: bytes, hashed_password: bytes) -> bool:
+    """
+    Функция предназначена для валидации пароля переданного
+    пользователем и зашифрованным паролем пользователя
+    :param password: Пароль пользователя
+    :param hashed_password: Зашифрованный пароль пользователя
+    :return: Булево значение: True - пароли совпали, иначе False
+    """
     return bcrypt.checkpw(password=password, hashed_password=hashed_password)
 
 
@@ -53,6 +81,14 @@ def create_jwt(token_type: str,
                token_data: dict,
                expire_minutes: int = int(ACCESS_TOKEN_EXPIRE_MINUTES),
                expire_timedelta: timedelta | None = None) -> str:
+    """
+    Функция предназначена для шифрования JWT на основе переданных данных
+    :param token_type: Тип токена
+    :param token_data: Полезные данные токена
+    :param expire_minutes: Время действия токена по умолчанию
+    :param expire_timedelta: Заданное время действия токена
+    :return:
+    """
     jwt_payload = {TOKEN_TYPE_FILED: token_type}
     jwt_payload.update(token_data)
 
@@ -62,6 +98,11 @@ def create_jwt(token_type: str,
 
 
 def create_access_token(user: UserSchema) -> str:
+    """
+    Функция предназначена для м=создания ACCESS токена
+    :param user: Данные пользователя
+    :return: ACCESS токен
+    """
     jwt_payload = {"sub": user.username,
                    "username": user.username,
                    "email": user.email}
@@ -72,6 +113,11 @@ def create_access_token(user: UserSchema) -> str:
 
 
 def create_refresh_token(user: UserSchema):
+    """
+    Функция предназначена для создания REFRESH токена
+    :param user: Данные пользователя
+    :return: REFRESH токен
+    """
     jwt_payload = {"sub": user.username}
 
     return create_jwt(token_type=REFRESH_TOKEN_TYPE,

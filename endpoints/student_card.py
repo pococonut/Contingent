@@ -13,10 +13,16 @@ from fastapi.encoders import jsonable_encoder
 router = APIRouter()
 
 
-@router.post("/student_card", tags=['student card'])
+@router.post("/student_card",
+             tags=['student card'],
+             response_description="Добавленная Карта студента")
 async def post_student_card(student_card: StudentsCardSh,
-
+                            token: str = Depends(get_current_active_auth_user),
                             db: AsyncSession = Depends(get_db)):
+    """
+    Используется для добавления Карты студента
+    - student_card: Карта студента
+    """
     student_card = await format_card_to_dict(student_card)
 
     for name_data, data in student_card.items():
@@ -28,12 +34,20 @@ async def post_student_card(student_card: StudentsCardSh,
     return result
 
 
-@router.patch("/change_student_card", tags=['student card'])
-async def change_student_card(personal_id: int = None,
+@router.patch("/change_student_card",
+              tags=['student card'],
+              response_description="Измененная Карта студента")
+async def change_student_card(token: str = Depends(get_current_active_auth_user),
+                              personal_id: int = None,
                               table_name: str = Query(enum=list(student_card_models_dict.keys())),
                               parameters: dict = None,
                               db: AsyncSession = Depends(get_db)):
-
+    """
+    Используется для изменения Карты студента
+    - personal_id: Идентификатор студента
+    - table_name: Названия таблицы БД
+    - parameters: Новые значения параметров Карты студента
+    """
     for parameter, new_val in parameters.items():
         validation_function = student_params_validation_dict.get(parameter)
         if validation_function:
@@ -50,9 +64,15 @@ async def change_student_card(personal_id: int = None,
     return updated_data
 
 
-@router.delete("/delete_student_card", tags=['student card'])
+@router.delete("/delete_student_card",
+               tags=['student card'],
+               response_description="Сообщение об успешном удалении")
 async def delete_student_card(token: str = Depends(get_current_active_auth_user),
                               personal_id: int = None,
                               db: AsyncSession = Depends(get_db)):
+    """
+    Используется для удаления Карты студента
+    - personal_id: Идентификатор студента
+    """
     result = await delete_object(db, personal_id, PersonalData)
     return result

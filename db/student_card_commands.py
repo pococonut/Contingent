@@ -83,11 +83,7 @@ async def change_card(db, data):
     personal_id = data.get("personal_id")
 
     table = student_card_models_dict.get(table_name)
-
-    if table_name == "personal_data":
-        student_id = table.id
-    else:
-        student_id = table.personal_id
+    student_id = table.id if table_name == "personal_data" else table.personal_id
 
     try:
         for parameter, new_val in parameters.items():

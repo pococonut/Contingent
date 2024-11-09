@@ -1,6 +1,5 @@
 import logging
 
-from fastapi import HTTPException
 from sqlalchemy import select, update
 
 from helpers.dicts import structure_models_dict
@@ -29,23 +28,24 @@ async def get_structures_data(db):
             .join(GroupData, GroupData.name == SubgroupData.group_name)
             .join(DirectionData, SubgroupData.direction_name == DirectionData.name))
 
+    parameters = ["id",
+                  "subgroup_name",
+                  "direction_name",
+                  "profile_name",
+                  "course",
+                  "group_name",
+                  "fgos",
+                  "short_name",
+                  "number",
+                  "qualification",
+                  "form"]
+
     result = await db.execute(stmt)
-    data = [
-        {
-            "id": row[0],
-            "subgroup_name": row[1],
-            "direction_name": row[2],
-            "profile_name": row[3],
-            "course": row[4],
-            "group_name": row[5],
-            "fgos": row[6],
-            "short_name": row[7],
-            "number": row[8],
-            "qualification": row[9],
-            "form": row[10]
-        }
-        for row in result
-    ]
+    data = []
+
+    for row in result:
+        row_data = dict((name, row[idx]) for idx, name in enumerate(parameters))
+        data.append(row_data)
 
     return data
 
@@ -78,5 +78,3 @@ async def change_structure(db, data):
 
     except Exception as e:
         logging.error(e)
-
-

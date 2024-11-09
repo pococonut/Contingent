@@ -17,12 +17,9 @@ async def filters_check(db, filters_data):
     :return: Список идентификаторов студентов
     """
     data_type, filters, table = filters_data
-    if data_type != "personal":
-        stmt = select(table.personal_id)
-    else:
-        stmt = select(table.id)
-
+    stmt = select(table.personal_id) if data_type != "personal" else select(table.id)
     conditions = []
+
     for param, value in filters.items():
         if not value:
             continue
@@ -39,7 +36,7 @@ async def filters_check(db, filters_data):
 
 async def get_suitable_students_ids(db, filters):
     """
-    Функция для формирования списка идентификаторов студентов подходящих под фильтры
+    Функция для формирования списка идентификаторов студентов, подходящих под фильтры
     :param db: Объект сессии
     :param filters: Фильтры
     :return: Список подходящих под фильтры студентов
@@ -67,10 +64,7 @@ async def get_filtered_cards(db, filters: dict = None):
 
         for student_id in suitable_students_ids:
             for name, table in student_card_models_dict.items():
-                if name == "personal_data":
-                    param_id = "id"
-                else:
-                    param_id = 'personal_id'
+                param_id = "id" if name == "personal_data" else 'personal_id'
                 stmt = select(table).where(student_id == getattr(table, param_id))
                 result = await db.execute(stmt)
                 data = result.scalars().all()[0]

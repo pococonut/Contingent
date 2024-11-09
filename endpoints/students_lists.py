@@ -10,7 +10,9 @@ from helpers.number_contingent import get_students_number_contingent
 router = APIRouter()
 
 
-@router.get('/students_cards', tags=['students list'])
+@router.get('/students_cards',
+            tags=['students list'],
+            response_description="Карты студентов")
 async def get_students_cards(token: str = Depends(get_current_active_auth_user),
                              firstname: Annotated[str | None, Query()] = None,
                              lastname: Annotated[str | None, Query()] = None,
@@ -21,6 +23,17 @@ async def get_students_cards(token: str = Depends(get_current_active_auth_user),
                              group: Annotated[str | None, Query()] = None,
                              subgroup: Annotated[str | None, Query()] = None,
                              session: AsyncSession = Depends(get_db)):
+    """
+    Используется для фильтрации и получения Карт студентов
+    - firstname: Фильтр Имени
+    - lastname: Фильтр Фамилии
+    - faculty: Фильтр Факультета
+    - direction: Фильтр Направления
+    - course: Фильтр Курса обучения
+    - department: Фильтр Кафедры
+    - group: Фильтр Группы
+    - subgroup: Фильтр Подгруппы
+    """
     filters = {"personal_filters": {"firstname": firstname,
                                     "lastname": lastname},
 
@@ -35,7 +48,9 @@ async def get_students_cards(token: str = Depends(get_current_active_auth_user),
     return students_cards
 
 
-@router.get("/number_contingent", tags=['students list'])
+@router.get("/number_contingent",
+            tags=['students list'],
+            response_description="Численный список студентов")
 async def get_number_contingent(token: str = Depends(get_current_active_auth_user),
                                 firstname: Annotated[str | None, Query()] = None,
                                 lastname: Annotated[str | None, Query()] = None,
@@ -48,6 +63,17 @@ async def get_number_contingent(token: str = Depends(get_current_active_auth_use
                                 session: AsyncSession = Depends(get_db),
 
                                 ):
+    """
+    Используется для фильтрации и получения численного списка студентов
+    - firstname: Фильтр Имени
+    - lastname: Фильтр Фамилии
+    - faculty: Фильтр Факультета
+    - direction: Фильтр Направления
+    - course: Фильтр Курса обучения
+    - department: Фильтр Кафедры
+    - group: Фильтр Группы
+    - subgroup: Фильтр Подгруппы
+    """
     filters = {"personal_filters": {"firstname": firstname,
                                     "lastname": lastname},
 

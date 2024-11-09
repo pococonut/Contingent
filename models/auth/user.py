@@ -1,14 +1,19 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, String
+from sqlalchemy.orm import mapped_column, Mapped
 
 from db.database import Base
 
 
 class User(Base):
+    """
+    Таблица данных пользователя
+    """
     __tablename__ = 'user'
 
-    id = Column(Integer, primary_key=True)
-    username = Column(String, unique=True)
-    password = Column(String)
-    access_token = Column(String)
-    refresh_token = Column(String)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
+    access_token: Mapped[str] = mapped_column(nullable=False)
+    refresh_token: Mapped[str] = mapped_column(nullable=False)
+
 
