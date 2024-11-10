@@ -2,7 +2,7 @@ import asyncio
 import logging
 
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, delete
 
 from db.database import engine, SessionLocal, Base
 from helpers.dicts import student_card_models_dict
@@ -94,8 +94,7 @@ async def delete_object(db, obj_id, table_name):
     :return: Идентификатор удаленного объекта при успешном выполнении
     """
     try:
-        obj = await db.get(table_name, obj_id)
-        await db.delete(obj)
+        await db.execute(delete(table_name).where(table_name.id == obj_id))
         await db.commit()
         return {"result": f"Object {obj_id} was successfully deleted"}
     except Exception as e:
