@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class HistoryDataSh(BaseModel):
+class HistoryDataSh(APIBase):
     """
     Модель тела запроса об истории студента.
     """
@@ -10,6 +10,3 @@ class HistoryDataSh(BaseModel):
 
     personal_id: int | None = None
 
-    class Config:
-        orm_mode = True
-        from_attributes = True

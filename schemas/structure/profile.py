@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class ProfileSh(BaseModel):
+class ProfileSh(APIBase):
     """
     Схема профиля
     """

@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class ContactDataSh(BaseModel):
+class ContactDataSh(APIBase):
     """
     Модель тела запроса контактной информации студента.
     """
@@ -10,7 +10,4 @@ class ContactDataSh(BaseModel):
     mail: str | None = None
     personal_id: int | None = None
 
-    class Config:
-        orm_mode = True
-        from_attributes = True
 

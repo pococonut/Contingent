@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class SubgroupSh(BaseModel):
+class SubgroupSh(APIBase):
     """
     Схема подгруппы
     """

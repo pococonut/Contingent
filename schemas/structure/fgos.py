@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class FgosSh(BaseModel):
+class FgosSh(APIBase):
     """
     Схема ФГОСа
     """

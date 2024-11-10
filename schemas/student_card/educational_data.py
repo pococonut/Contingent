@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class EducationalDataSh(BaseModel):
+class EducationalDataSh(APIBase):
     """
     Модель тела запроса учебной деятельности студента.
     """
@@ -21,8 +21,4 @@ class EducationalDataSh(BaseModel):
     current_year: str | None = None
 
     personal_id: int | None = None
-
-    class Config:
-        orm_mode = True
-        from_attributes = True
 

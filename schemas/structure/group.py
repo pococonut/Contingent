@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class GroupSh(BaseModel):
+class GroupSh(APIBase):
     """
     Схема направления
     """

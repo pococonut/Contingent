@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class ShortCard(BaseModel):
+class ShortCard(APIBase):
     """
     Модель тела запроса сокращенной карты студента.
     """
@@ -14,7 +14,4 @@ class ShortCard(BaseModel):
     group: str | None = None
     subgroup: str | None = None
 
-    class Config:
-        orm_mode = True
-        from_attributes = True
 

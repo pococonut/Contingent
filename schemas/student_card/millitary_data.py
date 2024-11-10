@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class MilitaryDataSh(BaseModel):
+class MilitaryDataSh(APIBase):
     """
     Модель тела запроса об отношении к военной службе студента.
     """
@@ -11,7 +11,4 @@ class MilitaryDataSh(BaseModel):
     document: str | None = None
     personal_id: int | None = None
 
-    class Config:
-        orm_mode = True
-        from_attributes = True
 

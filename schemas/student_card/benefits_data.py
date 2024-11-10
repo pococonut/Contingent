@@ -1,13 +1,10 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class BenefitsDataSh(BaseModel):
+class BenefitsDataSh(APIBase):
     """
-    Модель тела запроса о льготах студента.
+    Модель тела запроса льгот студента.
     """
     benefits: str | None = None
     personal_id: int | None = None
 
-    class Config:
-        orm_mode = True
-        from_attributes = True

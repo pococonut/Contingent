@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class DirectionSh(BaseModel):
+class DirectionSh(APIBase):
     """
     Схема направления
     """

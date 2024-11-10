@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class OtherDataSh(BaseModel):
+class OtherDataSh(APIBase):
     """
     Модель тела запроса остальной информации студента.
     """
@@ -11,8 +11,5 @@ class OtherDataSh(BaseModel):
     relatives_addresses: str | None = None
     personal_id: int | None = None
 
-    class Config:
-        orm_mode = True
-        from_attributes = True
 
 

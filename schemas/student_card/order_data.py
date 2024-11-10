@@ -1,13 +1,10 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class OrderDataSh(BaseModel):
+class OrderDataSh(APIBase):
     """
     Модель тела запроса о приказах.
     """
     order: str | None = None
     personal_id: int | None = None
 
-    class Config:
-        orm_mode = True
-        from_attributes = True

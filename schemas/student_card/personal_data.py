@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class PersonalDataSh(BaseModel):
+class PersonalDataSh(APIBase):
     """
     Модель тела запроса информации студента.
     """
@@ -20,6 +20,3 @@ class PersonalDataSh(BaseModel):
     general_status: str | None = None
     gender: str | None = None
 
-    class Config:
-        orm_mode = True
-        from_attributes = True

@@ -1,5 +1,4 @@
-from pydantic import BaseModel
-
+from db.database import APIBase
 from schemas.student_card.benefits_data import BenefitsDataSh
 from schemas.student_card.contact_data import ContactDataSh
 from schemas.student_card.educational_data import EducationalDataSh
@@ -11,7 +10,7 @@ from schemas.student_card.history_data import HistoryDataSh
 from schemas.student_card.order_data import OrderDataSh
 
 
-class StudentsCardSh(BaseModel):
+class StudentsCardSh(APIBase):
     """
     Модель тела запроса карты студента.
     """
@@ -25,7 +24,4 @@ class StudentsCardSh(BaseModel):
     history_data: HistoryDataSh | None = None
     order_data: OrderDataSh | None = None
 
-    class Config:
-        orm_mode = True
-        from_attributes = True
 

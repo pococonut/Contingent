@@ -1,7 +1,9 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import EmailStr
+
+from db.database import APIBase
 
 
-class UserSchema(BaseModel):
+class UserSchema(APIBase):
     """
     Схема данных пользователя
     """
@@ -11,7 +13,7 @@ class UserSchema(BaseModel):
     active: bool | None = True
 
 
-class TokenInfo(BaseModel):
+class TokenInfo(APIBase):
     """
     Схема данных пользователя
     """

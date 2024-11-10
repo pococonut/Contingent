@@ -1,14 +1,11 @@
-from pydantic import BaseModel
+from db.database import APIBase
 
 
-class StipendDataSh(BaseModel):
+class StipendDataSh(APIBase):
     """
-    Модель тела запроса о стипендии студента.
+    Модель тела запроса стипендии студента.
     """
     form: str | None = None
     amount: str | None = None
     personal_id: int | None = None
 
-    class Config:
-        orm_mode = True
-        from_attributes = True
