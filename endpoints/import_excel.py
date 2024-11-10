@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, UploadFile, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db
@@ -20,6 +20,9 @@ async def import_cards_excel(file: UploadFile,
     - file: Exel-файл с картами студентов
     """
     file = await file.read()
+    if len(file) >= 10485760:
+        raise HTTPException(status_code=400, detail=f"Your file is more than 10MB")
+
     df = await read_excel_file(file)
     student_cards = await get_cards_form_df(df)
     response = await add_commit_students_cards(db, student_cards)
