@@ -1,6 +1,7 @@
 import logging
 
-from sqlalchemy import select, update
+from fastapi import HTTPException
+from sqlalchemy import select, update, exc
 
 from helpers.dicts import structure_models_dict
 from models.structure.direction import DirectionData
@@ -40,7 +41,12 @@ async def get_structures_data(db):
                   "qualification",
                   "form"]
 
-    result = await db.execute(stmt)
+    try:
+        result = await db.execute(stmt)
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
+        raise HTTPException(status_code=500, detail=f"{e}")
+
     data = []
 
     for row in result:
@@ -76,5 +82,6 @@ async def change_structure(db, data):
         updated_data = result.scalars().all()
         return updated_data
 
-    except Exception as e:
+    except exc.SQLAlchemyError as e:
         logging.error(e)
+        raise HTTPException(status_code=500, detail=f"{e}")

@@ -1,7 +1,8 @@
 import logging
 from collections import defaultdict
 
-from sqlalchemy import select, and_
+from fastapi import HTTPException
+from sqlalchemy import select, and_, exc
 
 from helpers.dicts import student_card_models_dict
 from models.student_card.personal_data import PersonalData
@@ -71,5 +72,6 @@ async def get_filtered_cards(db, filters: dict = None):
                 suitable_students[student_id][name] = data
 
         return suitable_students
-    except Exception as e:
+    except exc.SQLAlchemyError as e:
         logging.error(e)
+        raise HTTPException(status_code=500, detail=f"{e}")

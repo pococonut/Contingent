@@ -2,7 +2,7 @@ import asyncio
 import logging
 
 from fastapi import HTTPException
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, exc
 
 from db.database import engine, SessionLocal, Base
 from helpers.dicts import student_card_models_dict
@@ -62,12 +62,14 @@ async def add_data_to_table(db, data, table):
             new_data = table(**data.dict())
 
         db.add(new_data)
-    except Exception as e:
-        logging.error(e)
+        await db.commit()
+        await db.refresh(new_data)
+        return data
 
-    await db.commit()
-    await db.refresh(new_data)
-    return data
+    except exc.DataError as e:
+        logging.error(e)
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
 
 
 async def get_table_data(db, table):
@@ -81,7 +83,7 @@ async def get_table_data(db, table):
         stmt = select(table)
         result = await db.execute(stmt)
         return result.scalars().all()
-    except Exception as e:
+    except exc.SQLAlchemyError as e:
         logging.error(e)
 
 
@@ -97,6 +99,6 @@ async def delete_object(db, obj_id, table_name):
         await db.execute(delete(table_name).where(table_name.id == obj_id))
         await db.commit()
         return {"result": f"Object {obj_id} was successfully deleted"}
-    except Exception as e:
+    except exc.SQLAlchemyError as e:
         logging.error(e)
         raise HTTPException(status_code=400, detail=f"Deletion Error.\n {e}")

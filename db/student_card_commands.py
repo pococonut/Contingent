@@ -1,7 +1,7 @@
 import logging
 
 from fastapi import HTTPException
-from sqlalchemy import select, update
+from sqlalchemy import select, update, exc
 
 from helpers.dicts import student_card_models_dict
 
@@ -30,9 +30,13 @@ async def add_student_data(db, student_card):
     :param student_card: Личная карта
     :return: Объект сессии
     """
-    for table_name, table in student_card_models_dict.items():
-        db.add(table(**student_card.get(table_name)))
-    return db
+    try:
+        for table_name, table in student_card_models_dict.items():
+            db.add(table(**student_card.get(table_name)))
+        return db
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
+        raise HTTPException(status_code=400, detail=f"Import Error.\n {e}")
 
 
 async def add_commit_students_cards(db, student_cards):
@@ -46,11 +50,10 @@ async def add_commit_students_cards(db, student_cards):
         for student_card in student_cards:
             db = await add_student_data(db, student_card)
         await db.commit()
-    except Exception as e:
+        return student_cards
+    except exc.SQLAlchemyError as e:
         logging.error(e)
         raise HTTPException(status_code=400, detail=f"Import Error.\n {e}")
-
-    return student_cards
 
 
 async def add_commit_students_card(db, student_card):
@@ -63,11 +66,10 @@ async def add_commit_students_card(db, student_card):
     try:
         db = await add_student_data(db, student_card)
         await db.commit()
-    except Exception as e:
+        return student_card
+    except exc.SQLAlchemyError as e:
         logging.error(e)
         raise HTTPException(status_code=400, detail=f"Import Error.\n {e}")
-
-    return student_card
 
 
 async def change_card(db, data):
@@ -97,6 +99,7 @@ async def change_card(db, data):
         updated_data = result.scalars().all()
         return updated_data
 
-    except Exception as e:
+    except exc.SQLAlchemyError as e:
         logging.error(e)
+        raise HTTPException(status_code=500, detail=f"{e}")
 
