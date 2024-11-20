@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db
 from db.filtering_cards_commands import get_filtered_cards
+from helpers.pagination import make_limit_dict
 from validation.auth_parameters import get_current_active_auth_user
 from helpers.number_contingent import get_students_number_contingent
 
@@ -14,6 +15,8 @@ router = APIRouter()
             tags=['students list'],
             response_description="Карты студентов")
 async def get_students_cards(token: str = Depends(get_current_active_auth_user),
+                             skip: int = 0,
+                             limit: int = 10,
                              firstname: Annotated[str | None, Query()] = None,
                              lastname: Annotated[str | None, Query()] = None,
                              faculty: Annotated[str | None, Query()] = None,
@@ -25,6 +28,8 @@ async def get_students_cards(token: str = Depends(get_current_active_auth_user),
                              session: AsyncSession = Depends(get_db)):
     """
     Используется для фильтрации и получения Карт студентов
+    - skip: Пропускает заданное количество элементов
+    - limit: Ограничивает количество возвращаемых элементов
     - firstname: Фильтр Имени
     - lastname: Фильтр Фамилии
     - faculty: Фильтр Факультета
@@ -45,13 +50,16 @@ async def get_students_cards(token: str = Depends(get_current_active_auth_user),
                                        "subgroup": subgroup}}
 
     students_cards = await get_filtered_cards(session, filters)
-    return students_cards
+    limit_data = make_limit_dict(students_cards, skip, limit)
+    return limit_data
 
 
 @router.get("/number_contingent",
             tags=['students list'],
             response_description="Численный список студентов")
-async def get_number_contingent(token: str = Depends(get_current_active_auth_user),
+async def get_number_contingent(
+                                skip: int = 0,
+                                limit: int = 10,
                                 firstname: Annotated[str | None, Query()] = None,
                                 lastname: Annotated[str | None, Query()] = None,
                                 faculty: Annotated[str | None, Query()] = None,
@@ -65,6 +73,8 @@ async def get_number_contingent(token: str = Depends(get_current_active_auth_use
                                 ):
     """
     Используется для фильтрации и получения численного списка студентов
+    - skip: Пропускает заданное количество элементов
+    - limit: Ограничивает количество возвращаемых элементов
     - firstname: Фильтр Имени
     - lastname: Фильтр Фамилии
     - faculty: Фильтр Факультета
@@ -85,5 +95,6 @@ async def get_number_contingent(token: str = Depends(get_current_active_auth_use
                                        "subgroup": subgroup}}
     students_cards = await get_filtered_cards(session, filters)
     number_contingent = await get_students_number_contingent(students_cards)
-    return number_contingent
+    limit_data = make_limit_dict(number_contingent, skip, limit)
+    return limit_data
 
