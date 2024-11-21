@@ -57,7 +57,7 @@ async def get_students_cards(token: str = Depends(get_current_active_auth_user),
 @router.get("/number_contingent",
             tags=['students list'],
             response_description="Численный список студентов")
-async def get_number_contingent(
+async def get_number_contingent(token: str = Depends(get_current_active_auth_user),
                                 skip: int = 0,
                                 limit: int = 10,
                                 firstname: Annotated[str | None, Query()] = None,
@@ -93,6 +93,7 @@ async def get_number_contingent(
                                        "department": department,
                                        "group": group,
                                        "subgroup": subgroup}}
+
     students_cards = await get_filtered_cards(session, filters)
     number_contingent = await get_students_number_contingent(students_cards)
     limit_data = make_limit_dict(number_contingent, skip, limit)
