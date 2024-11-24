@@ -91,7 +91,6 @@ async def post_group(group: GroupSh,
     """
     data = jsonable_encoder(group)
     list_of_groups = data.get('name')
-
     for gr in list_of_groups:
         data['name'] = gr
         await add_data_to_table(db, data, GroupData)

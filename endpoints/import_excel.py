@@ -13,7 +13,6 @@ router = APIRouter()
              tags=['excel'],
              response_description="Карточки студентов")
 async def import_cards_excel(file: UploadFile,
-                             token: str = Depends(get_current_active_auth_user),
                              db: AsyncSession = Depends(get_db)):
     """
     Импортирует Карточки студентов из exel-файла в базу данных

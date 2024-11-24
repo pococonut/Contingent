@@ -27,7 +27,7 @@ async def get_structures_data(db):
                    DirectionData.qualification,
                    DirectionData.form)
             .join(GroupData, GroupData.name == SubgroupData.group_name)
-            .join(DirectionData, SubgroupData.direction_name == DirectionData.name))
+            .join(DirectionData, SubgroupData.direction_name == DirectionData.name).distinct())
 
     parameters = ["id",
                   "subgroup_name",
@@ -50,7 +50,9 @@ async def get_structures_data(db):
     data = []
 
     for row in result:
+        print(row)
         row_data = dict((name, row[idx]) for idx, name in enumerate(parameters))
+        # if row_data not in data:
         data.append(row_data)
 
     return data

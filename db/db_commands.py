@@ -13,6 +13,7 @@ from models.structure.direction import DirectionData
 from models.structure.group import GroupData
 from models.structure.profile import ProfileData
 from models.structure.department import DepartmentData
+from models.structure.fgos import FgosData
 from models.auth.user import User
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
