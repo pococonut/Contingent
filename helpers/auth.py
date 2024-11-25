@@ -99,7 +99,7 @@ def create_jwt(token_type: str,
 
 def create_access_token(user: UserSchema) -> str:
     """
-    Функция предназначена для м=создания ACCESS токена
+    Функция предназначена для создания ACCESS токена
     :param user: Данные пользователя
     :return: ACCESS токен
     """
