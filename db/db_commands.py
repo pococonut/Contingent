@@ -14,6 +14,7 @@ from models.structure.group import GroupData
 from models.structure.profile import ProfileData
 from models.structure.department import DepartmentData
 from models.structure.fgos import FgosData
+from models.student_list.planned_num_contingent import PlannedNumContingent
 from models.auth.user import User
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,

@@ -31,8 +31,8 @@ def get_calculations(data):
     total_groups = len({v for k, v in data.items() if "group" in k})
     total_subgroups = len({v for k, v in data.items() if "sub" in k})
 
-    return {"бюджет": data.get("бюджет"),
-            "договор": data.get("договор"),
+    return {"free": data.get("бюджет"),
+            "contract": data.get("договор"),
             "total": data.get("total"),
             "groups": total_groups,
             "subgroups": total_subgroups}

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from sqlalchemy import ForeignKey, ForeignKeyConstraint
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.database import Base
 from models.student_card.personal_data import PersonalData
