@@ -70,8 +70,10 @@ async def add_data_to_table(db, data, table):
 
     except exc.DataError as e:
         logging.error(e)
+        raise HTTPException(status_code=500, detail=f"DataError: {e}")
     except exc.SQLAlchemyError as e:
         logging.error(e)
+        raise HTTPException(status_code=500, detail=f"SQLAlchemyError: {e}")
 
 
 async def get_table_data(db, table):
@@ -87,6 +89,7 @@ async def get_table_data(db, table):
         return result.scalars().all()
     except exc.SQLAlchemyError as e:
         logging.error(e)
+        raise HTTPException(status_code=500, detail=f"SQLAlchemyError: {e}")
 
 
 async def delete_object(db, obj_id, table_name):

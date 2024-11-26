@@ -45,14 +45,11 @@ async def get_structures_data(db):
         result = await db.execute(stmt)
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        raise HTTPException(status_code=500, detail=f"{e}")
+        raise HTTPException(status_code=500, detail=f"SQLAlchemyError: {e}")
 
     data = []
-
     for row in result:
-        print(row)
         row_data = dict((name, row[idx]) for idx, name in enumerate(parameters))
-        # if row_data not in data:
         data.append(row_data)
 
     return data
@@ -86,4 +83,4 @@ async def change_structure(db, data):
 
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        raise HTTPException(status_code=500, detail=f"{e}")
+        raise HTTPException(status_code=500, detail=f"SQLAlchemyError: {e}")

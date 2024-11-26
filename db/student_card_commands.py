@@ -101,5 +101,5 @@ async def change_card(db, data):
 
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        raise HTTPException(status_code=500, detail=f"{e}")
+        raise HTTPException(status_code=500, detail=f"SQLAlchemyError: {e}")
 
