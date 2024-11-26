@@ -135,7 +135,7 @@ async def get_structures(token: str = Depends(get_current_active_auth_user),
     return limit_data
 
 
-@router.patch("/change_structure",
+@router.patch("/structure",
               tags=['structure'],
               response_description="Обновленные данные Структуры")
 async def change_change_structure(token: str = Depends(get_current_active_auth_user),
@@ -157,7 +157,7 @@ async def change_change_structure(token: str = Depends(get_current_active_auth_u
     return updated_data
 
 
-@router.delete("/delete_structure",
+@router.delete("/structure",
                tags=['structure'],
                response_description="Удаление данных Структуры")
 async def remove_structure(structure_id: int = None,

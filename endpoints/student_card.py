@@ -34,7 +34,7 @@ async def post_student_card(student_card: StudentsCardSh,
     return result
 
 
-@router.patch("/change_student_card",
+@router.patch("/student_card",
               tags=['student card'],
               response_description="Измененная Карта студента")
 async def change_student_card(token: str = Depends(get_current_active_auth_user),
@@ -64,7 +64,7 @@ async def change_student_card(token: str = Depends(get_current_active_auth_user)
     return updated_data
 
 
-@router.delete("/delete_student_card",
+@router.delete("/student_card",
                tags=['student card'],
                response_description="Сообщение об успешном удалении")
 async def delete_student_card(token: str = Depends(get_current_active_auth_user),
