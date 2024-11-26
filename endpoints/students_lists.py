@@ -2,9 +2,9 @@ from typing import Annotated
 from fastapi import Depends, Query, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_db, add_data_to_table
+from db.db_commands import get_db, add_data_to_table, get_table_data
 from db.filtering_cards_commands import get_filtered_cards
-from helpers.pagination import make_limit_dict
+from helpers.pagination import make_limit_dict, make_limit_list
 from models.student_list.planned_num_contingent import PlannedNumContingent
 from validation.auth_parameters import get_current_active_auth_user
 from helpers.number_contingent import get_students_number_contingent
@@ -104,9 +104,31 @@ async def get_number_contingent(token: str = Depends(get_current_active_auth_use
 
 @router.post("/planned_contingent",
              tags=['students list'],
-             response_description="Планируемый численный список студентов")
-async def planned_num_list(number_list: PlannedNumContingentSh,
-                           token: str = Depends(get_current_active_auth_user),
-                           db: AsyncSession = Depends(get_db)):
-    await add_data_to_table(db, number_list, PlannedNumContingent)
-    return {"Successfully added": number_list}
+             response_description="G")
+async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
+                                token: str = Depends(get_current_active_auth_user),
+                                db: AsyncSession = Depends(get_db)):
+    """
+    Используется для добавления планируемого численного списка студентов
+    - number_lists: Список словарей, содержащих данные планируемого численного списка по направлениям
+    """
+    for lst in number_lists:
+        await add_data_to_table(db, lst, PlannedNumContingent)
+    return {"Successfully added": number_lists}
+
+
+@router.get("/planned_contingent",
+            tags=['students list'],
+            response_description="Планируемый численный список студентов")
+async def get_planned_num_list(token: str = Depends(get_current_active_auth_user),
+                               skip: int = 0,
+                               limit: int = 10,
+                               db: AsyncSession = Depends(get_db)):
+    """
+    Используется для получения планируемого численного списка студентов
+    - skip: Пропускает заданное количество элементов
+    - limit: Ограничивает количество возвращаемых элементов
+    """
+    planned_contingent = await get_table_data(db, PlannedNumContingent)
+    limit_data = make_limit_list(planned_contingent, skip, limit)
+    return limit_data
