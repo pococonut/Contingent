@@ -6,6 +6,6 @@ class PlannedNumContingentSh(APIBase):
     Модель запроса планируемого численного списка студентов
     """
     direction: str
-    course: str
-    groups: str
-    subgroups: str
+    course: int
+    groups: int
+    subgroups: int
