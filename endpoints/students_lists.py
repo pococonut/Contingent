@@ -98,7 +98,7 @@ async def get_number_contingent(token: str = Depends(get_current_active_auth_use
 
     students_cards = await get_filtered_cards(session, filters)
     number_contingent = get_students_number_contingent(students_cards)
-    limit_data = make_limit_dict(number_contingent, skip, limit)
+    limit_data = make_limit_list(number_contingent, skip, limit)
     return limit_data
 
 

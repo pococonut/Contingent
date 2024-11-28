@@ -31,7 +31,7 @@ def get_calculations(data):
     total_groups = len({v for k, v in data.items() if "group" in k})
     total_subgroups = len({v for k, v in data.items() if "sub" in k})
 
-    return {"free": data.get("бюджет"),
+    return {"budget": data.get("бюджет"),
             "contract": data.get("договор"),
             "total": data.get("total"),
             "groups": total_groups,
@@ -52,6 +52,13 @@ def format_cards_for_calculations(cards):
     return students_cards
 
 
+def make_num_cont_list_of_dicts(num_contingent):
+    lst_num_contingent = []
+    for direction, courses in num_contingent.items():
+        print(direction, courses)
+
+
+
 def get_students_number_contingent(cards):
     """
     Функция для формирования численного списка студентов
@@ -62,10 +69,18 @@ def get_students_number_contingent(cards):
 
     formatted_cards = format_cards_for_calculations(cards)
     directions = get_raw_calculations(formatted_cards)
-    number_contingent = defaultdict(defaultdict)
+    number_contingent = list()
 
     for direction, courses in directions.items():
         for course, data in courses.items():
-            number_contingent[direction][course] = get_calculations(data)
+            calculations = get_calculations(data)
+            data = {"direction": direction,
+                    "course": int(course),
+                    "budget": calculations.get("budget"),
+                    "contract": calculations.get("contract"),
+                    "groups": calculations.get("groups"),
+                    "subgroups": calculations.get("subgroups"),
+                    "total": calculations.get("total")}
+            number_contingent.append(data)
 
     return number_contingent
