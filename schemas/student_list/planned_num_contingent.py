@@ -7,7 +7,5 @@ class PlannedNumContingentSh(APIBase):
     """
     direction: str
     course: str
-    free: str
-    contract: str
     groups: str
     subgroups: str

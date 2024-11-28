@@ -8,15 +8,14 @@ def get_raw_calculations(cards):
     :return: Словарь с расчетами
     """
     directions = defaultdict(lambda: defaultdict(Counter))
-
     for card in cards.values():
         direction = card.get("direction")
         course = card.get("course")
 
-        lst = [card.get("degree_payment"),
-               f'group_{card.get("group")}',
-               f'sub_{card.get("subgroup")}',
-               "total"]
+        degree_payment = card.get("degree_payment")
+        group = f'group_{card.get("group")}'
+        subgroup = f'sub_{card.get("subgroup")}'
+        lst = [degree_payment, group, subgroup, "total"]
 
         directions[direction][course] += Counter(lst)
     return directions
@@ -31,9 +30,9 @@ def get_calculations(data):
     total_groups = len({v for k, v in data.items() if "group" in k})
     total_subgroups = len({v for k, v in data.items() if "sub" in k})
 
-    return {"budget": data.get("бюджет"),
-            "contract": data.get("договор"),
-            "total": data.get("total"),
+    return {"budget": data.get("бюджет", 0),
+            "contract": data.get("договор", 0),
+            "total": data.get("total", 0),
             "groups": total_groups,
             "subgroups": total_subgroups}
 
@@ -50,13 +49,6 @@ def format_cards_for_calculations(cards):
             data = table_data.__dict__
             students_cards[person_id].update(data)
     return students_cards
-
-
-def make_num_cont_list_of_dicts(num_contingent):
-    lst_num_contingent = []
-    for direction, courses in num_contingent.items():
-        print(direction, courses)
-
 
 
 def get_students_number_contingent(cards):
@@ -81,6 +73,6 @@ def get_students_number_contingent(cards):
                     "groups": calculations.get("groups"),
                     "subgroups": calculations.get("subgroups"),
                     "total": calculations.get("total")}
-            number_contingent.append(data)
 
+            number_contingent.append(data)
     return number_contingent
