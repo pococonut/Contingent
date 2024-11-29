@@ -56,7 +56,7 @@ async def get_students_cards(token: str = Depends(get_current_active_auth_user),
     return limit_data
 
 
-@router.get("/number_contingent",
+@router.get("/current_number_contingent",
             tags=['students list'],
             response_description="Численный список студентов")
 async def get_number_contingent(token: str = Depends(get_current_active_auth_user),
@@ -102,7 +102,7 @@ async def get_number_contingent(token: str = Depends(get_current_active_auth_use
     return limit_data
 
 
-@router.post("/planned_contingent",
+@router.post("/planned_number_contingent",
              tags=['students list'],
              response_description="G")
 async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
@@ -117,7 +117,7 @@ async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
     return {"Successfully added": number_lists}
 
 
-@router.get("/planned_contingent",
+@router.get("/planned_number_contingent",
             tags=['students list'],
             response_description="Планируемый численный список студентов")
 async def get_planned_num_list(token: str = Depends(get_current_active_auth_user),
