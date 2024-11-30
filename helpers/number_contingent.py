@@ -1,5 +1,21 @@
 from collections import defaultdict, Counter
 
+from fastapi.encoders import jsonable_encoder
+
+
+def get_rid_of_ids(data):
+    """
+    Функция для удаления параметра идентификатора в словаре
+    :param data: Словарь с данными
+    :return: Словарь без идентификаторов
+    """
+    data_new = []
+    for item in data:
+        js_item = jsonable_encoder(item)
+        del js_item["id"]
+        data_new.append(js_item)
+    return data_new
+
 
 def get_raw_calculations(cards):
     """

@@ -7,7 +7,7 @@ from db.filtering_cards_commands import get_filtered_cards
 from helpers.pagination import make_limit_dict, make_limit_list
 from models.student_list.planned_num_contingent import PlannedNumContingent
 from validation.auth_parameters import get_current_active_auth_user
-from helpers.number_contingent import get_students_number_contingent
+from helpers.number_contingent import get_students_number_contingent, get_rid_of_ids
 from schemas.student_list.planned_num_contingent import PlannedNumContingentSh
 
 router = APIRouter()
@@ -116,6 +116,7 @@ async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
         await add_data_to_table(db, lst, PlannedNumContingent)
     return {"Successfully added": number_lists}
 
+from fastapi.encoders import jsonable_encoder
 
 @router.get("/planned_number_contingent",
             tags=['students list'],
@@ -130,5 +131,6 @@ async def get_planned_num_list(token: str = Depends(get_current_active_auth_user
     - limit: Ограничивает количество возвращаемых элементов
     """
     planned_contingent = await get_table_data(db, PlannedNumContingent)
-    limit_data = make_limit_list(planned_contingent, skip, limit)
+    without_ids = get_rid_of_ids(planned_contingent)
+    limit_data = make_limit_list(without_ids, skip, limit)
     return limit_data
