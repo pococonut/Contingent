@@ -17,8 +17,8 @@ router = APIRouter()
             tags=['students list'],
             response_description="Карты студентов")
 async def get_students_cards(token: str = Depends(get_current_active_auth_user),
-                             skip: int = 0,
-                             limit: int = 10,
+                             skip: Annotated[int | None, Query()] = None,
+                             limit: Annotated[int | None, Query()] = None,
                              firstname: Annotated[str | None, Query()] = None,
                              lastname: Annotated[str | None, Query()] = None,
                              faculty: Annotated[str | None, Query()] = None,
@@ -60,8 +60,8 @@ async def get_students_cards(token: str = Depends(get_current_active_auth_user),
             tags=['students list'],
             response_description="Численный список студентов")
 async def get_number_contingent(token: str = Depends(get_current_active_auth_user),
-                                skip: int = 0,
-                                limit: int = 10,
+                                skip: Annotated[int | None, Query()] = None,
+                                limit: Annotated[int | None, Query()] = None,
                                 firstname: Annotated[str | None, Query()] = None,
                                 lastname: Annotated[str | None, Query()] = None,
                                 faculty: Annotated[str | None, Query()] = None,
@@ -70,8 +70,7 @@ async def get_number_contingent(token: str = Depends(get_current_active_auth_use
                                 department: Annotated[str | None, Query()] = None,
                                 group: Annotated[str | None, Query()] = None,
                                 subgroup: Annotated[str | None, Query()] = None,
-                                session: AsyncSession = Depends(get_db),
-
+                                session: AsyncSession = Depends(get_db)
                                 ):
     """
     Используется для фильтрации и получения численного списка студентов
@@ -116,14 +115,13 @@ async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
         await add_data_to_table(db, lst, PlannedNumContingent)
     return {"Successfully added": number_lists}
 
-from fastapi.encoders import jsonable_encoder
 
 @router.get("/planned_number_contingent",
             tags=['students list'],
             response_description="Планируемый численный список студентов")
 async def get_planned_num_list(token: str = Depends(get_current_active_auth_user),
-                               skip: int = 0,
-                               limit: int = 10,
+                               skip: Annotated[int | None, Query()] = None,
+                               limit: Annotated[int | None, Query()] = None,
                                db: AsyncSession = Depends(get_db)):
     """
     Используется для получения планируемого численного списка студентов

@@ -1,5 +1,5 @@
 
-def make_limit_dict(data, skip=0, limit=10):
+def make_limit_dict(data, skip=0, limit=None):
     """
     Функция для пагинации по объектам словаря
     :param data: Словарь словарей
@@ -8,12 +8,13 @@ def make_limit_dict(data, skip=0, limit=10):
     :return:
     """
     keys = list(data.keys())
-    paginated_keys = keys[skip:skip + limit]
-    paginated_dict = {key: data[key] for key in paginated_keys}
+    if limit:
+        keys = keys[skip:skip + limit]
+    paginated_dict = {key: data[key] for key in keys}
     return paginated_dict
 
 
-def make_limit_list(lst, skip=0, limit=10):
+def make_limit_list(lst, skip=0, limit=None):
     """
     Функция для пагинации по объектам списка
     :param lst: Список словарей
@@ -21,5 +22,7 @@ def make_limit_list(lst, skip=0, limit=10):
     :param limit: Ограничивает количество возвращаемых элементов
     :return:
     """
+    if not limit:
+        return lst
     return lst[skip:skip + limit]
 
