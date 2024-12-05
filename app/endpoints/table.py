@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from validation.auth_parameters import get_current_active_auth_user

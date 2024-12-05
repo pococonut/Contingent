@@ -1,4 +1,3 @@
-from sqlalchemy import Column, String
 from sqlalchemy.orm import mapped_column, Mapped
 
 from db.database import Base

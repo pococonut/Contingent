@@ -1,21 +1,10 @@
-import asyncio
 import logging
 
 from fastapi import HTTPException
 from sqlalchemy import select, delete, exc
 
 from db.database import engine, SessionLocal, Base
-from helpers.dicts import student_card_models_dict
-from models.student_card.personal_data import PersonalData
 from models.student_card.educational_data import EducationalData
-from models.structure.subgroup import SubgroupData
-from models.structure.direction import DirectionData
-from models.structure.group import GroupData
-from models.structure.profile import ProfileData
-from models.structure.department import DepartmentData
-from models.structure.fgos import FgosData
-from models.student_list.planned_num_contingent import PlannedNumContingent
-from models.auth.user import User
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")
