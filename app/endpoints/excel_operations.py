@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, UploadFile, HTTPException
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db
@@ -26,3 +27,14 @@ async def import_cards_excel(file: UploadFile,
     response = await add_commit_students_cards(db, student_cards)
     return response
 
+
+@router.get("/cards_excel_example",
+            tags=["excel"],
+            response_description="Шаблон excel файла для импорта Студенческих карт")
+async def get_excel_example():
+    """
+    Используется для получения шаблона excel файла для импорта Студенческих карт
+    """
+    headers = {'Content-Disposition': 'attachment; filename="Example.xlsx"'}
+    path = r"\contingent_bff\app\helpers\files\Example.xlsx"
+    return FileResponse(path=path, headers=headers)
