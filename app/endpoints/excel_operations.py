@@ -1,10 +1,12 @@
+import io
+
 from fastapi import APIRouter, Depends, UploadFile, HTTPException
-from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db
 from db.student_card_commands import add_commit_students_cards
 from helpers.excel_functions import read_excel_file, get_cards_form_df
+from starlette.responses import StreamingResponse
 
 router = APIRouter()
 
@@ -37,4 +39,11 @@ async def get_excel_example():
     """
     headers = {'Content-Disposition': 'attachment; filename="Example.xlsx"'}
     path = "./helpers/files/Example.xlsx"
-    return FileResponse(path=path, headers=headers)
+    media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    with open(path, "rb") as file:
+        bytes_file = io.BytesIO(file.read())
+    return StreamingResponse(
+        bytes_file,
+        headers=headers,
+        media_type=media_type
+    )
