@@ -36,5 +36,5 @@ async def get_excel_example():
     Используется для получения шаблона excel файла для импорта Студенческих карт
     """
     headers = {'Content-Disposition': 'attachment; filename="Example.xlsx"'}
-    path = r"\contingent_bff\app\helpers\files\Example.xlsx"
+    path = "/contingent_bff/app/helpers/files/Example.xlsx"
     return FileResponse(path=path, headers=headers)
