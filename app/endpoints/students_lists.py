@@ -103,7 +103,7 @@ async def get_number_contingent(token: str = Depends(get_current_active_auth_use
 
 @router.post("/planned_number_contingent",
              tags=['students list'],
-             response_description="G")
+             response_description="Добавленный планируемый численный список студентов")
 async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
                                 token: str = Depends(get_current_active_auth_user),
                                 db: AsyncSession = Depends(get_db)):

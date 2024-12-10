@@ -3,11 +3,24 @@ from collections import defaultdict, Counter
 from fastapi.encoders import jsonable_encoder
 
 
+def add_ids(data):
+    """
+    Функция для добавления параметра идентификатора в словарь
+    :param data: Список словарей
+    :return: Список словарей с идентификатором
+    """
+    data_with_ids = []
+    for i, d in enumerate(data):
+        d["id"] = i
+        data_with_ids.append(d)
+    return data_with_ids
+
+
 def get_rid_of_ids(data):
     """
     Функция для удаления параметра идентификатора в словаре
-    :param data: Словарь с данными
-    :return: Словарь без идентификаторов
+    :param data: Список словарей
+    :return: Список словарей без идентификаторов
     """
     data_new = []
     for item in data:
@@ -89,6 +102,7 @@ def get_students_number_contingent(cards):
                     "groups": calculations.get("groups"),
                     "subgroups": calculations.get("subgroups"),
                     "total": calculations.get("total")}
-
             number_contingent.append(data)
+
+    number_contingent = add_ids(number_contingent)
     return number_contingent
