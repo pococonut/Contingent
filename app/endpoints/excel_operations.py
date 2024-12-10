@@ -38,7 +38,7 @@ async def get_excel_example():
     Используется для получения шаблона excel файла для импорта Студенческих карт
     """
     headers = {'Content-Disposition': 'attachment; filename="Example.xlsx"'}
-    path = "./helpers/files/Example.xlsx"
+    path = "./docs/templates/Example.xlsx"
     media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     with open(path, "rb") as file:
         bytes_file = io.BytesIO(file.read())
