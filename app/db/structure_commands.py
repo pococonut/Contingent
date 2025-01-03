@@ -4,9 +4,9 @@ from fastapi import HTTPException
 from sqlalchemy import select, update, exc
 
 from helpers.dicts import structure_models_dict
-from models.structure.direction import DirectionData
-from models.structure.group import GroupData
-from models.structure.subgroup import SubgroupData
+from api.structure.direction.models import DirectionData
+from api.structure.group.models import GroupData
+from api.structure.subgroup.models import SubgroupData
 
 
 async def get_structures_data(db):
@@ -55,7 +55,7 @@ async def get_structures_data(db):
     return data
 
 
-async def change_structure(db, data):
+async def change_structure_data(db, data):
     """
     Функция для изменения Структуры
     :param db: Объект сессии
@@ -63,10 +63,9 @@ async def change_structure(db, data):
      параметры для изменения, идентификатор Структуры
     :return: Измененная Структура
     """
-    structure_id = data.get("structure_id")
-    table_name = data.get("table_name")
+    structure_id = data.get("id")
+    table = data.get("table")
     parameters = data.get("parameters")
-    table = structure_models_dict.get(table_name)
     structure_id_db = table.id
 
     try:

@@ -65,15 +65,17 @@ async def add_data_to_table(db, data, table):
         raise HTTPException(status_code=500, detail=f"SQLAlchemyError: {e}")
 
 
-async def get_table_data(db, table):
+async def get_table_data(db, table, item_id=None):
     """
-    Функция для получения данных из переданной таблицы БД
+    Функция для получения списка объектов из переданной таблицы БД,
+    если item_id=None, иначе функция возвращает данные конкретного объекта
+    :param item_id: Уникальный идентификатор объекта
     :param db: Объект сессии
     :param table: Таблица БД
     :return: Данные таблицы
     """
     try:
-        stmt = select(table)
+        stmt = select(table) if not item_id else select(table).where(table.id == item_id)
         result = await db.execute(stmt)
         return result.scalars().all()
     except exc.SQLAlchemyError as e:

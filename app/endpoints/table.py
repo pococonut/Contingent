@@ -22,8 +22,7 @@ async def create_db(db: AsyncSession = Depends(get_db),
 @router.get("/table_data",
             tags=["database"],
             response_description="Данные таблицы БД")
-async def get_table(token: str = Depends(get_current_active_auth_user),
-                    db: AsyncSession = Depends(get_db),
+async def get_table(db: AsyncSession = Depends(get_db),
                     table_name: str = Query(enum=list(all_models_dict.keys()))):
     """
     Используется для получения данных таблицы БД

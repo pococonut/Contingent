@@ -17,4 +17,3 @@ class DirectionData(Base):
     qualification: Mapped[str] = mapped_column(nullable=True)
     form: Mapped[str] = mapped_column(nullable=True)
 
-

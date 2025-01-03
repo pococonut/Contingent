@@ -16,11 +16,11 @@ from models.student_card.benefits_data import BenefitsData
 from models.student_card.military_data import MilitaryData
 from models.student_card.history_data import HistoryData
 from models.student_card.order_data import OrderData
-from models.structure.direction import DirectionData
-from models.structure.department import DepartmentData
-from models.structure.group import GroupData
-from models.structure.profile import ProfileData
-from models.structure.subgroup import SubgroupData
+from api.structure.direction.models import DirectionData
+from api.structure.department.models import DepartmentData
+from api.structure.group.models import GroupData
+from api.structure.profile.models import ProfileData
+from api.structure.subgroup.models import SubgroupData
 from validation.student_card_parameters import *
 
 student_card_validation_dict = {"personal_data": validate_personal_data,
