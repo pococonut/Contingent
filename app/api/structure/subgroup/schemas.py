@@ -5,10 +5,10 @@ class SubgroupSh(APIBase):
     """
     Схема подгруппы
     """
-    direction_name: str
+    direction: str
     course: str
-    department_name: str
-    group_name: str
-    profile_name: str
-    name: list[str]
+    department: str
+    group: str
+    profile: str
+    subgroup: list[str]
 

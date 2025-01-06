@@ -16,25 +16,25 @@ async def get_structures_data(db):
     :return: Список Структур
     """
     stmt = (select(SubgroupData.id,
-                   SubgroupData.name,
-                   SubgroupData.direction_name,
-                   SubgroupData.profile_name,
+                   SubgroupData.subgroup,
+                   SubgroupData.direction,
+                   SubgroupData.profile,
                    SubgroupData.course,
-                   SubgroupData.group_name,
+                   SubgroupData.group,
                    GroupData.fgos,
                    DirectionData.short_name,
                    DirectionData.number,
                    DirectionData.qualification,
                    DirectionData.form)
-            .join(GroupData, GroupData.name == SubgroupData.group_name)
-            .join(DirectionData, SubgroupData.direction_name == DirectionData.name).distinct())
+            .join(GroupData, GroupData.group == SubgroupData.group)
+            .join(DirectionData, SubgroupData.direction == DirectionData.direction).distinct())
 
     parameters = ["id",
-                  "subgroup_name",
-                  "direction_name",
-                  "profile_name",
+                  "subgroup",
+                  "direction",
+                  "profile",
                   "course",
-                  "group_name",
+                  "group",
                   "fgos",
                   "short_name",
                   "number",

@@ -5,8 +5,8 @@ class GroupSh(APIBase):
     """
     Схема направления
     """
-    direction_name: str
+    direction: str
     course: str
     fgos: str
-    name: list[str]
+    group: list[str]
 

@@ -22,10 +22,10 @@ async def post_subgroup(subgroup: SubgroupSh,
     - subgroup: Данные Подгрупп
     """
     data = jsonable_encoder(subgroup)
-    list_of_subgroups = data.get('name')
+    list_of_subgroups = data.get('subgroup')
 
     for sgr in list_of_subgroups:
-        data['name'] = sgr
+        data['subgroup'] = sgr
         await add_data_to_table(db, data, SubgroupData)
 
     return {"Successfully added": subgroup}
