@@ -4,22 +4,9 @@ from fastapi import HTTPException
 from sqlalchemy import select, delete, exc
 
 from db.database import engine, SessionLocal, Base
-from models.student_card.educational_data import EducationalData
 
 logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")
-
-
-async def drop_table():
-    async with engine.begin() as conn:
-        # Удаление таблицы
-        await conn.run_sync(EducationalData.metadata.drop_all)
-
-
-async def main():
-    await drop_table()
-
-# asyncio.run(main())
 
 
 async def get_db():

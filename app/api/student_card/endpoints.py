@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.student_card.personal_data import PersonalData
+from api.student_card.models.personal_data import PersonalData
 from validation.auth_parameters import get_current_active_auth_user
 from helpers.dicts import student_card_models_dict, student_card_validation_dict, student_params_validation_dict
 from db.student_card_commands import change_card, format_card_to_dict, add_commit_students_card
 from db.db_commands import get_db, delete_object
-from schemas.student_card.students_card import StudentsCardSh
+from api.student_card.schemas.students_card import StudentsCardSh
+
 from fastapi.encoders import jsonable_encoder
 
 
@@ -17,7 +18,6 @@ router = APIRouter()
              tags=['student card'],
              response_description="Добавленная Карта студента")
 async def post_student_card(student_card: StudentsCardSh,
-                            token: str = Depends(get_current_active_auth_user),
                             db: AsyncSession = Depends(get_db)):
     """
     Используется для добавления Карты студента
@@ -27,6 +27,7 @@ async def post_student_card(student_card: StudentsCardSh,
 
     for name_data, data in student_card.items():
         validation_function = student_card_validation_dict.get(name_data)
+        print(name_data)
         if validation_function:
             validation_function(jsonable_encoder(data))
 
@@ -34,11 +35,10 @@ async def post_student_card(student_card: StudentsCardSh,
     return result
 
 
-@router.patch("/student_card",
+@router.patch("/student_card/{personal_id}",
               tags=['student card'],
               response_description="Измененная Карта студента")
-async def change_student_card(token: str = Depends(get_current_active_auth_user),
-                              personal_id: int = None,
+async def change_student_card(personal_id: int,
                               table_name: str = Query(enum=list(student_card_models_dict.keys())),
                               parameters: dict = None,
                               db: AsyncSession = Depends(get_db)):
@@ -64,11 +64,10 @@ async def change_student_card(token: str = Depends(get_current_active_auth_user)
     return updated_data
 
 
-@router.delete("/student_card",
+@router.delete("/student_card/{personal_id}",
                tags=['student card'],
                response_description="Сообщение об успешном удалении")
-async def delete_student_card(token: str = Depends(get_current_active_auth_user),
-                              personal_id: int = None,
+async def delete_student_card(personal_id: int = None,
                               db: AsyncSession = Depends(get_db)):
     """
     Используется для удаления Карты студента

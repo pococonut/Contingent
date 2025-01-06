@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from endpoints import authentication, students_lists, excel_operations, student_card, table, structures
+from api.db import endpoints as db_endpoints
 from api.structure.direction import endpoints as direction_endpoints
 from api.structure.department import endpoints as department_endpoints
 from api.structure.fgos import endpoints as fgos_endpoints
@@ -9,6 +9,11 @@ from api.structure.group import endpoints as group_endpoints
 from api.structure.profile import endpoints as profile_endpoints
 from api.structure.subgroup import endpoints as subgroup_endpoints
 from api.structure.structure import endpoints as structure_endpoints
+from api.student_card import endpoints as student_card_endpoints
+from api.students_list.number_contingent import endpoints as number_contingent_endpoints
+from api.students_list.student_cards import endpoints as student_cards_endpoints
+from api.authentication import endpoints as authentication_endpoints
+from api.excel import endpoints as excel_endpoints
 
 app = FastAPI(title="Contingent")
 
@@ -31,12 +36,11 @@ app.include_router(group_endpoints.router)
 app.include_router(profile_endpoints.router)
 app.include_router(subgroup_endpoints.router)
 app.include_router(structure_endpoints.router)
-
-
-app.include_router(authentication.router)
-app.include_router(students_lists.router)
-app.include_router(student_card.router)
-app.include_router(excel_operations.router)
-app.include_router(table.router)
+app.include_router(authentication_endpoints.router)
+app.include_router(number_contingent_endpoints.router)
+app.include_router(student_cards_endpoints.router)
+app.include_router(student_card_endpoints.router)
+app.include_router(excel_endpoints.router)
+app.include_router(db_endpoints.router)
 
 

@@ -8,7 +8,7 @@ from helpers.pagination import make_limit_list
 router = APIRouter()
 
 
-@router.get("/structures",
+@router.get("/structure",
             tags=['structure'],
             response_description="Данные Структур")
 async def get_structures(skip: int = 0,

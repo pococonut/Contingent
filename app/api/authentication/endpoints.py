@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter
 
-from helpers import auth
-from schemas.auth.authentication import UserSchema, TokenInfo
+from api.authentication import helpers
+from api.authentication.schemas import UserSchema, TokenInfo
 from validation.auth_parameters import get_current_active_auth_user, get_current_auth_user_for_refresh, validate_auth_user
 
 
@@ -17,8 +17,8 @@ def auth_user_issue_jwt(user: UserSchema = Depends(validate_auth_user,)):
     Используется для аутентификации пользователя:
     - user: Данные пользователя
     """
-    access_token = auth.create_access_token(user)
-    refresh_token = auth.create_refresh_token(user)
+    access_token = helpers.create_access_token(user)
+    refresh_token = helpers.create_refresh_token(user)
 
     return TokenInfo(access_token=access_token,
                      refresh_token=refresh_token)
@@ -33,7 +33,7 @@ def auth_refresh_jwt(user: UserSchema = Depends(get_current_auth_user_for_refres
     Используется для обновления ACCESS токена
     - user: Данные пользователя
     """
-    access_token = auth.create_access_token(user)
+    access_token = helpers.create_access_token(user)
 
     return TokenInfo(access_token=access_token)
 

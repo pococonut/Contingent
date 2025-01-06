@@ -4,21 +4,21 @@ from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.database import Base
-from models.student_card.personal_data import PersonalData
+from api.student_card.models.personal_data import PersonalData
 
 
-class BenefitsData(Base):
+class OrderData(Base):
     """
-    Модель таблицы информации о льготах студента.
+    Модель таблицы информации о приказах.
     """
-    __tablename__ = 'benefits_data'
+    __tablename__ = 'order_data'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    benefits: Mapped[str] = mapped_column(nullable=True)
+    order: Mapped[str] = mapped_column(nullable=True)
 
     personal_id: Mapped[int] = mapped_column(ForeignKey('personal_data.id'), nullable=False)
 
     __table_args__ = (ForeignKeyConstraint(['personal_id'], ['personal_data.id'], ondelete='CASCADE'),)
 
-    personal: Mapped["PersonalData"] = relationship("PersonalData", back_populates="benefits")
+    personal: Mapped["PersonalData"] = relationship("PersonalData", back_populates="order")
 
