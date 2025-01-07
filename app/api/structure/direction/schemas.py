@@ -7,8 +7,8 @@ class DirectionSh(APIBase):
     """
     name: str
     short_name: str
-    number: str
+    code: str
     courses: str
     qualification: str
-    form: str
+    education_form: str
 

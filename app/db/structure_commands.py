@@ -21,11 +21,9 @@ async def get_structures_data(db):
                    SubgroupData.profile,
                    SubgroupData.course,
                    SubgroupData.group,
-                   GroupData.fgos,
-                   DirectionData.short_name,
-                   DirectionData.number,
+                   DirectionData.code,
                    DirectionData.qualification,
-                   DirectionData.form)
+                   DirectionData.education_form)
             .join(GroupData, GroupData.group == SubgroupData.group)
             .join(DirectionData, SubgroupData.direction == DirectionData.name).distinct())
 
@@ -35,11 +33,9 @@ async def get_structures_data(db):
                   "profile",
                   "course",
                   "group",
-                  "fgos",
-                  "short_name",
-                  "number",
+                  "code",
                   "qualification",
-                  "form"]
+                  "education_form"]
 
     try:
         result = await db.execute(stmt)
