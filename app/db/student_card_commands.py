@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy import select, update, exc
 
 from helpers.dicts import student_card_models_dict

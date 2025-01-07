@@ -1,7 +1,7 @@
 import logging
 from collections import defaultdict
 
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy import select, and_, exc
 
 from helpers.dicts import student_card_models_dict
