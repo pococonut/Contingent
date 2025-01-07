@@ -27,7 +27,7 @@ async def get_structures_data(db):
                    DirectionData.qualification,
                    DirectionData.form)
             .join(GroupData, GroupData.group == SubgroupData.group)
-            .join(DirectionData, SubgroupData.direction == DirectionData.direction).distinct())
+            .join(DirectionData, SubgroupData.direction == DirectionData.name).distinct())
 
     parameters = ["id",
                   "subgroup",
