@@ -74,5 +74,5 @@ async def get_filtered_cards(db, filters: dict = None):
         return suitable_students
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        raise HTTPException(status_code=500, detail=f"SQLAlchemyError: {e}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
 

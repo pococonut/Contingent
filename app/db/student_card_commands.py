@@ -36,7 +36,7 @@ async def add_student_data(db, student_card):
         return db
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        raise HTTPException(status_code=400, detail=f"Import Error.\n {e}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Import Error.\n {e}")
 
 
 async def add_commit_students_cards(db, student_cards):
@@ -53,7 +53,7 @@ async def add_commit_students_cards(db, student_cards):
         return student_cards
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        raise HTTPException(status_code=400, detail=f"Import Error.\n {e}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Import Error.\n {e}")
 
 
 async def add_commit_students_card(db, student_card):
@@ -69,7 +69,7 @@ async def add_commit_students_card(db, student_card):
         return student_card
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        raise HTTPException(status_code=400, detail=f"Import Error.\n {e}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Import Error.\n {e}")
 
 
 async def change_card(db, data):
@@ -101,5 +101,5 @@ async def change_card(db, data):
 
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        raise HTTPException(status_code=500, detail=f"SQLAlchemyError: {e}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
 

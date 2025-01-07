@@ -41,7 +41,7 @@ async def get_structures_data(db):
         result = await db.execute(stmt)
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        raise HTTPException(status_code=500, detail=f"SQLAlchemyError: {e}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
 
     data = []
     for row in result:
@@ -78,4 +78,4 @@ async def change_structure_data(db, data):
 
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        raise HTTPException(status_code=500, detail=f"SQLAlchemyError: {e}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
