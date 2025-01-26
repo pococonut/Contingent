@@ -13,7 +13,7 @@ class SubgroupData(Base):
     department: Mapped[str] = mapped_column(nullable=True)
     group: Mapped[str] = mapped_column(nullable=True)
     profile: Mapped[str] = mapped_column(nullable=True)
-    subgroup: Mapped[str] = mapped_column(nullable=True)
+    subgroup: Mapped[str] = mapped_column(unique=True, nullable=True)
 
 
 

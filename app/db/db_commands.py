@@ -44,6 +44,9 @@ async def add_data_to_table(db, data, table):
         await db.refresh(new_data)
         return data
 
+    except exc.IntegrityError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"IntegrityError: AlreadyExists")
     except exc.DataError as e:
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"DataError: {e}")

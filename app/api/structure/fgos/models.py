@@ -10,6 +10,6 @@ class FgosData(Base):
     __tablename__ = "fgos"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(nullable=True)
+    name: Mapped[str] = mapped_column(unique=True, nullable=True)
 
 

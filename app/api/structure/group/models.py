@@ -13,6 +13,6 @@ class GroupData(Base):
     direction: Mapped[str] = mapped_column(nullable=True)
     course: Mapped[str] = mapped_column(nullable=True)
     fgos: Mapped[str] = mapped_column(nullable=True)
-    group: Mapped[str] = mapped_column(nullable=True)
+    group: Mapped[str] = mapped_column(unique=True, nullable=True)
 
 
