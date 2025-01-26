@@ -17,22 +17,22 @@ async def get_structures_data(db):
     """
     stmt = (select(SubgroupData.id,
                    SubgroupData.subgroup,
-                   SubgroupData.direction,
                    SubgroupData.profile,
-                   SubgroupData.course,
                    SubgroupData.group,
+                   GroupData.course,
+                   GroupData.direction,
                    DirectionData.code,
                    DirectionData.qualification,
                    DirectionData.education_form)
             .join(GroupData, GroupData.group == SubgroupData.group)
-            .join(DirectionData, SubgroupData.direction == DirectionData.name).distinct())
+            .join(DirectionData, GroupData.direction == DirectionData.name).distinct())
 
     parameters = ["id",
                   "subgroup",
-                  "direction",
                   "profile",
-                  "course",
                   "group",
+                  "course",
+                  "direction",
                   "code",
                   "qualification",
                   "education_form"]
