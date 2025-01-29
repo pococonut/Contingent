@@ -5,7 +5,7 @@ from db.db_commands import get_table_data
 from db.db_commands import get_db, add_data_to_table, delete_object
 from db.structure_commands import get_structures_data, change_structure_data
 from api.structure.fgos.models import FgosData
-from api.structure.fgos.schemas import FgosSh
+from api.structure.fgos.schemas import FgosIn, FgosOut
 
 
 router = APIRouter()
@@ -13,20 +13,22 @@ router = APIRouter()
 
 @router.post("/fgos",
              tags=["fgos"],
-             response_description="Добавленный ФГОС")
-async def post_fgos(fgos: FgosSh,
+             response_description="Добавленный ФГОС",
+             response_model=FgosIn)
+async def post_fgos(fgos: FgosIn,
                     db: AsyncSession = Depends(get_db)):
     """
     Используется для добавления ФГОСа
     - fgos: Название ФГОСа
     """
     await add_data_to_table(db, fgos, FgosData)
-    return {"Successfully added": fgos}
+    return fgos
 
 
 @router.get("/fgos",
             tags=["fgos"],
-            response_description="Список ФГОСов")
+            response_description="Список ФГОСов",
+            response_model=list[FgosOut])
 async def get_fgos(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка ФГОСов
@@ -37,7 +39,8 @@ async def get_fgos(db: AsyncSession = Depends(get_db)):
 
 @router.get("/fgos/{fgos_id}",
             tags=["fgos"],
-            response_description="ФГОС")
+            response_description="ФГОС",
+            response_model=list[FgosOut])
 async def get_fgos(fgos_id: int,
                    db: AsyncSession = Depends(get_db)):
     """
@@ -50,7 +53,8 @@ async def get_fgos(fgos_id: int,
 
 @router.patch("/fgos/{fgos_id}",
               tags=['fgos'],
-              response_description="Измененный ФГОС")
+              response_description="Измененный ФГОС",
+              response_model=list[FgosOut])
 async def path_fgos(fgos_id: int,
                     parameters: dict = None,
                     db: AsyncSession = Depends(get_db)):

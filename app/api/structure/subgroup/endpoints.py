@@ -6,7 +6,7 @@ from db.db_commands import get_table_data
 from db.db_commands import get_db, add_data_to_table, delete_object
 from db.structure_commands import get_structures_data, change_structure_data
 from api.structure.subgroup.models import SubgroupData
-from api.structure.subgroup.schemas import SubgroupSh
+from api.structure.subgroup.schemas import SubgroupIn, SubgroupOut
 
 
 router = APIRouter()
@@ -14,8 +14,9 @@ router = APIRouter()
 
 @router.post("/subgroup",
              tags=['subgroup'],
-             response_description="Добавленная Подгруппа")
-async def post_subgroup(subgroup: SubgroupSh,
+             response_description="Добавленная Подгруппа",
+             response_model=SubgroupIn)
+async def post_subgroup(subgroup: SubgroupIn,
                         db: AsyncSession = Depends(get_db)):
     """
     Используется для добавления Подгрупп и их данных
@@ -28,12 +29,13 @@ async def post_subgroup(subgroup: SubgroupSh,
         data['subgroup'] = sgr
         await add_data_to_table(db, data, SubgroupData)
 
-    return {"Successfully added": subgroup}
+    return subgroup
 
 
 @router.get("/subgroup",
             tags=["subgroup"],
-            response_description="Список Подгрупп")
+            response_description="Список Подгрупп",
+            response_model=list[SubgroupOut])
 async def get_subgroup(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Подгрупп
@@ -44,7 +46,8 @@ async def get_subgroup(db: AsyncSession = Depends(get_db)):
 
 @router.get("/subgroup/{subgroup_id}",
             tags=["subgroup"],
-            response_description="Подгруппа")
+            response_description="Подгруппа",
+            response_model=list[SubgroupOut])
 async def get_subgroup(subgroup_id: int,
                        db: AsyncSession = Depends(get_db)):
     """
@@ -57,7 +60,8 @@ async def get_subgroup(subgroup_id: int,
 
 @router.patch("/subgroup/{subgroup_id}",
               tags=['subgroup'],
-              response_description="Измененная Подгруппа")
+              response_description="Измененная Подгруппа",
+              response_model=list[SubgroupOut])
 async def path_subgroup(subgroup_id: int,
                         parameters: dict = None,
                         db: AsyncSession = Depends(get_db)):

@@ -5,7 +5,7 @@ from db.db_commands import get_table_data
 from db.db_commands import get_db, add_data_to_table, delete_object
 from db.structure_commands import get_structures_data, change_structure_data
 from api.structure.department.models import DepartmentData
-from api.structure.department.schemas import DepartmentSh
+from api.structure.department.schemas import DepartmentIn, DepartmentOut
 
 
 router = APIRouter()
@@ -13,20 +13,22 @@ router = APIRouter()
 
 @router.post("/department",
              tags=["department"],
-             response_description="Добавленная Кафедра")
-async def post_department(department: DepartmentSh,
+             response_description="Добавленная Кафедра",
+             response_model=DepartmentIn)
+async def post_department(department: DepartmentIn,
                           db: AsyncSession = Depends(get_db)):
     """
     Используется для добавления Кафедры
     - department: Название Направления обучения
     """
     await add_data_to_table(db, department, DepartmentData)
-    return {"Successfully added": department}
+    return department
 
 
 @router.get("/department",
             tags=["department"],
-            response_description="Список Кафедр")
+            response_description="Список Кафедр",
+            response_model=list[DepartmentOut])
 async def get_department(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Кафедр
@@ -37,7 +39,8 @@ async def get_department(db: AsyncSession = Depends(get_db)):
 
 @router.get("/department/{department_id}",
             tags=["department"],
-            response_description="Кафедра")
+            response_description="Кафедра",
+            response_model=list[DepartmentOut])
 async def get_department(department_id: int,
                          db: AsyncSession = Depends(get_db)):
     """
@@ -50,7 +53,8 @@ async def get_department(department_id: int,
 
 @router.patch("/department/{department_id}",
               tags=["department"],
-              response_description="Измененное Кафедра")
+              response_description="Измененное Кафедра",
+              response_model=list[DepartmentOut])
 async def path_department(department_id: int,
                           parameters: dict = None,
                           db: AsyncSession = Depends(get_db)):

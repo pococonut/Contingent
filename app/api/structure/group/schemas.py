@@ -1,7 +1,7 @@
 from db.database import APIBase
 
 
-class GroupSh(APIBase):
+class GroupIn(APIBase):
     """
     Схема направления
     """
@@ -9,4 +9,15 @@ class GroupSh(APIBase):
     course: str
     fgos: str
     group: list[str]
+
+
+class GroupOut(APIBase):
+    """
+    Схема направления
+    """
+    id: int
+    direction: str
+    course: str
+    fgos: str
+    group: list[str] | str
 

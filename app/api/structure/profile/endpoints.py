@@ -5,7 +5,7 @@ from db.db_commands import get_table_data
 from db.db_commands import get_db, add_data_to_table, delete_object
 from db.structure_commands import get_structures_data, change_structure_data
 from api.structure.profile.models import ProfileData
-from api.structure.profile.schemas import ProfileSh
+from api.structure.profile.schemas import ProfileIn, ProfileOut
 
 
 router = APIRouter()
@@ -13,20 +13,22 @@ router = APIRouter()
 
 @router.post("/profile",
              tags=["profile"],
-             response_description="Добавленный Профиль")
-async def post_profile(profile: ProfileSh,
+             response_description="Добавленный Профиль",
+             response_model=ProfileIn)
+async def post_profile(profile: ProfileIn,
                     db: AsyncSession = Depends(get_db)):
     """
     Используется для добавления Профиля
     - profile: Название ФГОСа
     """
     await add_data_to_table(db, profile, ProfileData)
-    return {"Successfully added": profile}
+    return profile
 
 
 @router.get("/profile",
             tags=["profile"],
-            response_description="Список Профилей")
+            response_description="Список Профилей",
+            response_model=list[ProfileOut])
 async def get_profile(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Профилей
@@ -37,7 +39,8 @@ async def get_profile(db: AsyncSession = Depends(get_db)):
 
 @router.get("/profile/{profile_id}",
             tags=["profile"],
-            response_description="Профиль")
+            response_description="Профиль",
+            response_model=list[ProfileOut])
 async def get_profile(profile_id: int,
                    db: AsyncSession = Depends(get_db)):
     """
@@ -50,7 +53,8 @@ async def get_profile(profile_id: int,
 
 @router.patch("/profile/{profile_id}",
               tags=['profile'],
-              response_description="Измененный Профиль")
+              response_description="Измененный Профиль",
+              response_model=list[ProfileOut])
 async def path_profile(profile_id: int,
                        parameters: dict = None,
                        db: AsyncSession = Depends(get_db)):

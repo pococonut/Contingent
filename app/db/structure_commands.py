@@ -75,7 +75,9 @@ async def change_structure_data(db, data):
         result = await db.execute(stmt)
         updated_data = result.scalars().all()
         return updated_data
-
+    except exc.IntegrityError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"IntegrityError: AlreadyExists")
     except exc.SQLAlchemyError as e:
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")

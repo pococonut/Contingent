@@ -5,7 +5,7 @@ from db.db_commands import get_table_data
 from db.db_commands import get_db, add_data_to_table, delete_object
 from db.structure_commands import get_structures_data, change_structure_data
 from api.structure.direction.models import DirectionData
-from api.structure.direction.schemas import DirectionSh
+from api.structure.direction.schemas import DirectionIn, DirectionOut
 
 
 router = APIRouter()
@@ -13,20 +13,22 @@ router = APIRouter()
 
 @router.post("/direction",
              tags=["direction"],
-             response_description="Добавленное Направление обучения")
-async def post_direction(direction: DirectionSh,
+             response_description="Добавленное Направление обучения",
+             response_model=DirectionIn)
+async def post_direction(direction: DirectionIn,
                          db: AsyncSession = Depends(get_db)):
     """
     Используется для добавления Направления обучения
     - direction: Название Направления обучения
     """
     await add_data_to_table(db, direction, DirectionData)
-    return {"Successfully added": direction}
+    return direction
 
 
 @router.get("/direction",
             tags=["direction"],
-            response_description="Список Направлений обучения")
+            response_description="Список Направлений обучения",
+            response_model=list[DirectionOut])
 async def get_direction(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Направлений обучения
@@ -37,7 +39,8 @@ async def get_direction(db: AsyncSession = Depends(get_db)):
 
 @router.get("/direction/{direction_id}",
             tags=["direction"],
-            response_description="Направление обучения")
+            response_description="Направление обучения",
+            response_model=list[DirectionOut])
 async def get_direction(direction_id: int,
                         db: AsyncSession = Depends(get_db)):
     """
@@ -49,7 +52,8 @@ async def get_direction(direction_id: int,
 
 @router.patch("/direction/{direction_id}",
               tags=['direction'],
-              response_description="Измененное Направление обучения")
+              response_description="Измененное Направление обучения",
+              response_model=list[DirectionOut])
 async def path_direction(direction_id: int,
                          parameters: dict = None,
                          db: AsyncSession = Depends(get_db)):

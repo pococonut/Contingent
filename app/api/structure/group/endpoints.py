@@ -6,7 +6,7 @@ from db.db_commands import get_table_data
 from db.db_commands import get_db, add_data_to_table, delete_object
 from db.structure_commands import get_structures_data, change_structure_data
 from api.structure.group.models import GroupData
-from api.structure.group.schemas import GroupSh
+from api.structure.group.schemas import GroupIn, GroupOut
 
 
 router = APIRouter()
@@ -14,8 +14,9 @@ router = APIRouter()
 
 @router.post("/group",
              tags=['group'],
-             response_description="Добавленная Группа")
-async def post_group(group: GroupSh,
+             response_description="Добавленная Группа",
+             response_model=GroupIn)
+async def post_group(group: GroupIn,
                      db: AsyncSession = Depends(get_db)):
     """
     Используется для добавления Групп
@@ -27,12 +28,13 @@ async def post_group(group: GroupSh,
         data['group'] = gr
         await add_data_to_table(db, data, GroupData)
 
-    return {"Successfully added": group}
+    return group
 
 
 @router.get("/group",
             tags=["group"],
-            response_description="Список Групп")
+            response_description="Список Групп",
+            response_model=list[GroupOut])
 async def get_group(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка ФГОСов
@@ -43,7 +45,8 @@ async def get_group(db: AsyncSession = Depends(get_db)):
 
 @router.get("/group/{group_id}",
             tags=["group"],
-            response_description="Группа")
+            response_description="Группа",
+            response_model=list[GroupOut])
 async def get_group(group_id: int,
                     db: AsyncSession = Depends(get_db)):
     """
@@ -56,7 +59,8 @@ async def get_group(group_id: int,
 
 @router.patch("/group/{group_id}",
               tags=['group'],
-              response_description="Измененная Группа")
+              response_description="Измененная Группа",
+              response_model=list[GroupOut])
 async def path_group(group_id: int,
                      parameters: dict = None,
                      db: AsyncSession = Depends(get_db)):
