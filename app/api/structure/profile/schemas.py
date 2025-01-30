@@ -3,7 +3,7 @@ from db.database import APIBase
 
 class ProfileIn(APIBase):
     """
-    Схема профиля
+    Входная схема профиля
     """
     name: str
     short_name: str
@@ -11,7 +11,7 @@ class ProfileIn(APIBase):
 
 class ProfileOut(APIBase):
     """
-    Схема профиля
+    Выходная схема профиля
     """
     id: int
     name: str

@@ -3,7 +3,7 @@ from db.database import APIBase
 
 class SubgroupIn(APIBase):
     """
-    Схема подгруппы
+    Входная схема подгруппы
     """
     department: str
     group: str
@@ -13,7 +13,7 @@ class SubgroupIn(APIBase):
 
 class SubgroupOut(APIBase):
     """
-    Схема подгруппы
+    Выходная схема подгруппы
     """
     id: int
     department: str

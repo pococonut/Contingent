@@ -3,7 +3,7 @@ from db.database import APIBase
 
 class StructureOut(APIBase):
     """
-    Схема Структуры
+    Выходная схема Структуры
     """
     id: int
     subgroup: str

@@ -1,4 +1,5 @@
 from fastapi import Depends, APIRouter
+from fastapi_pagination import Page, paginate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_table_data
@@ -28,7 +29,7 @@ async def post_direction(direction: DirectionIn,
 @router.get("/direction",
             tags=["direction"],
             response_description="Список Направлений обучения",
-            response_model=list[DirectionOut])
+            response_model=Page[DirectionOut])
 async def get_direction(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Направлений обучения
