@@ -2,7 +2,7 @@ import jwt
 import bcrypt
 from datetime import timedelta, datetime
 
-from api.authentication.schemas import UserSchema
+from api.user.schemas import UserSchema
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_DAYS
 
 TOKEN_TYPE_FILED = "type"
@@ -62,8 +62,7 @@ def hash_password(password: str) -> bytes:
     :return: Зашифрованный пароль
     """
     salt = bcrypt.gensalt()
-    pwd_bytes: bytes = password.encode()
-    return bcrypt.hashpw(pwd_bytes, salt)
+    return bcrypt.hashpw(password, salt)
 
 
 def validate_password(password: bytes, hashed_password: bytes) -> bool:
@@ -103,9 +102,8 @@ def create_access_token(user: UserSchema) -> str:
     :param user: Данные пользователя
     :return: ACCESS токен
     """
-    jwt_payload = {"sub": user.username,
-                   "username": user.username,
-                   "email": user.email}
+    jwt_payload = {"sub": user.login,
+                   "username": user.login}
 
     return create_jwt(token_type=ACCESS_TOKEN_TYPE,
                       token_data=jwt_payload,
@@ -118,7 +116,7 @@ def create_refresh_token(user: UserSchema):
     :param user: Данные пользователя
     :return: REFRESH токен
     """
-    jwt_payload = {"sub": user.username}
+    jwt_payload = {"sub": user.login}
 
     return create_jwt(token_type=REFRESH_TOKEN_TYPE,
                       token_data=jwt_payload,

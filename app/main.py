@@ -14,6 +14,8 @@ from api.students_list.number_contingent import endpoints as number_contingent_e
 from api.students_list.student_cards import endpoints as student_cards_endpoints
 from api.authentication import endpoints as authentication_endpoints
 from api.excel import endpoints as excel_endpoints
+from api.user import endpoints as user_endpoints
+
 
 app = FastAPI(title="Contingent")
 
@@ -42,5 +44,7 @@ app.include_router(student_cards_endpoints.router)
 app.include_router(student_card_endpoints.router)
 app.include_router(excel_endpoints.router)
 app.include_router(db_endpoints.router)
+app.include_router(user_endpoints.router)
+
 
 
