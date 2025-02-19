@@ -1,7 +1,7 @@
 import logging
 
 from fastapi import HTTPException, status
-from sqlalchemy import select, delete, exc
+from sqlalchemy import select, delete, update, exc
 
 from db.database import engine, SessionLocal, Base
 
@@ -68,6 +68,38 @@ async def get_table_data(db, table, item_id=None):
         stmt = select(table) if not item_id else select(table).where(table.id == item_id)
         result = await db.execute(stmt)
         return result.scalars().all()
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
+
+
+async def change_data(db, data):
+    """
+    Функция для изменения параметров переданного объекта
+    :param db: Объект сессии
+    :param data: Словарь, содержащий имя таблицы,
+     параметры для изменения, идентификатор объекта
+    :return: Измененный объект
+    """
+    obj_id = data.get("id")
+    table = data.get("table")
+    parameters = data.get("parameters")
+    obj_id_db = table.id
+
+    try:
+        for parameter, new_val in parameters.items():
+            stmt = update(table).where(obj_id_db == obj_id)
+            stmt = stmt.values({f"{parameter}": new_val})
+            await db.execute(stmt)
+        await db.commit()
+
+        stmt = select(table).where(obj_id_db == obj_id)
+        result = await db.execute(stmt)
+        updated_data = result.scalars().all()
+        return updated_data
+    except exc.IntegrityError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"IntegrityError: AlreadyExists")
     except exc.SQLAlchemyError as e:
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")

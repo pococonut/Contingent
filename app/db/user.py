@@ -56,4 +56,3 @@ async def get_users_from_db(db):
         users_from_db[user_db.login] = user_db
 
     return users_from_db
-

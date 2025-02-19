@@ -2,9 +2,8 @@ from fastapi import Depends, APIRouter
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_table_data
-from db.db_commands import get_db, add_data_to_table, delete_object
-from db.structure_commands import get_structures_data, change_structure_data
+from db.db_commands import get_table_data, change_data, get_db, add_data_to_table, delete_object
+from db.structure_commands import get_structures_data
 from api.structure.subgroup.models import SubgroupData
 from api.structure.subgroup.schemas import SubgroupIn, SubgroupOut
 
@@ -74,7 +73,7 @@ async def path_subgroup(subgroup_id: int,
             "table": SubgroupData,
             "parameters": parameters}
 
-    updated_data = await change_structure_data(db, data)
+    updated_data = await change_data(db, data)
     return updated_data
 
 
