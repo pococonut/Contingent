@@ -1,9 +1,9 @@
 from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.user import add_user_to_db
+from db.user import add_user_to_db, get_user_by_name
 from db.db_commands import get_db, change_data, delete_object, get_table_data
-from api.user.schemas import UserSchema, UserSchemaOut
+from api.user.schemas import UserSchema, UserSchemaOut, UserFullName
 from api.user.models import User
 
 router = APIRouter()
@@ -32,6 +32,37 @@ async def get_users(db: AsyncSession = Depends(get_db)):
     """
     users = await get_table_data(db, User)
     return users
+
+
+@router.get("/user/{user_id}",
+            tags=['user'],
+            response_model=list[UserSchemaOut],
+            response_description="Пользователь")
+async def get_user_id(user_id: int,
+                      db: AsyncSession = Depends(get_db)):
+    """
+    Используется для получения данных Пользователя по идентификатору
+    """
+    user = await get_table_data(db, User, user_id)
+    return user
+
+
+@router.get("/user_by_name",
+            tags=['user'],
+            response_model=list[UserSchemaOut],
+            response_description="Список Пользователей")
+async def get_user_name(first_name: str,
+                        last_name: str,
+                        middle_name: str | None = None,
+                        db: AsyncSession = Depends(get_db)):
+    """
+    Используется для получения данных Пользователя по ФИО
+    """
+    user_name = {"first_name": first_name,
+                 "last_name": last_name,
+                 "middle_name": middle_name}
+    user = await get_user_by_name(db, user_name)
+    return user
 
 
 @router.patch("/user/{user_id}",

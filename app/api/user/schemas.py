@@ -24,3 +24,12 @@ class UserSchemaOut(APIBase):
     last_name: str
     middle_name: str | None = None
     role: str
+
+
+class UserFullName(APIBase):
+    """
+    Схема полного имени пользователя
+    """
+    first_name: str
+    last_name: str
+    middle_name: str | None = None
