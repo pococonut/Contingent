@@ -13,5 +13,5 @@ services:
       - backend_users
 
 networks:
-  backend:
+  backend_users:
     external: true
