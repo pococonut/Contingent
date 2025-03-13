@@ -12,6 +12,7 @@ class OtherData(Base):
     Модель таблицы об остальной информации студента.
     """
     __tablename__ = 'other_data'
+    __table_args__ = {'schema': 'test'}
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     parents: Mapped[str] = mapped_column(nullable=True)
@@ -19,9 +20,6 @@ class OtherData(Base):
     relatives_works: Mapped[str] = mapped_column(nullable=True)
     relatives_addresses: Mapped[str] = mapped_column(nullable=True)
 
-    personal_id: Mapped[int] = mapped_column(ForeignKey('personal_data.id'), nullable=False)
+    personal_id: Mapped[int] = mapped_column(nullable=False)
 
-    __table_args__ = (ForeignKeyConstraint(['personal_id'], ['personal_data.id'], ondelete='CASCADE'),)
-
-    personal: Mapped["PersonalData"] = relationship("PersonalData", back_populates="other")
 

@@ -10,6 +10,7 @@ class PersonalData(Base):
     Модель таблицы личной информации студента.
     """
     __tablename__ = 'personal_data'
+    __table_args__ = {'schema': 'test'}
 
     id: Mapped[int] = mapped_column(primary_key=True)
     firstname: Mapped[str] = mapped_column(nullable=True)
@@ -26,20 +27,3 @@ class PersonalData(Base):
     general_status: Mapped[str] = mapped_column(nullable=True)
     gender: Mapped[str] = mapped_column(nullable=True)
 
-    educational: Mapped["EducationalData"] = relationship("EducationalData", back_populates="personal",
-                                                          uselist=False, cascade="all, delete-orphan")
-
-    contact: Mapped["ContactData"] = relationship("ContactData", back_populates="personal",
-                                                  uselist=False, cascade="all, delete-orphan")
-    benefits: Mapped["BenefitsData"] = relationship("BenefitsData", back_populates="personal",
-                                                    uselist=False, cascade="all, delete-orphan")
-    military: Mapped["MilitaryData"] = relationship("MilitaryData", back_populates="personal",
-                                                    uselist=False, cascade="all, delete-orphan")
-    stipend: Mapped["StipendData"] = relationship("StipendData", back_populates="personal",
-                                                  uselist=False, cascade="all, delete-orphan")
-    other: Mapped["OtherData"] = relationship("OtherData", back_populates="personal",
-                                              uselist=False, cascade="all, delete-orphan")
-    history: Mapped["HistoryData"] = relationship("HistoryData", back_populates="personal",
-                                                  uselist=False, cascade="all, delete-orphan")
-    order: Mapped["OrderData"] = relationship("OrderData", back_populates="personal",
-                                              uselist=False, cascade="all, delete-orphan")

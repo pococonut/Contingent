@@ -12,14 +12,12 @@ class StipendData(Base):
     Модель таблицы информации о стипендии студента.
     """
     __tablename__ = 'stipend_data'
+    __table_args__ = {'schema': 'test'}
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     form: Mapped[str] = mapped_column(nullable=True)
     amount: Mapped[str] = mapped_column(nullable=True)
 
-    personal_id: Mapped[int] = mapped_column(ForeignKey('personal_data.id'), nullable=False)
+    personal_id: Mapped[int] = mapped_column(nullable=False)
 
-    __table_args__ = (ForeignKeyConstraint(['personal_id'], ['personal_data.id'], ondelete='CASCADE'),)
-
-    personal: Mapped["PersonalData"] = relationship("PersonalData", back_populates="stipend")
 
