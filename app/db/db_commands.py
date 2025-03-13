@@ -1,7 +1,9 @@
 import logging
 
 from fastapi import HTTPException, status
+from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select, delete, update, exc
+from asyncpg.exceptions import StringDataRightTruncationError
 
 from db.database import engine, SessionLocal, Base
 
@@ -52,6 +54,10 @@ async def add_data_to_table(db, data, table):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"DataError: {e}")
     except exc.SQLAlchemyError as e:
         logging.error(e)
+        print(e)
+        if "StringDataRightTruncationError" in str(e.orig):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail=f"MaxLengthError: Exceeding the character limit")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
 
 
@@ -66,8 +72,8 @@ async def get_table_data(db, table, item_id=None):
     """
     try:
         stmt = select(table) if not item_id else select(table).where(table.id == item_id)
-        result = await db.execute(stmt)
-        return result.scalars().all()
+        result = await paginate(db, stmt)
+        return result
     except exc.SQLAlchemyError as e:
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")

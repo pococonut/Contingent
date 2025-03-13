@@ -1,4 +1,5 @@
 from fastapi import Depends, APIRouter
+from fastapi_pagination import Page, paginate
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -34,7 +35,7 @@ async def post_subgroup(subgroup: SubgroupIn,
 @router.get("/subgroup",
             tags=["subgroup"],
             response_description="Список Подгрупп",
-            response_model=list[SubgroupOut])
+            response_model=Page[SubgroupOut])
 async def get_subgroup(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Подгрупп
@@ -46,7 +47,7 @@ async def get_subgroup(db: AsyncSession = Depends(get_db)):
 @router.get("/subgroup/{subgroup_id}",
             tags=["subgroup"],
             response_description="Подгруппа",
-            response_model=list[SubgroupOut])
+            response_model=Page[SubgroupOut])
 async def get_subgroup(subgroup_id: int,
                        db: AsyncSession = Depends(get_db)):
     """

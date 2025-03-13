@@ -3,7 +3,7 @@ from db.database import APIBase
 
 class GroupIn(APIBase):
     """
-    Схема направления
+    Входная схема направления
     """
     direction: str
     course: str
@@ -13,7 +13,7 @@ class GroupIn(APIBase):
 
 class GroupOut(APIBase):
     """
-    Схема направления
+    Выходная схема направления
     """
     id: int
     direction: str

@@ -1,4 +1,5 @@
 from fastapi import Depends, APIRouter
+from fastapi_pagination import Page, paginate
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -33,7 +34,7 @@ async def post_group(group: GroupIn,
 @router.get("/group",
             tags=["group"],
             response_description="Список Групп",
-            response_model=list[GroupOut])
+            response_model=Page[GroupOut])
 async def get_group(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка ФГОСов

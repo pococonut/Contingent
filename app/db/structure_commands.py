@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import HTTPException, status
+from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select, update, exc
 
 from helpers.dicts import structure_models_dict
@@ -27,28 +28,12 @@ async def get_structures_data(db):
             .join(GroupData, GroupData.group == SubgroupData.group)
             .join(DirectionData, GroupData.direction == DirectionData.name).distinct())
 
-    parameters = ["id",
-                  "subgroup",
-                  "profile",
-                  "group",
-                  "course",
-                  "direction",
-                  "code",
-                  "qualification",
-                  "education_form"]
-
     try:
-        result = await db.execute(stmt)
+        result = await paginate(db, stmt)
     except exc.SQLAlchemyError as e:
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
-
-    data = []
-    for row in result:
-        row_data = dict((name, row[idx]) for idx, name in enumerate(parameters))
-        data.append(row_data)
-
-    return data
+    return result
 
 
 async def change_structure_data(db, data):

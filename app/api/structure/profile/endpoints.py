@@ -1,4 +1,5 @@
 from fastapi import Depends, APIRouter
+from fastapi_pagination import Page, paginate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_table_data, change_data, get_db, add_data_to_table, delete_object
@@ -27,7 +28,7 @@ async def post_profile(profile: ProfileIn,
 @router.get("/profile",
             tags=["profile"],
             response_description="Список Профилей",
-            response_model=list[ProfileOut])
+            response_model=Page[ProfileOut])
 async def get_profile(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Профилей

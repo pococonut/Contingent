@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_pagination import Page, add_pagination, paginate
 
 from api.db import endpoints as db_endpoints
 from api.structure.direction import endpoints as direction_endpoints
@@ -17,7 +18,9 @@ from api.excel import endpoints as excel_endpoints
 from api.user import endpoints as user_endpoints
 
 
+
 app = FastAPI(title="Contingent")
+add_pagination(app)
 
 origins = [
     "http://localhost:5173",
