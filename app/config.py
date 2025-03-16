@@ -3,11 +3,7 @@ import os
 from dotenv import load_dotenv
 
 
-env_file_path = '../.env'
-if not os.path.isfile(env_file_path):
-    load_dotenv()
-else:
-    load_dotenv(env_file_path)
+load_dotenv()
 
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')

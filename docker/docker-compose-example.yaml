@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  <service_name>:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    container_name: <container_name>
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "<port>:8000"
+    networks:
+      - <network_name>
+    env_file:
+      - ../app/.env
+
+networks:
+  <network_name>:
+    external: true
