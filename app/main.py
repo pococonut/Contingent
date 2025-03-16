@@ -18,7 +18,6 @@ from api.excel import endpoints as excel_endpoints
 from api.user import endpoints as user_endpoints
 
 
-
 app = FastAPI(title="Contingent")
 add_pagination(app)
 

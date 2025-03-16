@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import Depends, Query, APIRouter
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db, add_data_to_table, get_table_data
@@ -74,16 +75,19 @@ async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
 
 @router.get("/planned_number_contingent",
             tags=['students list'],
-            response_description="Планируемый численный список студентов")
-async def get_planned_num_list(skip: Annotated[int | None, Query()] = None,
-                               limit: Annotated[int | None, Query()] = None,
-                               db: AsyncSession = Depends(get_db)):
+            response_description="Планируемый численный список студентов",
+            response_model=Page[PlannedNumContingentSh])
+async def get_planned_num_list(
+    # skip: Annotated[int | None, Query()] = None,
+    # limit: Annotated[int | None, Query()] = None,
+    db: AsyncSession = Depends(get_db)
+):
     """
     Используется для получения планируемого численного списка студентов
     - skip: Пропускает заданное количество элементов
     - limit: Ограничивает количество возвращаемых элементов
     """
     planned_contingent = await get_table_data(db, PlannedNumContingent)
-    without_ids = get_rid_of_ids(planned_contingent)
-    limit_data = make_limit_list(without_ids, skip, limit)
-    return limit_data
+    # without_ids = get_rid_of_ids(planned_contingent)
+    # limit_data = make_limit_list(without_ids, skip, limit)
+    return planned_contingent
