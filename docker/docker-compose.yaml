@@ -6,9 +6,9 @@ services:
       context: ../
       dockerfile: ./docker/Dockerfile
     container_name: backend_test
-    command: uvicorn main:app --host 0.0.0.0 --port 8080
+    command: uvicorn main:app --host 0.0.0.0 --port ${APP_PORT}
     ports:
-      - 8080:8080
+      - ${EXTERNAL_PORT}:${APP_PORT}
     networks:
       - backend_test
     env_file:
