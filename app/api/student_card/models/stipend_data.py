@@ -12,7 +12,7 @@ class StipendData(Base):
     Модель таблицы информации о стипендии студента.
     """
     __tablename__ = 'stipend_data'
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     form: Mapped[str] = mapped_column(nullable=True)

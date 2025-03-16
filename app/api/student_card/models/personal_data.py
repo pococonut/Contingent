@@ -10,7 +10,7 @@ class PersonalData(Base):
     Модель таблицы личной информации студента.
     """
     __tablename__ = 'personal_data'
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True)
     firstname: Mapped[str] = mapped_column(nullable=True)

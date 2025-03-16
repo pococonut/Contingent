@@ -12,7 +12,7 @@ class MilitaryData(Base):
     Модель таблицы информации об отношении к военной службе студента.
     """
     __tablename__ = 'military_data'
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     status: Mapped[str] = mapped_column(nullable=True)

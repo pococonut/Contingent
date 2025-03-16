@@ -12,7 +12,7 @@ class HistoryData(Base):
     Модель таблицы информации об истории студента
     """
     __tablename__ = 'history_data'
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     movements: Mapped[str] = mapped_column(nullable=True)

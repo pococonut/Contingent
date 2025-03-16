@@ -7,7 +7,7 @@ class PlannedNumContingent(Base):
     Модель таблицы планируемого численного списка студентов
     """
     __tablename__ = 'planned_num_contingent'
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     direction: Mapped[str] = mapped_column(nullable=False)

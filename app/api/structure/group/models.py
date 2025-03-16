@@ -10,7 +10,7 @@ class GroupData(Base):
     Модель таблицы групп
     """
     __tablename__ = "group"
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     direction: Mapped[str] = mapped_column(String(db_config.MAX_LEN_DIRECTION_NAME), nullable=True)

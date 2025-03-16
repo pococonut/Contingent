@@ -9,7 +9,7 @@ class User(Base):
     Таблица данных пользователя
     """
     __tablename__ = 'user'
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 

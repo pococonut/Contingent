@@ -12,7 +12,7 @@ class EducationalData(Base):
     Модель таблицы учебной деятельности студента.
     """
     __tablename__ = 'educational_data'
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     faculty: Mapped[str] = mapped_column(nullable=True)

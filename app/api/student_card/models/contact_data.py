@@ -12,7 +12,7 @@ class ContactData(Base):
     Модель таблицы контактной информации студента.
     """
     __tablename__ = 'contact_data'
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     number: Mapped[str] = mapped_column(nullable=True)

@@ -12,7 +12,7 @@ class OrderData(Base):
     Модель таблицы информации о приказах.
     """
     __tablename__ = 'order_data'
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     order: Mapped[str] = mapped_column(nullable=True)

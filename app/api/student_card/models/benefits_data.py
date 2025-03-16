@@ -12,7 +12,7 @@ class BenefitsData(Base):
     Модель таблицы информации о льготах студента.
     """
     __tablename__ = 'benefits_data'
-    __table_args__ = {'schema': 'test'}
+    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     benefits: Mapped[str] = mapped_column(nullable=True)
