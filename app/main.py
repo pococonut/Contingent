@@ -17,13 +17,10 @@ from api.authentication import endpoints as authentication_endpoints
 from api.excel import endpoints as excel_endpoints
 from api.user import endpoints as user_endpoints
 
-
 app = FastAPI(title="Contingent")
 add_pagination(app)
 
-origins = [
-    "http://localhost:5173",
-]
+origins = ['*']
 
 app.add_middleware(
     CORSMiddleware,
@@ -47,6 +44,3 @@ app.include_router(student_card_endpoints.router)
 app.include_router(excel_endpoints.router)
 app.include_router(db_endpoints.router)
 app.include_router(user_endpoints.router)
-
-
-
