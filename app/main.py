@@ -17,9 +17,7 @@ from api.excel import endpoints as excel_endpoints
 
 app = FastAPI(title="Contingent")
 
-origins = [
-    "http://localhost:5173",
-]
+origins = ['*']
 
 app.add_middleware(
     CORSMiddleware,
