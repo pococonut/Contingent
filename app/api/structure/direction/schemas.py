@@ -3,7 +3,7 @@ from db.database import APIBase
 
 class DirectionIn(APIBase):
     """
-    Схема направления
+    Входная схема направления
     """
     name: str
     short_name: str
@@ -15,7 +15,7 @@ class DirectionIn(APIBase):
 
 class DirectionOut(APIBase):
     """
-    Схема направления
+    Выходная схема направления
     """
     id: int
     name: str

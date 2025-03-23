@@ -3,7 +3,7 @@ from db.database import APIBase
 
 class DepartmentIn(APIBase):
     """
-    Схема кафедры
+    Входная схема кафедры
     """
     name: str
     short_name: str
@@ -11,7 +11,7 @@ class DepartmentIn(APIBase):
 
 class DepartmentOut(APIBase):
     """
-    Схема кафедры
+    Выходная схема кафедры
     """
     id: int
     name: str
