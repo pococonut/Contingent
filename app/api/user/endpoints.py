@@ -1,4 +1,5 @@
 from fastapi import Depends, APIRouter
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.user import add_user_to_db, get_user_by_name
@@ -24,7 +25,7 @@ async def post_user(user: UserSchema,
 
 @router.get("/users",
             tags=['user'],
-            response_model=list[UserSchemaOut],
+            response_model=Page[UserSchemaOut],
             response_description="Список Пользователей")
 async def get_users(db: AsyncSession = Depends(get_db)):
     """
@@ -36,7 +37,7 @@ async def get_users(db: AsyncSession = Depends(get_db)):
 
 @router.get("/user/{user_id}",
             tags=['user'],
-            response_model=list[UserSchemaOut],
+            response_model=Page[UserSchemaOut],
             response_description="Пользователь")
 async def get_user_id(user_id: int,
                       db: AsyncSession = Depends(get_db)):
@@ -49,7 +50,7 @@ async def get_user_id(user_id: int,
 
 @router.get("/user_by_name",
             tags=['user'],
-            response_model=list[UserSchemaOut],
+            response_model=Page[UserSchemaOut],
             response_description="Список Пользователей")
 async def get_user_name(first_name: str,
                         last_name: str,

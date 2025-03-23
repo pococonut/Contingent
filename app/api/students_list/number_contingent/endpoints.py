@@ -78,8 +78,6 @@ async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
             response_description="Планируемый численный список студентов",
             response_model=Page[PlannedNumContingentSh])
 async def get_planned_num_list(
-    # skip: Annotated[int | None, Query()] = None,
-    # limit: Annotated[int | None, Query()] = None,
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -88,6 +86,4 @@ async def get_planned_num_list(
     - limit: Ограничивает количество возвращаемых элементов
     """
     planned_contingent = await get_table_data(db, PlannedNumContingent)
-    # without_ids = get_rid_of_ids(planned_contingent)
-    # limit_data = make_limit_list(without_ids, skip, limit)
     return planned_contingent
