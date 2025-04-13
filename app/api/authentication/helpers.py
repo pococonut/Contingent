@@ -3,7 +3,7 @@ import bcrypt
 from datetime import timedelta, datetime
 
 from api.user.schemas import UserSchema
-from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_DAYS
+from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 TOKEN_TYPE_FILED = "type"
 ACCESS_TOKEN_TYPE = "access"
@@ -39,7 +39,7 @@ def encode_jwt(payload: dict,
     return encoded
 
 
-def decode_jwt(token: str,
+def decode_jwt(token: bytes,
                key: str = str(SECRET_KEY),
                algorithm: str = str(ALGORITHM)):
     """
@@ -55,7 +55,7 @@ def decode_jwt(token: str,
     return decoded
 
 
-def hash_password(password: str) -> bytes:
+def hash_password(password: bytes) -> bytes:
     """
     Функция предназначена для шифрования пароля пользователя
     :param password: Пароль пользователя
@@ -121,4 +121,3 @@ def create_refresh_token(user: UserSchema):
     return create_jwt(token_type=REFRESH_TOKEN_TYPE,
                       token_data=jwt_payload,
                       expire_timedelta=timedelta(days=int(REFRESH_TOKEN_EXPIRE_DAYS)))
-

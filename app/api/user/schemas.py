@@ -1,5 +1,5 @@
 from db.database import APIBase
-    
+
 
 class UserSchema(APIBase):
     """
@@ -8,12 +8,19 @@ class UserSchema(APIBase):
     first_name: str
     last_name: str
     middle_name: str | None = None
+    short_name: str | None = None
     login: str
     password: bytes
+    birth: str | None = None
+    structure: str | None = None
+    gender: str | None = None
     role: str
-    active: bool | None = None
     access_token: str | None = None
     refresh_token: str | None = None
+
+    """@field_serializer("password")
+    def serialize_password(self, password: bytes, _info):
+        return hash_password(password)"""
 
 
 class UserSchemaOut(APIBase):
@@ -23,6 +30,12 @@ class UserSchemaOut(APIBase):
     first_name: str
     last_name: str
     middle_name: str | None = None
+    short_name: str | None = None
+    login: str
+    password: bytes
+    birth: str | None = None
+    structure: str | None = None
+    gender: str | None = None
     role: str
 
 

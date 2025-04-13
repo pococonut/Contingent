@@ -2,12 +2,10 @@ import logging
 
 from fastapi import HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
-from sqlalchemy import select, delete, exc, and_
+from sqlalchemy import select, exc, and_
 
 from api.user.models import User
 from db.db_commands import get_table_data
-from db.database import engine, SessionLocal, Base
-from api.authentication.helpers import hash_password
 
 
 async def add_user_to_db(db, user):
@@ -18,22 +16,10 @@ async def add_user_to_db(db, user):
     :return: Добавленные данные
     """
     try:
-        user_model = User(
-            first_name=user.first_name,
-            last_name=user.last_name,
-            middle_name=user.middle_name,
-            login=user.login,
-            password=hash_password(user.password),
-            role=user.role,
-            active=user.active,
-            access_token=user.access_token,
-            refresh_token=user.refresh_token)
-
+        user_model = User(**user.dict())
         db.add(user_model)
         await db.commit()
         await db.refresh(user_model)
-        print(user_model.password)
-
         return user_model
     except exc.IntegrityError as e:
         logging.error(e)
