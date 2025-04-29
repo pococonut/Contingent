@@ -1,3 +1,5 @@
+from pydantic import EmailStr
+
 from db.database import APIBase
 
 
@@ -11,12 +13,14 @@ class UserSchema(APIBase):
     short_name: str | None = None
     login: str
     password: bytes
+    email: EmailStr | None = None
+    active: bool | None = True
     birth: str | None = None
     structure: str | None = None
     gender: str | None = None
     role: str
-    access_token: str | None = None
-    refresh_token: str | None = None
+    # access_token: str | None = None
+    # refresh_token: str | None = None
 
     """@field_serializer("password")
     def serialize_password(self, password: bytes, _info):
@@ -33,6 +37,8 @@ class UserSchemaOut(APIBase):
     short_name: str | None = None
     login: str
     password: bytes
+    email: EmailStr | None = None
+    active: bool | None = True
     birth: str | None = None
     structure: str | None = None
     gender: str | None = None

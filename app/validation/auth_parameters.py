@@ -5,14 +5,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.user import get_users_from_db
 from db.db_commands import get_db
 from api.authentication.helpers import hash_password
-from api.user.schemas import UserSchema
+from api.authentication.schemas import UserSchemaAuth
 from api.authentication import helpers
 from api.user.models import User
 
 http_bearer = HTTPBearer(auto_error=False)
 
 
-async def validate_auth_user(user_from_req: UserSchema,
+async def validate_auth_user(user_from_req: UserSchemaAuth,
                              db: AsyncSession = Depends(get_db)):
     """
     Функция проверяет существование пользователя в БД,
@@ -42,7 +42,7 @@ async def validate_auth_user(user_from_req: UserSchema,
 
 def get_current_token_payload(
         credentials: HTTPAuthorizationCredentials = Depends(http_bearer)
-) -> UserSchema:
+) -> UserSchemaAuth:
     """
     Функция предназначена для декодирования полезной нагрузки токена
     и проверки статуса авторизации пользователя
@@ -60,7 +60,7 @@ def get_current_token_payload(
     return payload
 
 
-async def get_user_by_token_sub(db, payload: dict) -> UserSchema:
+async def get_user_by_token_sub(db, payload: dict) -> UserSchemaAuth:
     """
     Функция проверяет существование пользователя в БД
     :param db: Объект сессии
@@ -104,7 +104,7 @@ async def get_current_auth_user(db: AsyncSession = Depends(get_db),
     return res
 
 
-def get_current_active_auth_user(user: UserSchema = Depends(get_current_auth_user)):
+def get_current_active_auth_user(user: UserSchemaAuth = Depends(get_current_auth_user)):
     """
     Функция предназначена для проверки статуса активности пользователя
     :param user: Данные пользователя

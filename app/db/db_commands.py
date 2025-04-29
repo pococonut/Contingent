@@ -3,7 +3,6 @@ import logging
 from fastapi import HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select, delete, update, exc
-from asyncpg.exceptions import StringDataRightTruncationError
 
 from db.database import engine, SessionLocal, Base
 
@@ -60,6 +59,24 @@ async def add_data_to_table(db, data, table):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
 
 
+async def get_table_data_paginate(db, table, item_id=None):
+    """
+    Функция для получения списка объектов с пагинацией из переданной таблицы БД,
+    если item_id=None, иначе функция возвращает данные конкретного объекта
+    :param item_id: Уникальный идентификатор объекта
+    :param db: Объект сессии
+    :param table: Таблица БД
+    :return: Данные таблицы
+    """
+    try:
+        stmt = select(table) if item_id is None else select(table).where(table.id == item_id)
+        result = await paginate(db, stmt)
+        return result
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
+
+
 async def get_table_data(db, table, item_id=None):
     """
     Функция для получения списка объектов из переданной таблицы БД,
@@ -70,9 +87,9 @@ async def get_table_data(db, table, item_id=None):
     :return: Данные таблицы
     """
     try:
-        stmt = select(table) if not item_id else select(table).where(table.id == item_id)
-        result = await paginate(db, stmt)
-        return result
+        stmt = select(table) if item_id is None else select(table).where(table.id == item_id)
+        result = await db.execute(stmt)
+        return result.scalars().all()
     except exc.SQLAlchemyError as e:
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")

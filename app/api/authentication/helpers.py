@@ -2,8 +2,8 @@ import jwt
 import bcrypt
 from datetime import timedelta, datetime
 
-from api.user.schemas import UserSchema
-from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from api.authentication.schemas import UserSchemaAuth
+from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_DAYS
 
 TOKEN_TYPE_FILED = "type"
 ACCESS_TOKEN_TYPE = "access"
@@ -73,7 +73,7 @@ def validate_password(password: bytes, hashed_password: bytes) -> bool:
     :param hashed_password: Зашифрованный пароль пользователя
     :return: Булево значение: True - пароли совпали, иначе False
     """
-    return bcrypt.checkpw(password=password, hashed_password=hashed_password)
+    return password == hashed_password  # bcrypt.checkpw(password=password, hashed_password=hashed_password)
 
 
 def create_jwt(token_type: str,
@@ -96,7 +96,7 @@ def create_jwt(token_type: str,
                       expire_timedelta=expire_timedelta)
 
 
-def create_access_token(user: UserSchema) -> str:
+def create_access_token(user: UserSchemaAuth) -> str:
     """
     Функция предназначена для создания ACCESS токена
     :param user: Данные пользователя
@@ -110,7 +110,7 @@ def create_access_token(user: UserSchema) -> str:
                       expire_minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
 
 
-def create_refresh_token(user: UserSchema):
+def create_refresh_token(user: UserSchemaAuth):
     """
     Функция предназначена для создания REFRESH токена
     :param user: Данные пользователя

@@ -3,7 +3,7 @@ from fastapi import Depends, APIRouter
 from db.db_commands import get_db
 from api.authentication import helpers
 from api.authentication.schemas import TokenInfo
-from api.user.schemas import UserSchema
+from api.authentication.schemas import UserSchemaAuth
 from validation.auth_parameters import get_current_active_auth_user, get_current_auth_user_for_refresh, validate_auth_user
 
 
@@ -14,7 +14,7 @@ router = APIRouter()
              tags=['auth'],
              response_model=TokenInfo,
              response_description="ACCESS и REFRESH токены")
-async def auth_user_issue_jwt(user: UserSchema = Depends(validate_auth_user)):
+async def auth_user_issue_jwt(user: UserSchemaAuth = Depends(validate_auth_user)):
     """
     Используется для аутентификации пользователя:
     - user: Данные пользователя
@@ -30,7 +30,7 @@ async def auth_user_issue_jwt(user: UserSchema = Depends(validate_auth_user)):
              response_model=TokenInfo,
              response_model_exclude_none=True,
              response_description="Новый ACCESS токен")
-async def auth_refresh_jwt(user: UserSchema = Depends(get_current_auth_user_for_refresh)):
+async def auth_refresh_jwt(user: UserSchemaAuth = Depends(get_current_auth_user_for_refresh)):
     """
     Используется для обновления ACCESS токена
     - user: Данные пользователя
@@ -43,7 +43,7 @@ async def auth_refresh_jwt(user: UserSchema = Depends(get_current_auth_user_for_
 @router.get("/check_valid_token",
             tags=['auth'],
             response_description="Username и Email пользователя")
-async def check_valid_token(user: UserSchema = Depends(get_current_active_auth_user)):
+async def check_valid_token(user: UserSchemaAuth = Depends(get_current_active_auth_user)):
     """
     Используется для проверки актуальности токена
     - user: Данные пользователя

@@ -3,7 +3,7 @@ from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.user import add_user_to_db, get_user_by_name
-from db.db_commands import get_db, change_data, delete_object, get_table_data
+from db.db_commands import get_db, change_data, delete_object, get_table_data_paginate, get_table_data
 from api.user.schemas import UserSchema, UserSchemaOut
 from api.user.models import User
 
@@ -31,13 +31,13 @@ async def get_users(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка пользователей
     """
-    users = await get_table_data(db, User)
+    users = await get_table_data_paginate(db, User)
     return users
 
 
 @router.get("/user/{user_id}",
             tags=['user'],
-            response_model=Page[UserSchemaOut],
+            response_model=list[UserSchemaOut],
             response_description="Пользователь")
 async def get_user_id(user_id: int,
                       db: AsyncSession = Depends(get_db)):

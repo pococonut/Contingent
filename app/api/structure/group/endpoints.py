@@ -1,10 +1,9 @@
 from fastapi import Depends, APIRouter
-from fastapi_pagination import Page, paginate
+from fastapi_pagination import Page
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_table_data, change_data, get_db, add_data_to_table, delete_object
-from db.structure_commands import get_structures_data
+from db.db_commands import get_table_data, get_table_data_paginate, change_data, get_db, add_data_to_table, delete_object
 from api.structure.group.models import GroupData
 from api.structure.group.schemas import GroupIn, GroupOut
 
@@ -39,7 +38,7 @@ async def get_group(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка ФГОСов
     """
-    data = await get_table_data(db, GroupData)
+    data = await get_table_data_paginate(db, GroupData)
     return data
 
 

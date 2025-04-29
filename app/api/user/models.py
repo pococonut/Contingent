@@ -9,7 +9,6 @@ class User(Base):
     Таблица данных пользователя
     """
     __tablename__ = 'user'
-    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
@@ -19,6 +18,8 @@ class User(Base):
     short_name: Mapped[str] = mapped_column(String(50), nullable=True)
     login: Mapped[str] = mapped_column(String(100), unique=True, nullable=True)
     password: Mapped[bytes] = mapped_column(LargeBinary, unique=True, nullable=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, nullable=True)
     birth: Mapped[str] = mapped_column(String(50), nullable=True)
     structure: Mapped[str] = mapped_column(String(100), nullable=True)
     gender: Mapped[str] = mapped_column(String(50), nullable=False)

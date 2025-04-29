@@ -37,7 +37,14 @@ async def get_users_from_db(db):
     Функция для получения словаря пользователей
     :param db: Объект сессии
     """
-    users = await get_table_data(db, User)
+    try:
+        stmt = select(User)
+        result = await db.execute(stmt)
+        users = result.scalars().all()
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
+
     users_from_db = {}
     for user_db in users:
         users_from_db[user_db.login] = user_db

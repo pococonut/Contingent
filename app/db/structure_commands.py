@@ -4,7 +4,6 @@ from fastapi import HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select, update, exc
 
-from helpers.dicts import structure_models_dict
 from api.structure.direction.models import DirectionData
 from api.structure.group.models import GroupData
 from api.structure.subgroup.models import SubgroupData
