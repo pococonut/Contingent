@@ -31,6 +31,7 @@ class UserSchemaOut(APIBase):
     """
     Схема ответа для данных пользователя
     """
+    id: int
     first_name: str
     last_name: str
     middle_name: str | None = None
