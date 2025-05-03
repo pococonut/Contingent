@@ -13,7 +13,12 @@ services:
       - <network_name>
     env_file:
       - ../app/.env
+    volumes:
+      - ../static:/static
 
 networks:
   <network_name>:
     external: true
+
+volumes:
+  <service_name>:

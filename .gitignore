@@ -161,3 +161,4 @@ cython_debug/
 test.py
 tmp/
 docker/docker-compose.yaml
+static
