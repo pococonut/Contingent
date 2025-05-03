@@ -2,10 +2,9 @@ from typing import Annotated
 from fastapi import Depends, Query, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_db, add_data_to_table, get_table_data
-from db.filtering_cards_commands import get_filtered_cards
-from helpers.pagination import make_limit_dict, make_limit_list
-from validation.auth_parameters import get_current_active_auth_user
+from db.db_commands import get_db
+from db.students_list.db_commands import get_filtered_cards
+from helpers.pagination import make_limit_dict
 
 router = APIRouter()
 

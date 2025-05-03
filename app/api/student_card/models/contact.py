@@ -4,7 +4,7 @@ from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.database import Base
-from api.student_card.models.personal_data import PersonalData
+from api.student_card.models.personal import PersonalData
 
 
 class ContactData(Base):

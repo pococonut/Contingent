@@ -2,7 +2,7 @@ import jwt
 import bcrypt
 from datetime import timedelta, datetime
 
-from api.authentication.schemas import UserSchemaAuth
+from api.authentication.schemas.authentication import UserSchemaAuth
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_DAYS
 
 TOKEN_TYPE_FILED = "type"

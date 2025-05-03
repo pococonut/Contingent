@@ -4,19 +4,19 @@ from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.database import Base
-from api.student_card.models.personal_data import PersonalData
+from api.student_card.models.personal import PersonalData
 
 
-class HistoryData(Base):
+class OrderData(Base):
     """
-    Модель таблицы информации об истории студента
+    Модель таблицы информации о приказах.
     """
-    __tablename__ = 'history_data'
+    __tablename__ = 'order_data'
     
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    movements: Mapped[str] = mapped_column(nullable=True)
-    statuses: Mapped[str] = mapped_column(nullable=True)
+    order: Mapped[str] = mapped_column(nullable=True)
 
     personal_id: Mapped[int] = mapped_column(nullable=False)
+
 

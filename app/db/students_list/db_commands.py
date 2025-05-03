@@ -5,8 +5,8 @@ from fastapi import HTTPException, status
 from sqlalchemy import select, and_, exc
 
 from helpers.dicts import student_card_models_dict
-from api.student_card.models.personal_data import PersonalData
-from api.student_card.models.educational_data import EducationalData
+from api.student_card.models.personal import PersonalData
+from api.student_card.models.educational import EducationalData
 
 
 async def filters_check(db, filters_data):

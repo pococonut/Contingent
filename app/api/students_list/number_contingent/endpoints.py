@@ -4,12 +4,11 @@ from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db, add_data_to_table, get_table_data
-from db.filtering_cards_commands import get_filtered_cards
-from helpers.pagination import make_limit_dict, make_limit_list
+from db.students_list.db_commands import get_filtered_cards
+from helpers.pagination import make_limit_list
 from api.students_list.number_contingent.models import PlannedNumContingent
 from api.students_list.number_contingent.schemas import PlannedNumContingentSh
-from validation.auth_parameters import get_current_active_auth_user
-from api.students_list.number_contingent.helpers import get_students_number_contingent, get_rid_of_ids
+from api.students_list.number_contingent.helpers import get_students_number_contingent
 
 router = APIRouter()
 

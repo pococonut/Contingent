@@ -4,8 +4,7 @@ from fastapi import HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select, exc, and_
 
-from api.user.models import User
-from db.db_commands import get_table_data
+from api.user.models.user import User
 
 
 async def add_user_to_db(db, user):

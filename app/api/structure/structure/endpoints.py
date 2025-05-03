@@ -3,7 +3,7 @@ from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db
-from db.structure_commands import get_structures_data
+from db.structure.db_commands import get_structures_data
 from api.structure.structure.schemas import StructureOut
 
 router = APIRouter()

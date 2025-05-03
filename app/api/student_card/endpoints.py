@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.student_card.models.personal_data import PersonalData
-from validation.auth_parameters import get_current_active_auth_user
+from api.student_card.models.personal import PersonalData
 from helpers.dicts import student_card_models_dict, student_card_validation_dict, student_params_validation_dict
-from db.student_card_commands import change_card, format_card_to_dict, add_commit_students_card
+from db.student_card.db_commands import change_card, format_card_to_dict, add_commit_students_card
 from db.db_commands import get_db, delete_object
 from api.student_card.schemas.students_card import StudentsCardSh
 

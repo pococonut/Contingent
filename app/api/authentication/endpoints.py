@@ -1,9 +1,7 @@
 from fastapi import Depends, APIRouter
 
-from db.db_commands import get_db
 from api.authentication import helpers
-from api.authentication.schemas import TokenInfo
-from api.authentication.schemas import UserSchemaAuth
+from api.authentication.schemas import TokenInfo, UserSchemaAuth
 from validation.auth_parameters import get_current_active_auth_user, get_current_auth_user_for_refresh, validate_auth_user
 
 

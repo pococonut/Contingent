@@ -2,10 +2,10 @@ from fastapi import Depends, APIRouter
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.user import add_user_to_db, get_user_by_name
+from db.user.db_commands import add_user_to_db, get_user_by_name
 from db.db_commands import get_db, change_data, delete_object, get_table_data_paginate, get_table_data
-from api.user.schemas import UserSchema, UserSchemaOut
-from api.user.models import User
+from api.user.schemas.user import UserSchema, UserSchemaOut
+from api.user.models.user import User
 
 router = APIRouter()
 

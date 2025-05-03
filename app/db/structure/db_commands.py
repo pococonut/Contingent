@@ -4,9 +4,9 @@ from fastapi import HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select, update, exc
 
-from api.structure.direction.models import DirectionData
-from api.structure.group.models import GroupData
-from api.structure.subgroup.models import SubgroupData
+from api.structure.direction.models.direction import DirectionData
+from api.structure.group.models.group import GroupData
+from api.structure.subgroup.models.subgroup import SubgroupData
 
 
 async def get_structures_data(db):
