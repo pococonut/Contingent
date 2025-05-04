@@ -1,3 +1,4 @@
+from fastapi import UploadFile
 from pydantic import EmailStr
 
 from db.database import APIBase
@@ -38,6 +39,7 @@ class UserSchemaOut(APIBase):
     short_name: str | None = None
     login: str
     password: bytes
+    photo: str | None = None
     email: EmailStr | None = None
     active: bool | None = True
     birth: str | None = None

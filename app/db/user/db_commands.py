@@ -1,8 +1,9 @@
 import logging
 
+import aiofiles
 from fastapi import HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
-from sqlalchemy import select, exc, and_
+from sqlalchemy import select, exc, and_, update
 
 from api.user.models.user import User
 
@@ -75,6 +76,25 @@ async def get_user_by_name(db, user_name):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
 
 
-
-
+async def add_user_photo(db, user_id, file):
+    """
+    Функция для добавления фото пользователя
+    :param db: Объект сессии
+    :param user_id: id пользователя
+    :param file: Фото пользователя
+    """
+    data = await file.read()
+    file_path = f"../static/{user_id}"
+    file_route = f"/static/{user_id}"
+    async with aiofiles.open(file_path, 'wb') as f:
+        await f.write(data)
+    try:
+        stmt = update(User).where(User.id == user_id)
+        stmt = stmt.values({"photo": file_route})
+        await db.execute(stmt)
+        await db.commit()
+        return {"response": "Success"}
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
 
