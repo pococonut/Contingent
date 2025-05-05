@@ -21,7 +21,10 @@ from api.user import endpoints as user_endpoints
 app = FastAPI(title="Contingent")
 add_pagination(app)
 
-origins = ['*']
+origins = [
+    "http://localhost:5173",
+]
+
 
 app.add_middleware(
     CORSMiddleware,
