@@ -12,8 +12,8 @@ class UserSchema(APIBase):
     last_name: str
     middle_name: str | None = None
     short_name: str | None = None
-    login: str
-    password: bytes
+    username: str
+    password: str
     email: EmailStr | None = None
     active: bool | None = True
     birth: str | None = None
@@ -37,8 +37,8 @@ class UserSchemaOut(APIBase):
     last_name: str
     middle_name: str | None = None
     short_name: str | None = None
-    login: str
-    password: bytes
+    username: str
+    password: str
     photo: str | None = None
     email: EmailStr | None = None
     active: bool | None = True

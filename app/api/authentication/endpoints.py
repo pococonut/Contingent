@@ -48,6 +48,6 @@ async def check_valid_token(user: UserSchemaAuth = Depends(get_current_active_au
     """
     return {"first_name": user.first_name,
             "last_name": user.last_name,
-            "login": user.login,
+            "username": user.username,
             "role": user.role}
 

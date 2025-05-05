@@ -47,7 +47,7 @@ async def get_users_from_db(db):
 
     users_from_db = {}
     for user_db in users:
-        users_from_db[user_db.login] = user_db
+        users_from_db[user_db.username] = user_db
 
     return users_from_db
 
