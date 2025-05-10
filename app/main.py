@@ -49,4 +49,4 @@ app.include_router(user_endpoints.router)
 app.include_router(authentication_endpoints.router)
 app.include_router(db_endpoints.router)
 
-app.mount("/static", StaticFiles(directory="../static"), name="static")
+app.mount("/user_photo", StaticFiles(directory="../user_photo"), name="user_photo")

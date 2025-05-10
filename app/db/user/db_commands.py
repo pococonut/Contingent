@@ -90,8 +90,8 @@ async def add_user_photo(db, user_id, file):
     :param file: Фото пользователя
     """
     data = await file.read()
-    file_path = f"../static/{user_id}"
-    file_route = f"/static/{user_id}"
+    file_path = f"../user_photo/{user_id}"
+    file_route = f"/user_photo/{user_id}"
     async with aiofiles.open(file_path, 'wb') as f:
         await f.write(data)
     try:
