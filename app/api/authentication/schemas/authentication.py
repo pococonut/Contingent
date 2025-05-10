@@ -16,7 +16,7 @@ class UserSchemaAuth(APIBase):
     """
     Схема данных пользователя
     """
-    username: str
+    login: str
     password: str
     email: EmailStr | None = None
     active: bool | None = True

@@ -102,8 +102,8 @@ def create_access_token(user: UserSchemaAuth) -> str:
     :param user: Данные пользователя
     :return: ACCESS токен
     """
-    jwt_payload = {"sub": user.username,
-                   "username": user.username}
+    jwt_payload = {"sub": user.login,
+                   "username": user.login}
 
     return create_jwt(token_type=ACCESS_TOKEN_TYPE,
                       token_data=jwt_payload,
@@ -116,7 +116,7 @@ def create_refresh_token(user: UserSchemaAuth):
     :param user: Данные пользователя
     :return: REFRESH токен
     """
-    jwt_payload = {"sub": user.username}
+    jwt_payload = {"sub": user.login}
 
     return create_jwt(token_type=REFRESH_TOKEN_TYPE,
                       token_data=jwt_payload,

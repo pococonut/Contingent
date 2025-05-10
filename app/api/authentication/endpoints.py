@@ -40,7 +40,7 @@ async def auth_refresh_jwt(user: UserSchemaAuth = Depends(get_current_auth_user_
 
 @router.get("/check_valid_token",
             tags=['auth'],
-            response_description="Username и Email пользователя")
+            response_description="Login и Email пользователя")
 async def check_valid_token(user: UserSchemaAuth = Depends(get_current_active_auth_user)):
     """
     Используется для проверки актуальности токена
@@ -48,6 +48,6 @@ async def check_valid_token(user: UserSchemaAuth = Depends(get_current_active_au
     """
     return {"first_name": user.first_name,
             "last_name": user.last_name,
-            "username": user.username,
+            "login": user.login,
             "role": user.role}
 

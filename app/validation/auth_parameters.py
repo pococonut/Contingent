@@ -19,18 +19,17 @@ async def validate_auth_user(user_from_req: UserSchemaAuth,
     :param user_from_req: Данные пользователя
     :return: Данные пользователя, если не возникло исключения
     """
-    username = user_from_req.username
+    username = user_from_req.login
     password = user_from_req.password
     users_from_db = await get_users_from_db(db)
     unauthed_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid username or password!")
+        detail="Invalid login or password!")
 
     if not (user := users_from_db.get(username)):
         raise unauthed_exc
 
     if password != users_from_db.get(username).password:  # not helpers.validate_password(password=password, hashed_password=users_from_db.get(username).password):
-        print(password, users_from_db.get(username).password)
         raise unauthed_exc
 
     if not user.active:

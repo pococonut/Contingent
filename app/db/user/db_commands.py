@@ -16,7 +16,13 @@ async def add_user_to_db(db, user):
     :return: Добавленные данные
     """
     try:
-        user_model = User(**user.dict())
+        user_dict = user.dict()
+
+        first_name_0 = f"{user_dict.get('first_name')[0]}."
+        middle_name_0 = f"{user_dict.get('middle_name')[0]}." if user_dict.get('middle_name') else ""
+        user_dict["short_name"] = f"{user_dict.get('last_name')} {first_name_0}{middle_name_0}"
+
+        user_model = User(**user_dict)
         db.add(user_model)
         await db.commit()
         await db.refresh(user_model)
@@ -47,7 +53,7 @@ async def get_users_from_db(db):
 
     users_from_db = {}
     for user_db in users:
-        users_from_db[user_db.username] = user_db
+        users_from_db[user_db.login] = user_db
 
     return users_from_db
 
