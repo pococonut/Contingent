@@ -32,8 +32,8 @@ async def validate_auth_user(user_from_req: UserSchemaAuth,
     if password != users_from_db.get(username).password:  # not helpers.validate_password(password=password, hashed_password=users_from_db.get(username).password):
         raise unauthed_exc
 
-    if not user.active:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="user inactive")
+    # if not user.active:
+    #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="user inactive")
 
     return user
 
@@ -108,13 +108,13 @@ def get_current_active_auth_user(user: UserSchemaAuth = Depends(get_current_auth
     :param user: Данные пользователя
     :return: Данные пользователя, если не возникло исключения
     """
-    if user.active:
-        return user
+    # if user.active:
+    return user
 
-    raise HTTPException(
-        status_code=status.HTTP_403_FORBIDDEN,
-        detail="user inactive"
-    )
+    # raise HTTPException(
+    #     status_code=status.HTTP_403_FORBIDDEN,
+    #     detail="user inactive"
+    # )
 
 
 def validate_token_type(payload: dict, token_type: str) -> bool:

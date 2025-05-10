@@ -1,4 +1,4 @@
-from pydantic import EmailStr, field_validator
+from pydantic import field_validator
 
 from db.database import APIBase
 
@@ -12,12 +12,11 @@ class UserSchema(APIBase):
     middle_name: str | None = None
     login: str
     password: str
-    phone: str | None = None
-    email: EmailStr | None = None
-    active: bool | None = True
+    phone: str
+    email: str | None = None
     birth: str | None = None
     structure: str | None = None
-    gender: str | None = None
+    gender: str
     role: str
 
     @field_validator('first_name', 'last_name', 'middle_name', mode='before')
@@ -43,13 +42,12 @@ class UserSchemaOut(APIBase):
     short_name: str | None = None
     login: str
     password: str
-    phone: str | None = None
+    phone: str
     photo: str | None = None
-    email: EmailStr | None = None
-    active: bool | None = True
+    email: str | None = None
     birth: str | None = None
     structure: str | None = None
-    gender: str | None = None
+    gender: str
     role: str
 
 
