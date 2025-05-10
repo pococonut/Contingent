@@ -6,7 +6,7 @@ from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 import aiofiles
 
-from db.user.db_commands import add_user_to_db, get_user_by_name, add_user_photo
+from db.user.db_commands import add_user_to_db, get_user_by_name, add_user_photo, delete_user_photo
 from db.db_commands import get_db, change_data, delete_object, get_table_data_paginate, get_table_data
 from api.user.schemas.user import UserSchema, UserSchemaOut
 from api.user.models.user import User
@@ -33,6 +33,14 @@ async def post_photo(user_id: int,
                      file: UploadFile,
                      db: AsyncSession = Depends(get_db)):
     response = await add_user_photo(db, user_id, file)
+    return response
+
+
+@router.delete("/photo",
+               tags=["user"])
+async def delete_photo(user_id: int,
+                       db: AsyncSession = Depends(get_db)):
+    response = await delete_user_photo(db, user_id)
     return response
 
 
