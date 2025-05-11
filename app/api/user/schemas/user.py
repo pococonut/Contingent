@@ -43,7 +43,6 @@ class UserSchemaOut(APIBase):
     login: str
     password: str
     phone: str
-    photo: str | None = None
     email: str | None = None
     birth: str | None = None
     structure: str | None = None
