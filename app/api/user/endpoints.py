@@ -16,15 +16,15 @@ router = APIRouter()
 
 @router.post("/user",
              tags=["user"],
-             response_model=UserSchema,
+             response_model=UserSchemaOut,
              response_description="Добавленный Пользователь")
 async def post_user(user: UserSchema,
                     db: AsyncSession = Depends(get_db)):
     """
     Используется для вставки данных о пользователе
     """
-    await add_user_to_db(db, user)
-    return user
+    response = await add_user_to_db(db, user)
+    return response
 
 
 @router.post("/photo",

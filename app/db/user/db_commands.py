@@ -3,6 +3,7 @@ import os
 
 import aiofiles
 from fastapi import HTTPException, status
+from fastapi.encoders import jsonable_encoder
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select, exc, and_, update
 
@@ -28,7 +29,11 @@ async def add_user_to_db(db, user):
         db.add(user_model)
         await db.commit()
         await db.refresh(user_model)
-        return user_model
+
+        stmt = select(User).where(User.login == user_dict.get('login'))
+        result = await db.execute(stmt)
+        user = jsonable_encoder(result.scalars().first())
+        return user
     except exc.IntegrityError as e:
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"IntegrityError: AlreadyExists")
