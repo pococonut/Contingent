@@ -34,10 +34,15 @@ async def get_cards(db, student_id=None):
     try:
         if student_id is None:
             stmt = select(PersonalData.id)
-            result = await db.execute(stmt)
-            suitable_students_ids = result.scalars().all()
         else:
-            suitable_students_ids = [student_id]
+            stmt = select(PersonalData.id).where(PersonalData.id == student_id)
+
+        result = await db.execute(stmt)
+        suitable_students_ids = result.scalars().all()
+
+        if not suitable_students_ids:
+            return {}
+
         for student_id in suitable_students_ids:
             for name, table in student_card_models_dict.items():
                 param_id = "id" if name == "personal_data" else 'personal_id'
