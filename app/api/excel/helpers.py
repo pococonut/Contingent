@@ -3,7 +3,7 @@ from io import BytesIO
 import pandas as pd
 import numpy as np
 
-from validation.student_card_parameters import validate_personal_data, validate_educational_data, validate_contact_data, \
+from validation.student_card_parameters import validate_personal_data, validate_study_data, validate_contact_data, \
     validate_other_data
 
 
@@ -61,7 +61,7 @@ async def parse_df_row(i, df):
                         "current_year": str(df.at[i, 'Текущий год обуч.']),
                         "personal_id": i, }
 
-    validate_educational_data(educational_data)
+    validate_study_data(educational_data)
 
     contact_data = {"number": str(df.at[i, 'Тел.']),
                     "spare_number": str(df.at[i, '2й Тел.']),

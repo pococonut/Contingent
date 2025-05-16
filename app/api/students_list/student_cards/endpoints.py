@@ -9,7 +9,7 @@ from helpers.pagination import make_limit_dict
 router = APIRouter()
 
 
-@router.get('/students_cards',
+@router.get('/name_list',
             tags=['students list'],
             response_description="Карты студентов")
 async def get_students_cards(  # token: str = Depends(get_current_active_auth_user),

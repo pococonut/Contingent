@@ -1,8 +1,10 @@
 import logging
+from collections import defaultdict
 
 from fastapi import HTTPException, status
 from sqlalchemy import select, update, exc
 
+from api.student_card.models import PersonalData
 from helpers.dicts import student_card_models_dict
 
 
@@ -13,14 +15,41 @@ async def format_card_to_dict(s_card):
     :return: Данные карты студента в виде списка словарей
     """
     return {"personal_data": s_card.personal_data.dict(),
-            "educational_data": s_card.educational_data.dict(),
+            "study_data": s_card.study_data.dict(),
+            "education_data": s_card.education_data.dict(),
             "stipend_data": s_card.stipend_data.dict(),
             "contact_data": s_card.contact_data.dict(),
             "military_data": s_card.military_data.dict(),
             "benefits_data": s_card.benefits_data.dict(),
-            "other_data": s_card.other_data.dict(),
-            "history_data": s_card.history_data.dict(),
-            "order_data": s_card.order_data.dict()}
+            "other_data": s_card.other_data.dict()}
+
+
+async def get_cards(db, student_id=None):
+    """
+    Функция для получения списка карт студентов
+    :return: Словарь карт студентов
+    """
+
+    suitable_students = defaultdict(dict)
+    try:
+        if student_id is None:
+            stmt = select(PersonalData.id)
+            result = await db.execute(stmt)
+            suitable_students_ids = result.scalars().all()
+        else:
+            suitable_students_ids = [student_id]
+        for student_id in suitable_students_ids:
+            for name, table in student_card_models_dict.items():
+                param_id = "id" if name == "personal_data" else 'personal_id'
+                stmt = select(table).where(student_id == getattr(table, param_id))
+                result = await db.execute(stmt)
+                data = result.scalars().all()[0]
+                suitable_students[student_id][name] = data
+
+        return suitable_students
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
 
 
 async def add_student_data(db, student_card):

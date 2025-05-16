@@ -6,7 +6,7 @@ from sqlalchemy import select, and_, exc
 
 from helpers.dicts import student_card_models_dict
 from api.student_card.models.personal import PersonalData
-from api.student_card.models.study import EducationalData
+from api.student_card.models.study import StudyData
 
 
 async def filters_check(db, filters_data):
@@ -43,7 +43,7 @@ async def get_suitable_students_ids(db, filters):
     :return: Список подходящих под фильтры студентов
     """
     personal_filter_data = ["personal", filters.get("personal_filters"), PersonalData]
-    educational_filter_data = ["educational", filters.get("educational_filters"), EducationalData]
+    educational_filter_data = ["educational", filters.get("educational_filters"), StudyData]
 
     suitable_students_personal = await filters_check(db, personal_filter_data)
     suitable_students_educational = await filters_check(db, educational_filter_data)
