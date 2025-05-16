@@ -5,7 +5,7 @@ class StipendDataSh(APIBase):
     """
     Модель тела запроса стипендии студента.
     """
-    form: str | None = None
-    amount: str | None = None
-    personal_id: int | None = None
+    academic: str | None = None
+    social: str | None = None
+    personal_id: int
 

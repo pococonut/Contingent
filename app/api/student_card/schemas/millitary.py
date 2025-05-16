@@ -7,8 +7,7 @@ class MilitaryDataSh(APIBase):
     """
     status: str | None = None
     category: str | None = None
-    delay: str | None = None
+    deferment_end_date: str | None = None
     document: str | None = None
-    personal_id: int | None = None
-
+    personal_id: int
 

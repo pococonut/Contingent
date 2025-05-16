@@ -5,6 +5,6 @@ class BenefitsDataSh(APIBase):
     """
     Модель тела запроса льгот студента.
     """
-    benefits: str | None = None
-    personal_id: int | None = None
+    benefits_type: str | None = None
+    personal_id: int
 

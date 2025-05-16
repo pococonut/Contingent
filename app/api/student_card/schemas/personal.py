@@ -5,18 +5,18 @@ class PersonalDataSh(APIBase):
     """
     Модель тела запроса информации студента.
     """
-    id: int | None = None
-    firstname: str | None = None
-    lastname: str | None = None
-    patronymic: str | None = None
-    birth_date: str | None = None
-    birth_place: str | None = None
+    id: int
+    first_name: str
+    last_name: str
+    middle_name: str | None = None
+    birth: str
+    place_of_birth: str | None = None
     citizenship: str | None = None
-    type_of_identity: str | None = None
-    address: str | None = None
+    identity_cards: str | None = None
+    residential_address: str | None = None
+    registration_address: str | None = None
     snils: str | None = None
-    polis: str | None = None
-    study_status: str | None = None
-    general_status: str | None = None
-    gender: str | None = None
+    global_status: str
+    inner_status: str
+    gender: str
 

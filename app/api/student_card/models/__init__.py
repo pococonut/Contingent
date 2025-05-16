@@ -1,6 +1,6 @@
 from .benefits import BenefitsData
 from .contact import ContactData
-from .educational import EducationalData
+from .study import EducationalData
 from .history import HistoryData
 from .military import MilitaryData
 from .order import OrderData

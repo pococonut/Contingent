@@ -146,7 +146,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# pytype static type analyzer
+# pytype user_photo type analyzer
 .pytype/
 
 # Cython debug symbols
@@ -161,4 +161,4 @@ cython_debug/
 test.py
 tmp/
 docker/docker-compose.yaml
-static
+user_photo

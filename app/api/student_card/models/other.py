@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from sqlalchemy import ForeignKey, ForeignKeyConstraint
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from db.database import Base
-from api.student_card.models.personal import PersonalData
 
 
 class OtherData(Base):
@@ -12,13 +10,10 @@ class OtherData(Base):
     Модель таблицы об остальной информации студента.
     """
     __tablename__ = 'other_data'
-    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    parents: Mapped[str] = mapped_column(nullable=True)
-    parents_contacts: Mapped[str] = mapped_column(nullable=True)
-    relatives_works: Mapped[str] = mapped_column(nullable=True)
-    relatives_addresses: Mapped[str] = mapped_column(nullable=True)
+    first_parent: Mapped[str] = mapped_column(nullable=True)
+    second_parent: Mapped[str] = mapped_column(nullable=True)
 
     personal_id: Mapped[int] = mapped_column(nullable=False)
 
