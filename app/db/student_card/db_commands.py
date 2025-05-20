@@ -2,10 +2,12 @@ import logging
 from collections import defaultdict
 
 from fastapi import HTTPException, status
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select, update, exc
 
 from api.student_card.models import PersonalData
-from helpers.dicts import student_card_models_dict
+from api.student_card.schemas import StudentsCardSh
+from helpers.dicts import student_card_models_dict, student_card_schemas_dict
 
 
 async def format_card_to_dict(s_card):
@@ -17,14 +19,13 @@ async def format_card_to_dict(s_card):
     return {"personal_data": s_card.personal_data.dict(),
             "study_data": s_card.study_data.dict(),
             "education_data": s_card.education_data.dict(),
-            "stipend_data": s_card.stipend_data.dict(),
             "contact_data": s_card.contact_data.dict(),
             "military_data": s_card.military_data.dict(),
             "benefits_data": s_card.benefits_data.dict(),
-            "other_data": s_card.other_data.dict()}
+            "reference_data": s_card.reference_data.dict()}
 
 
-async def get_cards(db, student_id=None):
+async def get_cards(db):
     """
     Функция для получения списка карт студентов
     :return: Словарь карт студентов
@@ -32,11 +33,35 @@ async def get_cards(db, student_id=None):
 
     suitable_students = defaultdict(dict)
     try:
-        if student_id is None:
-            stmt = select(PersonalData.id)
-        else:
-            stmt = select(PersonalData.id).where(PersonalData.id == student_id)
+        stmt = select(PersonalData.id)
+        result = await db.execute(stmt)
+        suitable_students_ids = result.scalars().all()
+        if not suitable_students_ids:
+            return {}
 
+        for student_id in suitable_students_ids:
+            for name, table in student_card_models_dict.items():
+                param_id = "id" if name == "personal_data" else 'personal_id'
+                stmt = select(table).where(student_id == getattr(table, param_id))
+                result = await db.execute(stmt)
+                data = result.scalars().all()[0]
+                suitable_students[student_id][name] = student_card_schemas_dict.get(name).from_orm(data)
+
+        return suitable_students
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
+
+
+async def get_card(db, student_id):
+    """
+    Функция для получения списка карт студентов
+    :return: Словарь карт студентов
+    """
+
+    suitable_students = defaultdict(dict)
+    try:
+        stmt = select(PersonalData.id).where(PersonalData.id == student_id)
         result = await db.execute(stmt)
         suitable_students_ids = result.scalars().all()
 
@@ -49,7 +74,7 @@ async def get_cards(db, student_id=None):
                 stmt = select(table).where(student_id == getattr(table, param_id))
                 result = await db.execute(stmt)
                 data = result.scalars().all()[0]
-                suitable_students[student_id][name] = data
+                suitable_students[student_id][name] = student_card_schemas_dict.get(name).from_orm(data)
 
         return suitable_students
     except exc.SQLAlchemyError as e:
@@ -65,8 +90,16 @@ async def add_student_data(db, student_card):
     :return: Объект сессии
     """
     try:
+        personal_data = PersonalData(**student_card.get("personal_data"))
+        db.add(personal_data)
+        await db.commit()
+        await db.refresh(personal_data)
+
         for table_name, table in student_card_models_dict.items():
-            db.add(table(**student_card.get(table_name)))
+            if table_name == "personal_data":
+                continue
+            student_card[table_name].update({"personal_id": personal_data.id})
+            db.add(table(**student_card[table_name]))
         return db
     except exc.SQLAlchemyError as e:
         logging.error(e)

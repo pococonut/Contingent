@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.student_card.models.personal import PersonalData
 from helpers.dicts import student_card_models_dict, student_card_validation_dict, student_params_validation_dict
-from db.student_card.db_commands import change_card, format_card_to_dict, add_commit_students_card, get_cards
+from db.student_card.db_commands import change_card, format_card_to_dict, add_commit_students_card, get_cards, get_card
 from db.db_commands import get_db, delete_object
 from api.student_card.schemas.students_card import StudentsCardSh
 
@@ -27,8 +27,8 @@ async def post_student_card(student_card: StudentsCardSh,
         if validation_function:
             validation_function(jsonable_encoder(data))
 
-    result = await add_commit_students_card(db, student_card)
-    return result
+    await add_commit_students_card(db, student_card)
+    return student_card
 
 
 @router.get("/students_cards",
@@ -50,7 +50,7 @@ async def get_students_card(personal_id: int,
     """
     Используется для получения Карт студентов
     """
-    student_cards = await get_cards(db, personal_id)
+    student_cards = await get_card(db, personal_id)
     return student_cards
 
 
@@ -67,13 +67,14 @@ async def change_student_card(personal_id: int,
     - table_name: Названия таблицы БД
     - parameters: Новые значения параметров Карты студента
     """
-    for parameter, new_val in parameters.items():
-        validation_function = student_params_validation_dict.get(parameter)
-        if validation_function:
-            params = {"personal_id": personal_id,
-                      "id": personal_id,
-                      parameter: new_val}
-            validation_function(params)
+    # Валидация
+    # for parameter, new_val in parameters.items():
+    #     validation_function = student_params_validation_dict.get(parameter)
+    #     if validation_function:
+    #         params = {"personal_id": personal_id,
+    #                   "id": personal_id,
+    #                   parameter: new_val}
+    #         validation_function(params)
 
     data = {"personal_id": personal_id,
             "table_name": table_name,

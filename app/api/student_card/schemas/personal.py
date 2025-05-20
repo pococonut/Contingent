@@ -1,11 +1,10 @@
 from db.database import APIBase
 
 
-class PersonalDataSh(APIBase):
+class PersonalDataShIn(APIBase):
     """
     Модель тела запроса информации студента.
     """
-    id: int
     first_name: str
     last_name: str
     middle_name: str | None = None
@@ -19,4 +18,8 @@ class PersonalDataSh(APIBase):
     global_status: str
     inner_status: str
     gender: str
+
+
+class PersonalDataShOut(PersonalDataShIn):
+    id: int
 

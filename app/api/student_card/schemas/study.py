@@ -1,3 +1,5 @@
+from pydantic import ConfigDict
+
 from db.database import APIBase
 
 
@@ -22,5 +24,4 @@ class StudyDataSh(APIBase):
     stipend_academic: str | None = None
     stipend_social: str | None = None
 
-    personal_id: int
 

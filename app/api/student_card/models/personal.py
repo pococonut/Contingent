@@ -11,7 +11,7 @@ class PersonalData(Base):
     """
     __tablename__ = 'personal_data'
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     first_name: Mapped[str] = mapped_column(nullable=False)
     last_name: Mapped[str] = mapped_column(nullable=False)
     middle_name: Mapped[str] = mapped_column(nullable=True)

@@ -198,7 +198,7 @@ def validate_study_data(study_data):
     check_requirement_params(not_necessary, study_data)
     # validate_education_forms(study_data)
     validate_course(study_data)
-    validate_group(study_data)
+    # validate_group(study_data)
     # validate_subgroup(study_data)
     validate_student_book(study_data)
 

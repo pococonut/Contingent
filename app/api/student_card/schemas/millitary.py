@@ -9,5 +9,4 @@ class MilitaryDataSh(APIBase):
     category: str | None = None
     deferment_end_date: str | None = None
     document: str | None = None
-    personal_id: int
 

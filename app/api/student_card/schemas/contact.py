@@ -8,6 +8,5 @@ class ContactDataSh(APIBase):
     first_phone: str | None = None
     second_phone: str | None = None
     email: str | None = None
-    personal_id: int
 
 
