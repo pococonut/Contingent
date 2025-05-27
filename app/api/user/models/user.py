@@ -17,7 +17,7 @@ class User(Base):
     middle_name: Mapped[str] = mapped_column(String(50), nullable=True)
     short_name: Mapped[str] = mapped_column(String(50), nullable=True)
     login: Mapped[str] = mapped_column(String(100), unique=True, nullable=True)
-    password: Mapped[bytes] = mapped_column(String, nullable=True)
+    password: Mapped[str] = mapped_column(String, nullable=True)
     phone: Mapped[str] = mapped_column(String, nullable=False)
     photo: Mapped[str] = mapped_column(String, nullable=True)
     email: Mapped[str] = mapped_column(String(100), nullable=True)

@@ -41,10 +41,10 @@ def get_raw_calculations(cards):
         direction = card.get("direction")
         course = card.get("course")
 
-        degree_payment = card.get("degree_payment")
+        learning_conditions = card.get("learning_conditions")
         group = f'group_{card.get("group")}'
         subgroup = f'sub_{card.get("subgroup")}'
-        lst = [degree_payment, group, subgroup, "total"]
+        lst = [learning_conditions, group, subgroup, "total"]
 
         directions[direction][course] += Counter(lst)
     return directions
@@ -56,6 +56,7 @@ def get_calculations(data):
     :param data: Словарь с расчетами без группировки групп и подгрупп
     :return: Словарь с расчетами
     """
+    print(data)
     total_groups = len({v for k, v in data.items() if "group" in k})
     total_subgroups = len({v for k, v in data.items() if "sub" in k})
 

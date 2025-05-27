@@ -1,5 +1,6 @@
-from typing import Annotated
+from typing import Annotated, List
 from fastapi import Depends, Query, APIRouter
+from fastapi.encoders import jsonable_encoder
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -75,7 +76,7 @@ async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
 @router.get("/planned_number_contingent",
             tags=['students list'],
             response_description="Планируемый численный список студентов",
-            response_model=Page[PlannedNumContingentSh])
+            response_model=List[PlannedNumContingentSh])
 async def get_planned_num_list(
     db: AsyncSession = Depends(get_db)
 ):
@@ -85,4 +86,4 @@ async def get_planned_num_list(
     - limit: Ограничивает количество возвращаемых элементов
     """
     planned_contingent = await get_table_data(db, PlannedNumContingent)
-    return planned_contingent
+    return jsonable_encoder(planned_contingent)

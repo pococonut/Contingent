@@ -10,7 +10,6 @@ class SubgroupData(Base):
     Модель таблицы подгрупп
     """
     __tablename__ = "subgroup"
-    
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     department: Mapped[str] = mapped_column(String(db_config.MAX_LEN_DEPARTMENT_NAME), nullable=True)  # 200
