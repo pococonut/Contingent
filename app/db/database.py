@@ -15,4 +15,3 @@ class APIBase(BaseModel):
 
 engine = create_async_engine(DB_URL, echo=False)
 SessionLocal = async_sessionmaker(engine)
-

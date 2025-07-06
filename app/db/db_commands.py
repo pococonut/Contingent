@@ -10,20 +10,22 @@ logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")
 
 
-async def get_db():
+async def create_db():
     """
     Функция инициализирует базу данных при первом
-    вызове и создает новую сессию базы данных
-    :return: Объект сессии
+    вызове
     """
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        await db.close()
+
+async def get_db():
+    """
+    Функция создает новую сессию базы данных
+    :return: Объект сессии
+    """
+    async with SessionLocal() as session:
+        yield session
 
 
 async def add_data_to_table(db, data, table):
