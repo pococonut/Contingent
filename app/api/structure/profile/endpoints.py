@@ -1,10 +1,8 @@
 from fastapi import Depends, APIRouter
-from fastapi_pagination import Page, paginate
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_table_data
-from db.db_commands import get_db, add_data_to_table, delete_object
-from db.structure_commands import get_structures_data, change_structure_data
+from db.db_commands import get_table_data, get_table_data_paginate, change_data, get_db, add_data_to_table, delete_object
 from api.structure.profile.models import ProfileData
 from api.structure.profile.schemas import ProfileIn, ProfileOut
 
@@ -34,7 +32,7 @@ async def get_profile(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Профилей
     """
-    data = await get_table_data(db, ProfileData)
+    data = await get_table_data_paginate(db, ProfileData)
     return data
 
 
@@ -68,7 +66,7 @@ async def path_profile(profile_id: int,
             "table": ProfileData,
             "parameters": parameters}
 
-    updated_data = await change_structure_data(db, data)
+    updated_data = await change_data(db, data)
     return updated_data
 
 

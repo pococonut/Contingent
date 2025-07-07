@@ -1,11 +1,9 @@
 from fastapi import Depends, APIRouter
-from fastapi_pagination import Page, paginate
+from fastapi_pagination import Page
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_table_data
-from db.db_commands import get_db, add_data_to_table, delete_object
-from db.structure_commands import get_structures_data, change_structure_data
+from db.db_commands import get_table_data, get_table_data_paginate, change_data, get_db, add_data_to_table, delete_object
 from api.structure.subgroup.models import SubgroupData
 from api.structure.subgroup.schemas import SubgroupIn, SubgroupOut
 
@@ -41,14 +39,14 @@ async def get_subgroup(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Подгрупп
     """
-    data = await get_table_data(db, SubgroupData)
+    data = await get_table_data_paginate(db, SubgroupData)
     return data
 
 
 @router.get("/subgroup/{subgroup_id}",
             tags=["subgroup"],
             response_description="Подгруппа",
-            response_model=Page[SubgroupOut])
+            response_model=list[SubgroupOut])
 async def get_subgroup(subgroup_id: int,
                        db: AsyncSession = Depends(get_db)):
     """
@@ -75,7 +73,7 @@ async def path_subgroup(subgroup_id: int,
             "table": SubgroupData,
             "parameters": parameters}
 
-    updated_data = await change_structure_data(db, data)
+    updated_data = await change_data(db, data)
     return updated_data
 
 

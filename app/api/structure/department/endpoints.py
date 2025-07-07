@@ -1,10 +1,8 @@
 from fastapi import Depends, APIRouter
-from fastapi_pagination import Page, paginate
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_table_data
-from db.db_commands import get_db, add_data_to_table, delete_object
-from db.structure_commands import get_structures_data, change_structure_data
+from db.db_commands import get_table_data, get_table_data_paginate, get_db, add_data_to_table, delete_object, change_data
 from api.structure.department.models import DepartmentData
 from api.structure.department.schemas import DepartmentIn, DepartmentOut
 
@@ -34,7 +32,7 @@ async def get_department(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Кафедр
     """
-    data = await get_table_data(db, DepartmentData)
+    data = await get_table_data_paginate(db, DepartmentData)
     return data
 
 
@@ -68,7 +66,7 @@ async def path_department(department_id: int,
             "table": DepartmentData,
             "parameters": parameters}
 
-    updated_data = await change_structure_data(db, data)
+    updated_data = await change_data(db, data)
     return updated_data
 
 

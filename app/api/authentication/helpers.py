@@ -2,7 +2,7 @@ import jwt
 import bcrypt
 from datetime import timedelta, datetime
 
-from api.authentication.schemas import UserSchema
+from api.authentication.schemas.authentication import UserSchemaAuth
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_DAYS
 
 TOKEN_TYPE_FILED = "type"
@@ -39,7 +39,7 @@ def encode_jwt(payload: dict,
     return encoded
 
 
-def decode_jwt(token: str,
+def decode_jwt(token: bytes,
                key: str = str(SECRET_KEY),
                algorithm: str = str(ALGORITHM)):
     """
@@ -55,15 +55,14 @@ def decode_jwt(token: str,
     return decoded
 
 
-def hash_password(password: str) -> bytes:
+def hash_password(password: bytes) -> bytes:
     """
     Функция предназначена для шифрования пароля пользователя
     :param password: Пароль пользователя
     :return: Зашифрованный пароль
     """
     salt = bcrypt.gensalt()
-    pwd_bytes: bytes = password.encode()
-    return bcrypt.hashpw(pwd_bytes, salt)
+    return bcrypt.hashpw(password, salt)
 
 
 def validate_password(password: bytes, hashed_password: bytes) -> bool:
@@ -74,7 +73,7 @@ def validate_password(password: bytes, hashed_password: bytes) -> bool:
     :param hashed_password: Зашифрованный пароль пользователя
     :return: Булево значение: True - пароли совпали, иначе False
     """
-    return bcrypt.checkpw(password=password, hashed_password=hashed_password)
+    return password == hashed_password  # bcrypt.checkpw(password=password, hashed_password=hashed_password)
 
 
 def create_jwt(token_type: str,
@@ -97,30 +96,28 @@ def create_jwt(token_type: str,
                       expire_timedelta=expire_timedelta)
 
 
-def create_access_token(user: UserSchema) -> str:
+def create_access_token(user: UserSchemaAuth) -> str:
     """
     Функция предназначена для создания ACCESS токена
     :param user: Данные пользователя
     :return: ACCESS токен
     """
-    jwt_payload = {"sub": user.username,
-                   "username": user.username,
-                   "email": user.email}
+    jwt_payload = {"sub": user.login,
+                   "username": user.login}
 
     return create_jwt(token_type=ACCESS_TOKEN_TYPE,
                       token_data=jwt_payload,
                       expire_minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
 
 
-def create_refresh_token(user: UserSchema):
+def create_refresh_token(user: UserSchemaAuth):
     """
     Функция предназначена для создания REFRESH токена
     :param user: Данные пользователя
     :return: REFRESH токен
     """
-    jwt_payload = {"sub": user.username}
+    jwt_payload = {"sub": user.login}
 
     return create_jwt(token_type=REFRESH_TOKEN_TYPE,
                       token_data=jwt_payload,
                       expire_timedelta=timedelta(days=int(REFRESH_TOKEN_EXPIRE_DAYS)))
-

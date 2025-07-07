@@ -2,8 +2,7 @@ import logging
 
 from fastapi import HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
-from sqlalchemy import select, delete, exc
-from asyncpg.exceptions import StringDataRightTruncationError
+from sqlalchemy import select, delete, update, exc
 
 from db.database import engine, SessionLocal, Base
 
@@ -11,20 +10,22 @@ logging.basicConfig(filename='db_log.log', level=logging.INFO,
                     filemode="w", format="%(asctime)s %(levelname)s %(message)s")
 
 
-async def get_db():
+async def create_db():
     """
     Функция инициализирует базу данных при первом
-    вызове и создает новую сессию базы данных
-    :return: Объект сессии
+    вызове
     """
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        await db.close()
+
+async def get_db():
+    """
+    Функция создает новую сессию базы данных
+    :return: Объект сессии
+    """
+    async with SessionLocal() as session:
+        yield session
 
 
 async def add_data_to_table(db, data, table):
@@ -54,10 +55,24 @@ async def add_data_to_table(db, data, table):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"DataError: {e}")
     except exc.SQLAlchemyError as e:
         logging.error(e)
-        print(e)
-        if "StringDataRightTruncationError" in str(e.orig):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                detail=f"MaxLengthError: Exceeding the character limit")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
+
+
+async def get_table_data_paginate(db, table, item_id=None):
+    """
+    Функция для получения списка объектов с пагинацией из переданной таблицы БД,
+    если item_id=None, иначе функция возвращает данные конкретного объекта
+    :param item_id: Уникальный идентификатор объекта
+    :param db: Объект сессии
+    :param table: Таблица БД
+    :return: Данные таблицы
+    """
+    try:
+        stmt = select(table) if item_id is None else select(table).where(table.id == item_id)
+        result = await paginate(db, stmt)
+        return result
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
 
 
@@ -71,9 +86,41 @@ async def get_table_data(db, table, item_id=None):
     :return: Данные таблицы
     """
     try:
-        stmt = select(table) if not item_id else select(table).where(table.id == item_id)
-        result = await paginate(db, stmt)
-        return result
+        stmt = select(table) if item_id is None else select(table).where(table.id == item_id)
+        result = await db.execute(stmt)
+        return result.scalars().all()
+    except exc.SQLAlchemyError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")
+
+
+async def change_data(db, data):
+    """
+    Функция для изменения параметров переданного объекта
+    :param db: Объект сессии
+    :param data: Словарь, содержащий имя таблицы,
+     параметры для изменения, идентификатор объекта
+    :return: Измененный объект
+    """
+    obj_id = data.get("id")
+    table = data.get("table")
+    parameters = data.get("parameters")
+    obj_id_db = table.id
+
+    try:
+        for parameter, new_val in parameters.items():
+            stmt = update(table).where(obj_id_db == obj_id)
+            stmt = stmt.values({f"{parameter}": new_val})
+            await db.execute(stmt)
+        await db.commit()
+
+        stmt = select(table).where(obj_id_db == obj_id)
+        result = await db.execute(stmt)
+        updated_data = result.scalars().all()
+        return updated_data
+    except exc.IntegrityError as e:
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"IntegrityError: AlreadyExists")
     except exc.SQLAlchemyError as e:
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"SQLAlchemyError: {e}")

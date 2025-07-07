@@ -75,12 +75,12 @@ def validate_personal_data(personal_data):
     Функция валидирует Персональные данные студента
     :param personal_data: Персональные данные студента
     """
-    not_necessary = ["patronymic"]
-    only_str = ["firstname", "lastname", "patronymic"]
+    not_necessary = ["middle_name"]
+    only_str = ["first_name", "last_name", "middle_name"]
     check_requirement_params(not_necessary, personal_data)
     validate_string_params(personal_data, only_str)
-    validate_date(personal_data)
-    validate_snils(personal_data)
+    # validate_date(personal_data)
+    # validate_snils(personal_data)
 
 
 def validate_phone_number(params):
@@ -90,7 +90,7 @@ def validate_phone_number(params):
     """
     phones = []
     for key, value in params.items():
-        if "number" in key and value:
+        if "phone" in key and value:
             phones.append(value)
 
     for phone in phones:
@@ -119,8 +119,8 @@ def validate_contact_data(contact_data):
     not_necessary = ["spare_number"]
     requirement_params = get_only_requirement(contact_data, not_necessary)
     check_param_existence(requirement_params)
-    validate_phone_number(contact_data)
-    validate_mail(contact_data)
+    # validate_phone_number(contact_data)
+    # validate_mail(contact_data)
 
 
 def validate_education_forms(params):
@@ -184,23 +184,23 @@ def validate_student_book(params):
     Функция проверяет формат зачетной книжки
     :param params: Данные студенческой карты
     """
-    if not params.get("book_num").isdigit():
+    if not params.get("record_book_number").isdigit():
         exception_text = f"ID: {params.get('personal_id')}. Wrong book number format."
         raise HTTPException(status_code=400, detail=exception_text)
 
 
-def validate_educational_data(educational_data):
+def validate_study_data(study_data):
     """
     Функция проверяет Учебные данные студента
-    :param educational_data: Учебные данные студента
+    :param study_data: Учебные данные студента
     """
     not_necessary = []
-    check_requirement_params(not_necessary, educational_data)
-    validate_education_forms(educational_data)
-    validate_course(educational_data)
-    validate_group(educational_data)
-    validate_subgroup(educational_data)
-    validate_student_book(educational_data)
+    check_requirement_params(not_necessary, study_data)
+    # validate_education_forms(study_data)
+    validate_course(study_data)
+    # validate_group(study_data)
+    # validate_subgroup(study_data)
+    validate_student_book(study_data)
 
 
 def validate_other_data(other_data):
@@ -208,5 +208,5 @@ def validate_other_data(other_data):
     Функция проверяет Справочные данные студента
     :param other_data: Справочные данные студента
     """
-    not_necessary = ["relatives_works", "relatives_addresses"]
+    not_necessary = []
     check_requirement_params(not_necessary, other_data)

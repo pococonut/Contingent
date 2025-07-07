@@ -1,10 +1,9 @@
 from fastapi import Depends, APIRouter
-from fastapi_pagination import Page, paginate
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_db, add_data_to_table, delete_object
-from db.structure_commands import get_structures_data, change_structure_data
-from helpers.pagination import make_limit_list
+from db.db_commands import get_db
+from db.structure.db_commands import get_structures_data
 from api.structure.structure.schemas import StructureOut
 
 router = APIRouter()

@@ -5,7 +5,7 @@ from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db
-from db.student_card_commands import add_commit_students_cards
+from db.student_card.db_commands import add_commit_students_cards
 from api.excel.helpers import read_excel_file, get_cards_form_df
 from starlette.responses import StreamingResponse
 

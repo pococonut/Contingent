@@ -1,10 +1,9 @@
 from fastapi import Depends, APIRouter
-from fastapi_pagination import Page, paginate
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.db_commands import get_table_data
-from db.db_commands import get_db, add_data_to_table, delete_object
-from db.structure_commands import get_structures_data, change_structure_data
+from db.db_commands import get_table_data, change_data, get_db, add_data_to_table, delete_object, \
+    get_table_data_paginate
 from api.structure.direction.models import DirectionData
 from api.structure.direction.schemas import DirectionIn, DirectionOut
 
@@ -34,7 +33,7 @@ async def get_direction(db: AsyncSession = Depends(get_db)):
     """
     Используется для получения списка Направлений обучения
     """
-    data = await get_table_data(db, DirectionData)
+    data = await get_table_data_paginate(db, DirectionData)
     return data
 
 
@@ -67,7 +66,7 @@ async def path_direction(direction_id: int,
             "table": DirectionData,
             "parameters": parameters}
 
-    updated_data = await change_structure_data(db, data)
+    updated_data = await change_data(db, data)
     return updated_data
 
 

@@ -1,14 +1,15 @@
-from typing import Annotated
+from typing import Annotated, List
 from fastapi import Depends, Query, APIRouter
+from fastapi.encoders import jsonable_encoder
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db, add_data_to_table, get_table_data
-from db.filtering_cards_commands import get_filtered_cards
-from helpers.pagination import make_limit_dict, make_limit_list
+from db.students_list.db_commands import get_filtered_cards
+from helpers.pagination import make_limit_list
 from api.students_list.number_contingent.models import PlannedNumContingent
 from api.students_list.number_contingent.schemas import PlannedNumContingentSh
-from validation.auth_parameters import get_current_active_auth_user
-from api.students_list.number_contingent.helpers import get_students_number_contingent, get_rid_of_ids
+from api.students_list.number_contingent.helpers import get_students_number_contingent
 
 router = APIRouter()
 
@@ -74,16 +75,15 @@ async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
 
 @router.get("/planned_number_contingent",
             tags=['students list'],
-            response_description="Планируемый численный список студентов")
-async def get_planned_num_list(skip: Annotated[int | None, Query()] = None,
-                               limit: Annotated[int | None, Query()] = None,
-                               db: AsyncSession = Depends(get_db)):
+            response_description="Планируемый численный список студентов",
+            response_model=List[PlannedNumContingentSh])
+async def get_planned_num_list(
+    db: AsyncSession = Depends(get_db)
+):
     """
     Используется для получения планируемого численного списка студентов
     - skip: Пропускает заданное количество элементов
     - limit: Ограничивает количество возвращаемых элементов
     """
     planned_contingent = await get_table_data(db, PlannedNumContingent)
-    without_ids = get_rid_of_ids(planned_contingent)
-    limit_data = make_limit_list(without_ids, skip, limit)
-    return limit_data
+    return jsonable_encoder(planned_contingent)
