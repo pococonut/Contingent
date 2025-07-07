@@ -1,4 +1,4 @@
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy import String
 
 from db.database import Base
@@ -19,3 +19,4 @@ class DirectionData(Base):
     qualification: Mapped[str] = mapped_column(String(db_config.MAX_LEN_DIRECTION_QUALIFICATION), nullable=True)
     education_form: Mapped[str] = mapped_column(String(db_config.MAX_LEN_DIRECTION_EDUCATION_FORM), nullable=True)
 
+    groups: Mapped[list["GroupData"]] = relationship(back_populates="direction_rel")
