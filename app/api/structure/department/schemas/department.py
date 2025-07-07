@@ -8,6 +8,17 @@ class DepartmentIn(APIBase):
     name: str
     short_name: str
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "name": "Вычислительная математика и компьютерные науки",
+                    "short_name": "ВМИ"
+                }
+            ]
+        }
+    }
+
 
 class DepartmentOut(APIBase):
     """

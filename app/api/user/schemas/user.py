@@ -19,6 +19,26 @@ class UserSchema(APIBase):
     gender: str
     role: str
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "first_name": "Полина",
+                    "last_name": "Золотухина",
+                    "middle_name": "Викторовна",
+                    "login": "po",
+                    "password": "string",
+                    "phone": "88005353535",
+                    "email": "po@mail.ru",
+                    "birth": "16.09.2003",
+                    "structure": "нет",
+                    "gender": "ж",
+                    "role": "admin"
+                }
+            ]
+        }
+    }
+
     @field_validator('first_name', 'last_name', 'middle_name', mode='before')
     @classmethod
     def capitalize_parameter(cls, value):

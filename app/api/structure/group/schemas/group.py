@@ -10,6 +10,20 @@ class GroupIn(APIBase):
     fgos: str
     group: list[str]
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "direction": "Математика и Компьютерные науки",
+                    "course": "1",
+                    "fgos": "3++",
+                    "group": [
+                        "11", "12", "13"
+                    ]
+                }
+            ]
+        }
+    }
 
 class GroupOut(APIBase):
     """

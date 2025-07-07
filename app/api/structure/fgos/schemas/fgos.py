@@ -7,6 +7,16 @@ class FgosIn(APIBase):
     """
     name: str
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "name": "3++"
+                }
+            ]
+        }
+    }
+
 
 class FgosOut(APIBase):
     """

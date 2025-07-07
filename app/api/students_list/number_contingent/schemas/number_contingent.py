@@ -9,3 +9,16 @@ class PlannedNumContingentSh(APIBase):
     course: int
     groups: int
     subgroups: int
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "direction": "Математика и компьютерные науки",
+                    "course": 2,
+                    "groups": 3,
+                    "subgroups": 6
+                }
+            ]
+        }
+    }

@@ -10,6 +10,20 @@ class SubgroupIn(APIBase):
     profile: str
     subgroup: list[str]
 
+    model_config = {
+            "json_schema_extra": {
+                "examples": [
+                    {
+                        "department": "Вычислительная математика и информатика",
+                        "group": "11",
+                        "profile": "Математика",
+                        "subgroup": [
+                            "11/1", "11/2"
+                        ]
+                    }
+                ]
+            }
+        }
 
 class SubgroupOut(APIBase):
     """

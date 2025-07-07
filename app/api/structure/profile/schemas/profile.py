@@ -8,6 +8,17 @@ class ProfileIn(APIBase):
     name: str
     short_name: str
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "name": "Математика",
+                    "short_name": "М"
+                }
+            ]
+        }
+    }
+
 
 class ProfileOut(APIBase):
     """
