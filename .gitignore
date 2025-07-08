@@ -162,4 +162,4 @@ test.py
 tmp/
 docker/docker-compose.yaml
 user_photo
-pg_data
+pgdata/
