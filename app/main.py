@@ -13,7 +13,7 @@ from api.structure.subgroup import endpoints as subgroup_endpoints
 from api.structure.structure import endpoints as structure_endpoints
 from api.student_card import endpoints as student_card_endpoints
 from api.students_list.number_contingent import endpoints as number_contingent_endpoints
-from api.students_list.student_cards import endpoints as student_cards_endpoints
+from api.students_list.student_cards import endpoints as student_list_endpoints
 from api.authentication import endpoints as authentication_endpoints
 from api.excel import endpoints as excel_endpoints
 from api.user import endpoints as user_endpoints
@@ -32,6 +32,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(db_endpoints.router)
+app.include_router(user_endpoints.router)
+app.include_router(authentication_endpoints.router)
+app.include_router(student_card_endpoints.router)
+app.include_router(excel_endpoints.router)
+app.include_router(student_list_endpoints.router)
+app.include_router(number_contingent_endpoints.router)
 app.include_router(direction_endpoints.router)
 app.include_router(department_endpoints.router)
 app.include_router(fgos_endpoints.router)
@@ -39,12 +46,5 @@ app.include_router(group_endpoints.router)
 app.include_router(profile_endpoints.router)
 app.include_router(subgroup_endpoints.router)
 app.include_router(structure_endpoints.router)
-app.include_router(number_contingent_endpoints.router)
-app.include_router(student_cards_endpoints.router)
-app.include_router(student_card_endpoints.router)
-app.include_router(excel_endpoints.router)
-app.include_router(user_endpoints.router)
-app.include_router(authentication_endpoints.router)
-app.include_router(db_endpoints.router)
 
 app.mount("/user_photo", StaticFiles(directory="../user_photo"), name="user_photo")

@@ -3,8 +3,7 @@ from io import BytesIO
 import pandas as pd
 import numpy as np
 
-from validation.student_card_parameters import validate_personal_data, validate_study_data, validate_contact_data, \
-    validate_other_data
+from validation.student_card_parameters import validate_personal_data, validate_study_data, validate_contact_data
 
 
 async def read_excel_file(file, begin_row=1):
@@ -30,83 +29,72 @@ async def parse_df_row(i, df):
     df = df.replace({np.nan: ""})
 
     personal_data = {"id": i,
-                     "firstname": df.at[i, 'Имя'],
-                     "lastname": df.at[i, 'Фамилия'],
-                     "patronymic": df.at[i, 'Отчество'],
-                     "birth_date": df.at[i, 'Дата рожд.'],
-                     "birth_place": df.at[i, 'Место рожд.'],
+                     "first_name": df.at[i, 'Имя'],
+                     "last_name": df.at[i, 'Фамилия'],
+                     "middle_name": df.at[i, 'Отчество'],
+                     "birth": str(df.at[i, 'Дата рожд.']),
+                     "place_of_birth": df.at[i, 'Место рожд.'],
                      "citizenship": df.at[i, 'Гражданство'],
-                     "type_of_identity": df.at[i, 'Удостов. личности'],
-                     "address": df.at[i, 'Адрес'],
+                     "identity_cards": df.at[i, 'Удостов. личности'],
+                     "residential_address": df.at[i, 'Адрес проживания'],
+                     "registration_address": df.at[i, 'Адрес регистрации'],
                      "snils": str(df.at[i, 'Снилс']),
-                     "study_status": df.at[i, 'Статус внутри вуза'],
-                     "general_status": df.at[i, 'Статус общий'],
+                     "inner_status": df.at[i, 'Статус внутри вуза'],
+                     "global_status": df.at[i, 'Статус общий'],
                      "gender": df.at[i, 'Пол']}
 
     validate_personal_data(personal_data)
 
-    educational_data = {"faculty": df.at[i, 'Факультет'],
-                        "direction": df.at[i, 'Направление'],
-                        "course": str(df.at[i, 'Курс']),
-                        "department": str(df.at[i, 'Кафедра']),
-                        "group": str(df.at[i, 'Группа']),
-                        "subgroup": df.at[i, 'Подгруппа'],
-                        "book_num": str(df.at[i, 'Номер зачётки']),
-                        "form": str(df.at[i, 'Форма обуч.']),
-                        "degree": df.at[i, 'Степень обуч.'],
-                        "degree_payment": df.at[i, 'Форма обуч. $'],
-                        "study_duration": str(df.at[i, 'Период обуч.']),
-                        "study_duration_total": str(df.at[i, 'Срок обуч.']),
-                        "study_profile": str(df.at[i, 'Профиль обуч.']),
-                        "current_year": str(df.at[i, 'Текущий год обуч.']),
-                        "personal_id": i, }
+    educational_data = {"educational_document": str(df.at[i, 'Документ об образовании']),
+                        "document_serial_number": str(df.at[i, 'Серийный номер документа'])}
 
-    validate_study_data(educational_data)
+    study_data = {"faculty": df.at[i, 'Факультет'],
+                  "course": str(df.at[i, 'Курс']),
+                  "direction": df.at[i, 'Направление'],
+                  "group": str(df.at[i, 'Группа']),
+                  "subgroup": df.at[i, 'Подгруппа'],
+                  "educational_form": str(df.at[i, 'Форма обуч.']),
+                  "degree_of_study": df.at[i, 'Степень обуч.'],
+                  "learning_conditions": df.at[i, 'Форма обуч. $'],
+                  "department": str(df.at[i, 'Кафедра']),
+                  "profile": str(df.at[i, 'Профиль обуч.']),
+                  "record_book_number": str(df.at[i, 'Номер зачётки']),
+                  "start_date": str(df.at[i, 'Начало обучения']),
+                  "end_date": str(df.at[i, 'Конец обучения']),
+                  "period_of_study": str(df.at[i, 'Период обуч.']),
+                  "stipend_academic": str(df.at[i, 'Академическая стипендия']),
+                  "stipend_social": str(df.at[i, 'Социальная стипендия']),
+                  "personal_id": i, }
 
-    contact_data = {"number": str(df.at[i, 'Тел.']),
-                    "spare_number": str(df.at[i, '2й Тел.']),
-                    "mail": str(df.at[i, 'Почта']),
+    validate_study_data(study_data)
+
+    contact_data = {"first_phone": str(df.at[i, 'Тел.']),
+                    "second_phone": str(df.at[i, '2й Тел.']),
+                    "email": str(df.at[i, 'Почта']),
                     "personal_id": i}
 
     validate_contact_data(contact_data)
 
-    benefits_data = {"benefits": str(df.at[i, 'Льготы']),
+    benefits_data = {"benefits_type": str(df.at[i, 'Тип льгот']),
                      "personal_id": i}
-
-    stipend_data = {"form": str(df.at[i, 'Форма']),
-                    "amount": str(df.at[i, 'Сумма']),
-                    "personal_id": i, }
 
     military_data = {"status": str(df.at[i, 'Статус']),
                      "category": str(df.at[i, 'Категория']),
-                     "delay": str(df.at[i, 'Отсрочка']),
+                     "deferment_end_date": str(df.at[i, 'Отсрочка']),
                      "document": str(df.at[i, 'Документ']),
                      "personal_id": i, }
 
-    other_data = {"parents": str(df.at[i, 'Родители']),
-                  "parents_contacts": str(df.at[i, 'Контакты родственников']),
-                  "relatives_works": str(df.at[i, 'Места работы родственников']),
-                  "relatives_addresses": str(df.at[i, 'Адреса родственников']),
-                  "personal_id": i, }
-
-    validate_other_data(other_data)
-
-    history_data = {"movements": str(df.at[i, 'История перемещений (курс)']),
-                    "statuses": str(df.at[i, 'История статусов']),
-                    "personal_id": i, }
-
-    order_data = {"order": str(df.at[i, 'Приказы']),
-                  "personal_id": i, }
+    reference_data = {"first_parent": str(df.at[i, 'Родитель 1']),
+                      "second_parent": str(df.at[i, 'Родитель 2']),
+                      "personal_id": i, }
 
     return {"personal_data": personal_data,
-            "educational_data": educational_data,
-            "stipend_data": stipend_data,
+            "study_data": study_data,
+            "education_data": educational_data,
             "contact_data": contact_data,
             "military_data": military_data,
             "benefits_data": benefits_data,
-            "other_data": other_data,
-            "history_data": history_data,
-            "order_data": order_data}
+            "reference_data": reference_data}
 
 
 async def get_cards_form_df(df):

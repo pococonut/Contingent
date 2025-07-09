@@ -21,24 +21,23 @@ from validation.student_card_parameters import *
 
 student_card_validation_dict = {"personal_data": validate_personal_data,
                                 "study_data": validate_study_data,
-                                "contact_data": validate_contact_data,
-                                "other_data": validate_other_data, }
+                                "contact_data": validate_contact_data}
 
-student_params_validation_dict = {"birth_date": validate_date,
+student_params_validation_dict = {"birth": validate_date,
                                   "snils": validate_snils,
-                                  "number": validate_phone_number,
-                                  "spare_number": validate_phone_number,
-                                  "mail": validate_mail,
+                                  "first_phone": validate_phone_number,
+                                  "second_phone": validate_phone_number,
+                                  "email": validate_mail,
                                   "faculty": validate_education_forms,
                                   "direction": validate_education_forms,
                                   "department": validate_education_forms,
-                                  "form": validate_education_forms,
-                                  "degree": validate_education_forms,
-                                  "degree_payment": validate_education_forms,
+                                  "educational_form": validate_education_forms,
+                                  "degree_of_study": validate_education_forms,
+                                  "learning_conditions": validate_education_forms,
                                   "course": validate_course,
                                   "group": validate_group,
                                   "subgroup": validate_subgroup,
-                                  "book_num": validate_student_book}
+                                  "record_book_number": validate_student_book}
 
 student_card_models_dict = {"personal_data": PersonalData,
                             "education_data": EducationData,

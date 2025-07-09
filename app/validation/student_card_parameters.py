@@ -54,7 +54,7 @@ def validate_date(params):
     :param params: Данные студенческой карты
     """
     pattern = r"\d\d\.\d\d\.\d{4}"
-    if not re.fullmatch(pattern, params.get("birth_date")):
+    if not re.fullmatch(pattern, params.get("birth")):
         exception_text = f"ID: {params.get('id')}. Wrong date format."
         raise HTTPException(status_code=400, detail=exception_text)
 
@@ -106,7 +106,7 @@ def validate_mail(params):
     :param params: Данные студенческой карты
     """
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    if not re.match(pattern, params.get("mail")):
+    if not re.match(pattern, params.get("email")):
         exception_text = f"ID: {params.get('personal_id')}. Wrong mail format."
         raise HTTPException(status_code=400, detail=exception_text)
 
@@ -116,7 +116,7 @@ def validate_contact_data(contact_data):
     Функция валидирует Контактные данные студента
     :param contact_data: Контактные данные студента
     """
-    not_necessary = ["spare_number"]
+    not_necessary = ["second_phone"]
     requirement_params = get_only_requirement(contact_data, not_necessary)
     check_param_existence(requirement_params)
     # validate_phone_number(contact_data)
@@ -201,12 +201,3 @@ def validate_study_data(study_data):
     # validate_group(study_data)
     # validate_subgroup(study_data)
     validate_student_book(study_data)
-
-
-def validate_other_data(other_data):
-    """
-    Функция проверяет Справочные данные студента
-    :param other_data: Справочные данные студента
-    """
-    not_necessary = []
-    check_requirement_params(not_necessary, other_data)
