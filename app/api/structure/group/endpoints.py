@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.db_commands import get_table_data, get_table_data_paginate, change_data, get_db, add_data_to_table, delete_object
 from api.structure.group.models import GroupData
 from api.structure.group.schemas import GroupIn, GroupOut
+from validation.auth_parameters import get_current_active_auth_user
 
 
 router = APIRouter()
@@ -16,7 +17,8 @@ router = APIRouter()
              response_description="Добавленная Группа",
              response_model=GroupIn)
 async def post_group(group: GroupIn,
-                     db: AsyncSession = Depends(get_db)):
+                     db: AsyncSession = Depends(get_db),
+                     token: str = Depends(get_current_active_auth_user)):
     """
     Используется для добавления Групп
     - group: Данные Групп
@@ -34,7 +36,8 @@ async def post_group(group: GroupIn,
             tags=["group"],
             response_description="Список Групп",
             response_model=Page[GroupOut])
-async def get_group(db: AsyncSession = Depends(get_db)):
+async def get_group(db: AsyncSession = Depends(get_db),
+                    token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения списка ФГОСов
     """
@@ -47,7 +50,8 @@ async def get_group(db: AsyncSession = Depends(get_db)):
             response_description="Группа",
             response_model=list[GroupOut])
 async def get_group(group_id: int,
-                    db: AsyncSession = Depends(get_db)):
+                    db: AsyncSession = Depends(get_db),
+                    token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения Группы по идентификатору
     - group_id: Уникальный идентификатор Группы
@@ -62,7 +66,8 @@ async def get_group(group_id: int,
               response_model=list[GroupOut])
 async def path_group(group_id: int,
                      parameters: dict = None,
-                     db: AsyncSession = Depends(get_db)):
+                     db: AsyncSession = Depends(get_db),
+                     token: str = Depends(get_current_active_auth_user)):
     """
     Используется для изменения параметров Группы
     - group_id: Уникальный идентификатор Группы
@@ -80,7 +85,8 @@ async def path_group(group_id: int,
                tags=['group'],
                response_description="Удаленная Группа")
 async def delete_group(group_id: int,
-                       db: AsyncSession = Depends(get_db)):
+                       db: AsyncSession = Depends(get_db),
+                       token: str = Depends(get_current_active_auth_user)):
     """
     Используется для удаления Группы
     - group_id: Уникальный идентификатор Группы

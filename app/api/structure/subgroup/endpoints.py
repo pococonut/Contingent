@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.db_commands import get_table_data, get_table_data_paginate, change_data, get_db, add_data_to_table, delete_object
 from api.structure.subgroup.models import SubgroupData
 from api.structure.subgroup.schemas import SubgroupIn, SubgroupOut
-
+from validation.auth_parameters import get_current_active_auth_user
 
 router = APIRouter()
 
@@ -16,7 +16,8 @@ router = APIRouter()
              response_description="Добавленная Подгруппа",
              response_model=SubgroupIn)
 async def post_subgroup(subgroup: SubgroupIn,
-                        db: AsyncSession = Depends(get_db)):
+                        db: AsyncSession = Depends(get_db),
+                        token: str = Depends(get_current_active_auth_user)):
     """
     Используется для добавления Подгрупп и их данных
     - subgroup: Данные Подгрупп
@@ -35,7 +36,8 @@ async def post_subgroup(subgroup: SubgroupIn,
             tags=["subgroup"],
             response_description="Список Подгрупп",
             response_model=Page[SubgroupOut])
-async def get_subgroup(db: AsyncSession = Depends(get_db)):
+async def get_subgroup(db: AsyncSession = Depends(get_db),
+                       token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения списка Подгрупп
     """
@@ -48,7 +50,8 @@ async def get_subgroup(db: AsyncSession = Depends(get_db)):
             response_description="Подгруппа",
             response_model=list[SubgroupOut])
 async def get_subgroup(subgroup_id: int,
-                       db: AsyncSession = Depends(get_db)):
+                       db: AsyncSession = Depends(get_db),
+                       token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения Подгруппы по идентификатору
     - subgroup_id: Уникальный идентификатор ФГОСа
@@ -63,7 +66,8 @@ async def get_subgroup(subgroup_id: int,
               response_model=list[SubgroupOut])
 async def path_subgroup(subgroup_id: int,
                         parameters: dict = None,
-                        db: AsyncSession = Depends(get_db)):
+                        db: AsyncSession = Depends(get_db),
+                        token: str = Depends(get_current_active_auth_user)):
     """
     Используется для изменения параметров Подгруппы
     - subgroup_id: Уникальный идентификатор Подгруппы
@@ -81,7 +85,8 @@ async def path_subgroup(subgroup_id: int,
                tags=['subgroup'],
                response_description="Удаленная Подгруппа")
 async def delete_subgroup(subgroup_id: int,
-                          db: AsyncSession = Depends(get_db)):
+                          db: AsyncSession = Depends(get_db),
+                          token: str = Depends(get_current_active_auth_user)):
     """
     Используется для удаления Подгруппы
     - subgroup_id: Уникальный идентификатор Подгруппы

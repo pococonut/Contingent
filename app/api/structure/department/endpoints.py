@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.db_commands import get_table_data, get_table_data_paginate, get_db, add_data_to_table, delete_object, change_data
 from api.structure.department.models import DepartmentData
 from api.structure.department.schemas import DepartmentIn, DepartmentOut
+from validation.auth_parameters import get_current_active_auth_user
 
 
 router = APIRouter()
@@ -15,7 +16,8 @@ router = APIRouter()
              response_description="Добавленная Кафедра",
              response_model=DepartmentIn)
 async def post_department(department: DepartmentIn,
-                          db: AsyncSession = Depends(get_db)):
+                          db: AsyncSession = Depends(get_db),
+                          token: str = Depends(get_current_active_auth_user)):
     """
     Используется для добавления Кафедры
     - department: Название Направления обучения
@@ -28,7 +30,8 @@ async def post_department(department: DepartmentIn,
             tags=["department"],
             response_description="Список Кафедр",
             response_model=Page[DepartmentOut])
-async def get_department(db: AsyncSession = Depends(get_db)):
+async def get_department(db: AsyncSession = Depends(get_db),
+                         token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения списка Кафедр
     """
@@ -41,7 +44,8 @@ async def get_department(db: AsyncSession = Depends(get_db)):
             response_description="Кафедра",
             response_model=list[DepartmentOut])
 async def get_department(department_id: int,
-                         db: AsyncSession = Depends(get_db)):
+                         db: AsyncSession = Depends(get_db),
+                         token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения Кафедры по идентификатору
     - department_id: Уникальный идентификатор Кафедры
@@ -56,7 +60,8 @@ async def get_department(department_id: int,
               response_model=list[DepartmentOut])
 async def path_department(department_id: int,
                           parameters: dict = None,
-                          db: AsyncSession = Depends(get_db)):
+                          db: AsyncSession = Depends(get_db),
+                          token: str = Depends(get_current_active_auth_user)):
     """
     Используется для изменения параметров Кафедры
     - department_id: Уникальный идентификатор Кафедры
@@ -74,7 +79,8 @@ async def path_department(department_id: int,
                tags=["department"],
                response_description="Удаленная Кафедра")
 async def delete_department(department_id: int,
-                            db: AsyncSession = Depends(get_db)):
+                            db: AsyncSession = Depends(get_db),
+                            token: str = Depends(get_current_active_auth_user)):
     """
     Используется для удаления Кафедры
     - department_id: Уникальный идентификатор Кафедры

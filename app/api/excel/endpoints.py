@@ -3,11 +3,13 @@ import io
 from fastapi import APIRouter, File, Depends, HTTPException, status
 from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.responses import StreamingResponse
 
 from db.db_commands import get_db
 from db.student_card.db_commands import add_commit_students_cards
 from api.excel.helpers import read_excel_file, get_cards_form_df
-from starlette.responses import StreamingResponse
+from validation.auth_parameters import get_current_active_auth_user
+
 
 router = APIRouter()
 
@@ -16,7 +18,8 @@ router = APIRouter()
              tags=['excel'],
              response_description="Карточки студентов")
 async def import_cards_excel(file: Annotated[bytes, File()],
-                             db: AsyncSession = Depends(get_db)):
+                             db: AsyncSession = Depends(get_db),
+                             token: str = Depends(get_current_active_auth_user)):
     """
     Импортирует Карточки студентов из exel-файла в базу данных
     - file: Exel-файл с картами студентов
@@ -33,7 +36,7 @@ async def import_cards_excel(file: Annotated[bytes, File()],
 @router.get("/cards_excel_example",
             tags=["excel"],
             response_description="Шаблон excel файла для импорта Студенческих карт")
-async def get_excel_example():
+async def get_excel_example(token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения шаблона excel файла для импорта Студенческих карт
     """

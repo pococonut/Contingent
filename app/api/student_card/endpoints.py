@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, Query
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.student_card.models.personal import PersonalData
-from helpers.dicts import student_card_models_dict, student_card_validation_dict, student_params_validation_dict
+from helpers.dicts import student_card_models_dict, student_card_validation_dict
 from db.student_card.db_commands import change_card, format_card_to_dict, add_commit_students_card, get_cards, get_card
 from db.db_commands import get_db, delete_object
 from api.student_card.schemas.students_card import StudentsCardSh
-
-from fastapi.encoders import jsonable_encoder
+from validation.auth_parameters import get_current_active_auth_user
 
 router = APIRouter()
 
@@ -16,7 +16,8 @@ router = APIRouter()
              tags=['student card'],
              response_description="Добавленная Карта студента")
 async def post_student_card(student_card: StudentsCardSh,
-                            db: AsyncSession = Depends(get_db)):
+                            db: AsyncSession = Depends(get_db),
+                            token: str = Depends(get_current_active_auth_user)):
     """
     Используется для добавления Карты студента
     - student_card: Карта студента
@@ -34,7 +35,8 @@ async def post_student_card(student_card: StudentsCardSh,
 @router.get("/students_cards",
             tags=['student card'],
             response_description="Карты студентов")
-async def get_students_card(db: AsyncSession = Depends(get_db)):
+async def get_students_card(db: AsyncSession = Depends(get_db),
+                            token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения Карт студентов
     """
@@ -46,7 +48,8 @@ async def get_students_card(db: AsyncSession = Depends(get_db)):
             tags=['student card'],
             response_description="Карта студента")
 async def get_students_card(personal_id: int,
-                            db: AsyncSession = Depends(get_db)):
+                            db: AsyncSession = Depends(get_db),
+                            token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения Карт студентов
     """
@@ -60,7 +63,8 @@ async def get_students_card(personal_id: int,
 async def change_student_card(personal_id: int,
                               table_name: str = Query(enum=list(student_card_models_dict.keys())),
                               parameters: dict = None,
-                              db: AsyncSession = Depends(get_db)):
+                              db: AsyncSession = Depends(get_db),
+                              token: str = Depends(get_current_active_auth_user)):
     """
     Используется для изменения Карты студента
     - personal_id: Идентификатор студента
@@ -88,7 +92,8 @@ async def change_student_card(personal_id: int,
                tags=['student card'],
                response_description="Сообщение об успешном удалении")
 async def delete_student_card(personal_id: int = None,
-                              db: AsyncSession = Depends(get_db)):
+                              db: AsyncSession = Depends(get_db),
+                              token: str = Depends(get_current_active_auth_user)):
     """
     Используется для удаления Карты студента
     - personal_id: Идентификатор студента

@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.db_commands import get_table_data, get_table_data_paginate, change_data, get_db, add_data_to_table, delete_object
 from api.structure.profile.models import ProfileData
 from api.structure.profile.schemas import ProfileIn, ProfileOut
+from validation.auth_parameters import get_current_active_auth_user
 
 
 router = APIRouter()
@@ -15,7 +16,8 @@ router = APIRouter()
              response_description="Добавленный Профиль",
              response_model=ProfileIn)
 async def post_profile(profile: ProfileIn,
-                    db: AsyncSession = Depends(get_db)):
+                       db: AsyncSession = Depends(get_db),
+                       token: str = Depends(get_current_active_auth_user)):
     """
     Используется для добавления Профиля
     - profile: Название ФГОСа
@@ -28,7 +30,8 @@ async def post_profile(profile: ProfileIn,
             tags=["profile"],
             response_description="Список Профилей",
             response_model=Page[ProfileOut])
-async def get_profile(db: AsyncSession = Depends(get_db)):
+async def get_profile(db: AsyncSession = Depends(get_db),
+                      token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения списка Профилей
     """
@@ -41,7 +44,8 @@ async def get_profile(db: AsyncSession = Depends(get_db)):
             response_description="Профиль",
             response_model=list[ProfileOut])
 async def get_profile(profile_id: int,
-                   db: AsyncSession = Depends(get_db)):
+                      db: AsyncSession = Depends(get_db),
+                      token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения Профиля по идентификатору
     - profile_id: Уникальный идентификатор Профиля
@@ -56,7 +60,8 @@ async def get_profile(profile_id: int,
               response_model=list[ProfileOut])
 async def path_profile(profile_id: int,
                        parameters: dict = None,
-                       db: AsyncSession = Depends(get_db)):
+                       db: AsyncSession = Depends(get_db),
+                       token: str = Depends(get_current_active_auth_user)):
     """
     Используется для изменения параметров Профиля
     - profile_id: Уникальный идентификатор Профиля
@@ -74,7 +79,8 @@ async def path_profile(profile_id: int,
                tags=['profile'],
                response_description="Удаленный Профиль")
 async def delete_profile(profile_id: int,
-                         db: AsyncSession = Depends(get_db)):
+                         db: AsyncSession = Depends(get_db),
+                         token: str = Depends(get_current_active_auth_user)):
     """
     Используется для удаления Профиля
     - profile_id: Уникальный идентификатор Профиля

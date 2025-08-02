@@ -10,6 +10,7 @@ from db.user.db_commands import add_user_to_db, get_user_by_name, add_user_photo
 from db.db_commands import get_db, change_data, delete_object, get_table_data_paginate, get_table_data
 from api.user.schemas.user import UserSchema, UserSchemaOut
 from api.user.models.user import User
+from validation.auth_parameters import get_current_active_auth_user
 
 router = APIRouter()
 
@@ -31,7 +32,8 @@ async def post_user(user: UserSchema,
              tags=["user"])
 async def post_photo(user_id: int,
                      file: UploadFile,
-                     db: AsyncSession = Depends(get_db)):
+                     db: AsyncSession = Depends(get_db),
+                     token: str = Depends(get_current_active_auth_user)):
     response = await add_user_photo(db, user_id, file)
     return response
 
@@ -39,7 +41,8 @@ async def post_photo(user_id: int,
 @router.delete("/photo",
                tags=["user"])
 async def delete_photo(user_id: int,
-                       db: AsyncSession = Depends(get_db)):
+                       db: AsyncSession = Depends(get_db),
+                       token: str = Depends(get_current_active_auth_user)):
     response = await delete_user_photo(db, user_id)
     return response
 
@@ -48,7 +51,8 @@ async def delete_photo(user_id: int,
             tags=['user'],
             response_model=Page[UserSchemaOut],
             response_description="Список Пользователей")
-async def get_users(db: AsyncSession = Depends(get_db)):
+async def get_users(db: AsyncSession = Depends(get_db),
+                    token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения списка пользователей
     """
@@ -61,7 +65,8 @@ async def get_users(db: AsyncSession = Depends(get_db)):
             response_model=list[UserSchemaOut],
             response_description="Пользователь")
 async def get_user_id(user_id: int,
-                      db: AsyncSession = Depends(get_db)):
+                      db: AsyncSession = Depends(get_db),
+                      token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения данных Пользователя по идентификатору
     """
@@ -76,7 +81,8 @@ async def get_user_id(user_id: int,
 async def get_user_name(first_name: str,
                         last_name: str,
                         middle_name: str | None = None,
-                        db: AsyncSession = Depends(get_db)):
+                        db: AsyncSession = Depends(get_db),
+                        token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения данных Пользователя по ФИО
     """
@@ -93,7 +99,8 @@ async def get_user_name(first_name: str,
               response_description="Измененный Пользователь")
 async def change_user(user_id: int,
                       parameters: dict = None,
-                      db: AsyncSession = Depends(get_db)):
+                      db: AsyncSession = Depends(get_db),
+                      token: str = Depends(get_current_active_auth_user)):
     """
     Используется для изменения параметров Пользователя
     - user_id: Уникальный идентификатор Пользователя
@@ -111,7 +118,8 @@ async def change_user(user_id: int,
                tags=["user"],
                response_description="Удаленный Пользователь")
 async def delete_department(user_id: int,
-                            db: AsyncSession = Depends(get_db)):
+                            db: AsyncSession = Depends(get_db),
+                            token: str = Depends(get_current_active_auth_user)):
     """
     Используется для удаления Кафедры
     - department_id: Уникальный идентификатор Кафедры

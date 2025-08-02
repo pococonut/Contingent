@@ -1,7 +1,6 @@
 from typing import Annotated, List
 from fastapi import Depends, Query, APIRouter
 from fastapi.encoders import jsonable_encoder
-from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.db_commands import get_db, add_data_to_table, get_table_data
@@ -10,6 +9,7 @@ from helpers.pagination import make_limit_list
 from api.students_list.number_contingent.models import PlannedNumContingent
 from api.students_list.number_contingent.schemas import PlannedNumContingentSh
 from api.students_list.number_contingent.helpers import get_students_number_contingent
+from validation.auth_parameters import get_current_active_auth_user
 
 router = APIRouter()
 
@@ -28,7 +28,8 @@ async def get_number_contingent(# token: str = Depends(get_current_active_auth_u
                                 department: Annotated[str | None, Query()] = None,
                                 group: Annotated[str | None, Query()] = None,
                                 subgroup: Annotated[str | None, Query()] = None,
-                                session: AsyncSession = Depends(get_db)
+                                session: AsyncSession = Depends(get_db),
+                                token: str = Depends(get_current_active_auth_user)
                                 ):
     """
     Используется для фильтрации и получения численного списка студентов
@@ -63,7 +64,8 @@ async def get_number_contingent(# token: str = Depends(get_current_active_auth_u
              tags=['students list'],
              response_description="Добавленный планируемый численный список студентов")
 async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
-                                db: AsyncSession = Depends(get_db)):
+                                db: AsyncSession = Depends(get_db),
+                                token: str = Depends(get_current_active_auth_user)):
     """
     Используется для добавления планируемого численного списка студентов
     - number_lists: Список словарей, содержащих данные планируемого численного списка по направлениям
@@ -77,9 +79,8 @@ async def post_planned_num_list(number_lists: list[PlannedNumContingentSh],
             tags=['students list'],
             response_description="Планируемый численный список студентов",
             response_model=List[PlannedNumContingentSh])
-async def get_planned_num_list(
-    db: AsyncSession = Depends(get_db)
-):
+async def get_planned_num_list(db: AsyncSession = Depends(get_db),
+                               token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения планируемого численного списка студентов
     - skip: Пропускает заданное количество элементов

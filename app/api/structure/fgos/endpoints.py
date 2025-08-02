@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.db_commands import get_table_data, get_table_data_paginate, change_data, get_db, add_data_to_table, delete_object
 from api.structure.fgos.models import FgosData
 from api.structure.fgos.schemas import FgosIn, FgosOut
+from validation.auth_parameters import get_current_active_auth_user
 
 
 router = APIRouter()
@@ -15,7 +16,8 @@ router = APIRouter()
              response_description="Добавленный ФГОС",
              response_model=FgosIn)
 async def post_fgos(fgos: FgosIn,
-                    db: AsyncSession = Depends(get_db)):
+                    db: AsyncSession = Depends(get_db),
+                    token: str = Depends(get_current_active_auth_user)):
     """
     Используется для добавления ФГОСа
     - fgos: Название ФГОСа
@@ -28,7 +30,8 @@ async def post_fgos(fgos: FgosIn,
             tags=["fgos"],
             response_description="Список ФГОСов",
             response_model=Page[FgosOut])
-async def get_fgos(db: AsyncSession = Depends(get_db)):
+async def get_fgos(db: AsyncSession = Depends(get_db),
+                   token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения списка ФГОСов
     """
@@ -41,7 +44,8 @@ async def get_fgos(db: AsyncSession = Depends(get_db)):
             response_description="ФГОС",
             response_model=list[FgosOut])
 async def get_fgos(fgos_id: int,
-                   db: AsyncSession = Depends(get_db)):
+                   db: AsyncSession = Depends(get_db),
+                   token: str = Depends(get_current_active_auth_user)):
     """
     Используется для получения ФГОСа по идентификатору
     - fgos_id: Уникальный идентификатор ФГОСа
@@ -56,7 +60,8 @@ async def get_fgos(fgos_id: int,
               response_model=list[FgosOut])
 async def path_fgos(fgos_id: int,
                     parameters: dict = None,
-                    db: AsyncSession = Depends(get_db)):
+                    db: AsyncSession = Depends(get_db),
+                    token: str = Depends(get_current_active_auth_user)):
     """
     Используется для изменения параметров ФГОСа
     - fgos_id: Уникальный идентификатор ФГОСа
@@ -74,7 +79,8 @@ async def path_fgos(fgos_id: int,
                tags=['fgos'],
                response_description="Удаленный ФГОС")
 async def delete_fgos(fgos_id: int,
-                      db: AsyncSession = Depends(get_db)):
+                      db: AsyncSession = Depends(get_db),
+                      token: str = Depends(get_current_active_auth_user)):
     """
     Используется для удаления ФГОСа
     - fgos_id: Уникальный идентификатор ФГОСа

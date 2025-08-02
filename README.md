@@ -1,5 +1,5 @@
-Contingent  ![contingent](contingent.jpg) 
---------------------- 
+# Contingent  ![contingent](contingent.jpg) 
+
 ## About project
 The repository contains the server-side implementation of the Contingent project.
 
