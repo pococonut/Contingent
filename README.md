@@ -1,8 +1,7 @@
 # Contingent  ![contingent](contingent.jpg) 
-
-## About project
 The repository contains the server-side implementation of the Contingent project.
 
+## About project
 ##### What is the Contingent?
 Contingent is a project for automation tasks of university workers, which helps to make their work easier. Оne of the main tasks of working with data at universities is the task of maintaining the university's student body - the contingent. The processes of obtaining, processing and using academic data at Kuban State University are quite hard and poorly automated. Contingent is an effective solution of difficulties with working university data, which helps to keep all necessary information in one place and provides convenient tools for working with it.
 
